@@ -63,3 +63,6 @@ int spParserGameModeCommand(char* str);
 bool checkPosPat(char *str);
 
 #endif /* SPCHESSPARSER_H_ */
+
+//
+
