@@ -687,7 +687,43 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 
 	//update piecesArray
 	if (ifPlayer1IsCurrent(src)) {
+<<<<<<< HEAD
 		//find the piece according to current location
+=======
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			if (src->movesPlayer1[i][0] == from[0]
+					&& src->movesPlayer1[i][1] == from[1]) {
+				src->movesPlayer1[i][0] = to[0];
+				src->movesPlayer1[i][1] = to[1];
+			}
+		}
+		if (eaten) {
+			for (int i = 0; i < NUM_OF_PIECES; i++) {
+				if (src->movesPlayer2[i][0] == to[0]
+						&& src->movesPlayer2[i][1] == to[1]) {
+					src->movesPlayer2[i][0] = EATEN;
+					src->movesPlayer2[i][1] = EATEN;
+				}
+			}
+		}
+	} else {
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			if (src->movesPlayer2[i][0] == from[0]
+					&& src->movesPlayer2[i][1] == from[1]) {
+				src->movesPlayer2[i][0] = to[0];
+				src->movesPlayer2[i][1] = to[1];
+			}
+		}
+		if (eaten) {
+			for (int i = 0; i < NUM_OF_PIECES; i++) {
+				if (src->movesPlayer1[i][0] == to[0]
+						&& src->movesPlayer1[i][1] == to[1]) {
+					src->movesPlayer1[i][0] = EATEN;
+					src->movesPlayer1[i][1] = EATEN;
+				}
+			}
+		}
+>>>>>>> d9ff3c881c1aac6708ffb3002878a3e7842bf5b2
 	}
 
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_W_SYMBOL) {
@@ -701,7 +737,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 			spArrayListRemoveLast(src->movesPlayer2);
 		spArrayListAddFirst(src->movesPlayer2, elem);
 	}
-//change the player in the end of the turn
+	//change the player in the end of the turn
 	spChessChangePlayer(src);
 	spDestroyMove(elem);
 	return SPCHESS_GAME_SUCCESS;
@@ -726,9 +762,47 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 		elem = spArrayListGetFirst(src->movesPlayer1);
 		spArrayListRemoveFirst(src->movesPlayer1);
 	}
-//change the game back according to the last move
+	//change the game back according to the last move
 	src->gameBoard[elem->from[0]][elem->from[1]] = elem->piece;
 	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't munch
+	bool eaten = elem->eaten != EMPTY;
+
+	//update piecesArray
+	if (ifPlayer1IsCurrent(src)) {
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			if (src->movesPlayer1[i][0] == elem->to[0]
+					&& src->movesPlayer1[i][1] == elem->to[1]) {
+				src->movesPlayer1[i][0] = elem->from[0];
+				src->movesPlayer1[i][1] = elem->from[1];
+			}
+		}
+		if (eaten) {
+			for (int i = 0; i < NUM_OF_PIECES; i++) {
+				if (src->movesPlayer2[i][0] == to[0]
+						&& src->movesPlayer2[i][1] == to[1]) {
+					src->movesPlayer2[i][0] = EATEN;
+					src->movesPlayer2[i][1] = EATEN;
+				}
+			}
+		}
+	} else {
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			if (src->movesPlayer2[i][0] == elem->to[0]
+					&& src->movesPlayer2[i][1] == elem->to[1]) {
+				src->movesPlayer2[i][0] = elem->from[0];
+				src->movesPlayer2[i][1] = elem->from[1];
+			}
+		}
+		if (eaten) {
+			for (int i = 0; i < NUM_OF_PIECES; i++) {
+				if (src->movesPlayer1[i][0] == to[0]
+						&& src->movesPlayer1[i][1] == to[1]) {
+					src->movesPlayer1[i][0] = EATEN;
+					src->movesPlayer1[i][1] = EATEN;
+				}
+			}
+		}
+	}
 
 	spChessChangePlayer(src); //change the turn
 	spDestroyMove(elem);

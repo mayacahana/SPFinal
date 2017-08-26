@@ -20,6 +20,7 @@
 #define MAX_STEPS_PIECE 27
 #define NUM_OF_PIECES 16
 #define DIM 2
+#define EATEN -17
 
 //pieces:
 #define WHITE_P 'm'
