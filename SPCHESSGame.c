@@ -684,7 +684,10 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 
 	//update piecesArray
 	if (ifPlayer1IsCurrent(src)) {
+
+
 		//find the piece according to current location
+
 		for (int i = 0; i < NUM_OF_PIECES; i++) {
 			if (src->piecesPlayer1[i][0] == from[0]
 					&& src->piecesPlayer1[i][1] == from[1]) {
@@ -924,3 +927,35 @@ char pawnFromArray(int index, char currentPlayer) {
 	}
 	return '\0';
 }
+int* getSubArrayForPawn(char pawn) {
+	int* res = malloc(2 * sizeof(int));
+	pawn = tolower(pawn);
+	switch (pawn) {
+	case ('m'):
+		res[0] = 0;
+		res[1] = 7;
+		return res;
+	case ('n'):
+		res[0] = 8;
+		res[1] = 9;
+		return res;
+	case ('b'):
+		res[0] = 10;
+		res[1] = 11;
+		return res;
+	case ('r'):
+		res[0] = 12;
+		res[1] = 13;
+		return res;
+	case ('q'):
+		res[0] = 14;
+		res[1] = 14;
+		return res;
+	case ('k'):
+		res[0] = 15;
+		res[1] = 15;
+		return res;
+	}
+	return res;
+}
+
