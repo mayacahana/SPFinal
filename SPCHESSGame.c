@@ -671,7 +671,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 	if (!src || !spChessGameIsValidMove(src, from, to))
 		return SPCHESS_GAME_INVALID_ARGUMENT;
 
-//the move is valid-index thus it is safe to create move for other validation checks
+	//the move is valid-index thus it is safe to create move for other validation checks
 	char piece = src->gameBoard[from[0]][from[1]];
 	char eaten = src->gameBoard[to[0]][to[1]];
 	bool isEaten = eaten != EMPTY;
@@ -687,9 +687,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 
 	//update piecesArray
 	if (ifPlayer1IsCurrent(src)) {
-<<<<<<< HEAD
 		//find the piece according to current location
-=======
 		for (int i = 0; i < NUM_OF_PIECES; i++) {
 			if (src->movesPlayer1[i][0] == from[0]
 					&& src->movesPlayer1[i][1] == from[1]) {
@@ -723,7 +721,6 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 				}
 			}
 		}
->>>>>>> d9ff3c881c1aac6708ffb3002878a3e7842bf5b2
 	}
 
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_W_SYMBOL) {
@@ -737,7 +734,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 			spArrayListRemoveLast(src->movesPlayer2);
 		spArrayListAddFirst(src->movesPlayer2, elem);
 	}
-	//change the player in the end of the turn
+//change the player in the end of the turn
 	spChessChangePlayer(src);
 	spDestroyMove(elem);
 	return SPCHESS_GAME_SUCCESS;
@@ -762,12 +759,12 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 		elem = spArrayListGetFirst(src->movesPlayer1);
 		spArrayListRemoveFirst(src->movesPlayer1);
 	}
-	//change the game back according to the last move
+//change the game back according to the last move
 	src->gameBoard[elem->from[0]][elem->from[1]] = elem->piece;
 	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't munch
 	bool eaten = elem->eaten != EMPTY;
 
-	//update piecesArray
+//update piecesArray
 	if (ifPlayer1IsCurrent(src)) {
 		for (int i = 0; i < NUM_OF_PIECES; i++) {
 			if (src->movesPlayer1[i][0] == elem->to[0]
@@ -777,11 +774,15 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 			}
 		}
 		if (eaten) {
-			for (int i = 0; i < NUM_OF_PIECES; i++) {
-				if (src->movesPlayer2[i][0] == to[0]
-						&& src->movesPlayer2[i][1] == to[1]) {
-					src->movesPlayer2[i][0] = EATEN;
-					src->movesPlayer2[i][1] = EATEN;
+			int* subArr = getSubArrayForPawn(eaten);
+			int leftBound = subArr[0];
+			int rightBound = subArr[1];
+			free(subArr);
+			for (int i = leftBound; i <= rightBound; i++) {
+				if (src->movesPlayer2[i][0] == EATEN
+						&& src->movesPlayer2[i][1] == EATEN) {
+					src->movesPlayer2[i][0] = elem->to[0];
+					src->movesPlayer2[i][1] = elem->to[1];
 				}
 			}
 		}
@@ -794,115 +795,78 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 			}
 		}
 		if (eaten) {
-			for (int i = 0; i < NUM_OF_PIECES; i++) {
-				if (src->movesPlayer1[i][0] == to[0]
-						&& src->movesPlayer1[i][1] == to[1]) {
-					src->movesPlayer1[i][0] = EATEN;
-					src->movesPlayer1[i][1] = EATEN;
+			int* subArr = getSubArrayForPawn(eaten);
+			int leftBound = subArr[0];
+			int rightBound = subArr[1];
+			free(subArr);
+			for (int i = leftBound; i <= rightBound; i++) {
+				if (src->movesPlayer1[i][0] == EATEN
+						&& src->movesPlayer1[i][1] == EATEN) {
+					src->movesPlayer1[i][0] = elem->to[0];
+					src->movesPlayer1[i][1] = elem->to[1];
 				}
 			}
 		}
 	}
-
 	spChessChangePlayer(src); //change the turn
 	spDestroyMove(elem);
 	return SPCHESS_GAME_SUCCESS;
 }
 
 //return the symbol of the color which is in the state of mate, if there is, null o/w.
-char spChessifMate(SPCHESSGame* src) {
+char spChessIfMate(SPCHESSGame* src) {
 	if (src)
 		return '\0';
 
-	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
-		if (spChessIfMateWhite(src)) // if white is threating the black
-			return SPCHESS_GAME_PLAYER_2_SYMBOL;
+	if (ifPlayer1IsCurrent(src))
+		if (spChessIfPlayer1IsThreatening(src)) // if white is threating the black
+			return SPCHESS_GAME_PLAYER_B_SYMBOL;
 		else
 			return '\0';
 	else {
-		if (spChessIfMateBlack(src)) //if black is threating the white
-			return SPCHESS_GAME_PLAYER_1_SYMBOL;
+		if (spChessIfPlayer2IsThreatening(src)) //if black is threating the white
+			return SPCHESS_GAME_PLAYER_W_SYMBOL;
 		else
 			return '\0';
 	}
 }
 
-bool spChessIfMateWhite(SPCHESSGame* src) {
+bool spChessIfPlayer1IsThreatening(SPCHESSGame* src) {
 	bool isMate = false;
-	int locBlackKing[2] = { -1 };
-	findBlackKing(src, locBlackKing);
-	int to[2] = { locBlackKing[0], locBlackKing[1] };
-	char blackKing = src->gameBoard[locBlackKing[0]][locBlackKing[1]];
+	int to[2] = { src->movesPlayer2[15][0], src->colorPlayer2[15][1] };
 	char piece;
-//find white pieces who can threaten the black king
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
-			int from[2] = { i, j };
-			piece = src->gameBoard[i][j];
-			move* elem = SpCreateMove(from, to, piece, blackKing);
-			if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
-				isMate = true;
-				spDestroyMove(elem);
-				break;
-			}
+	//find white pieces who can threaten the black king
+	for (int i = 0; i < NUM_OF_PIECES; i++) {
+		int from[2] = { src->piecesPlayer1[i][0], src->piecesPlayer1[i][1] };
+		piece = src->gameBoard[from[0]][from[1]];
+		move* elem = SpCreateMove(from, to, piece, BLACK_K);
+		if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
+			isMate = true;
 			spDestroyMove(elem);
+			break;
 		}
+		spDestroyMove(elem);
 	}
 	return isMate;
 }
 
-bool spChessIfBlackWhite(SPCHESSGame* src) {
+bool spChessIfPlayer2IsThreatening(SPCHESSGame* src) {
 	bool isMate = false;
-	int locWhiteKing[2] = { -1 };
-	findWhiteKing(src, locWhiteKing);
-	int to[2] = { locWhiteKing[0], locWhiteKing[1] };
-	char whiteKing = src->gameBoard[locWhiteKing[0]][locWhiteKing[1]];
+	int to[2] = { src->movesPlayer1[15][0], src->colorPlayer1[15][1] };
 	char piece;
-//find white pieces who can threaten the black king
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
-			int from[2] = { i, j };
-			piece = src->gameBoard[i][j];
-			move* elem = SpCreateMove(from, to, piece, whiteKing);
-			if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
-				isMate = true;
-				spDestroyMove(elem);
-				break;
-			}
+	//find white pieces who can threaten the black king
+	for (int i = 0; i < NUM_OF_PIECES; i++) {
+		int from[2] = { src->piecesPlayer2[i][0], src->piecesPlayer2[i][1] };
+		piece = src->gameBoard[from[0]][from[1]];
+		move* elem = SpCreateMove(from, to, piece, WHITE_K);
+		if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
+			isMate = true;
 			spDestroyMove(elem);
+			break;
 		}
+		spDestroyMove(elem);
 	}
 	return isMate;
-}
-
-void findBlackKing(SPCHESSGame* src, int locBlackKing[2]) {
-	if (!src)
-		return;
-
-//find the black king on the board
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
-			if (src->gameBoard[i][j] == BLACK_K) {
-				locBlackKing[0] = i;
-				locBlackKing[1] = j;
-			}
-		}
-	}
-}
-
-void findWhiteKing(SPCHESSGame* src, int locWhiteKing[2]) {
-	if (!src)
-		return;
-
-//find the white king on the board
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
-			if (src->gameBoard[i][j] == WHITE_K) {
-				locWhiteKing[0] = i;
-				locWhiteKing[1] = j;
-			}
-		}
-	}
 }
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src) {

@@ -97,10 +97,8 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[2], int to[2]
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 
 char spChessIfMate(SPCHESSGame* src);
-bool spChessIfMateWhite(src);
-bool spChessIfMateBlack(src);
-void findBlackKing(src);
-void findWhiteKing(src);
+bool spChessIfPlayer1IsThreatening(src);
+bool spChessIfPlayer2IsThreatening(src);
 
 
 
