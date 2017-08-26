@@ -4,6 +4,7 @@
  *  Created on: 15 באוג׳ 2017
  *      Author: uri
  */
+//opop
 
 #include <stdio.h>
 #include <string.h>
