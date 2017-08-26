@@ -98,20 +98,35 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	fprintf(out,
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
 	if (game->currentPlayer == 'W')
-		fputs("0</current_turn>\n\t",out);
+		fputs("0</current_turn>\n\t", out);
 	else {
-		fputs("1</current_turn>\n\t<game_mode>",out);
+		fputs("1</current_turn>\n\t<game_mode>", out);
 	}
 	if (game->gameMode == 2)
-		fputs("2</game_mode>\n\t",out);
+		fputs("2</game_mode>\n\t", out);
 	else {
-		fputs("1</game_mode>\n\t<difficulty>",out);
-		fprintf(out,"%d",game->difficulty);
-		fputs("</difficulty>\n\t<user_color>",out);
-		if(game->userColor == 'W'){
-			fputs("1</user_color>\n\t")
+		fputs("1</game_mode>\n\t<difficulty>", out);
+		fprintf(out, "%d", game->difficulty);
+		fputs("</difficulty>\n\t<user_color>", out);
+		if (game->userColor == 'W') {
+			fputs("1</user_color>\n\t<board>");
+		} else {
+			fputs("2</user_color>\n\t<board>");
 		}
 	}
+	for (int j = 7; j >= 0; j--) {
+		fprintf(out, "\n\t\t<row_%d>", j + 1);
+		for (int i = 0; i < 8; i++) {
+			if (game->gameBoard[i][j] == EMPTY)
+				fputs("_", out);
+			else
+				fputc(game->gameBoard[i][j], out);
+		}
+		fprintf(out, "</row_%d>", j + 1);
+	}
+	fprintf(out, "\n\t</board>\n</game>\n");
+	assert(fclose(out) == 0);
+	return 0;
 }
 
 void getNextTag(FILE* in, char nextTag[13]) {
