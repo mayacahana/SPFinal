@@ -14,10 +14,10 @@
 #include <ctype.h>
 #include <stdbool.h>
 #define SP_MAX_LINE_LENGTH 1024
-
+#define DIM 2
 typedef struct move_t {
-	int from[2];
-	int to[2];
+	int from[DIM];
+	int to[DIM];
 	char piece;
 	char eaten; // empty if not
 	//points ?
