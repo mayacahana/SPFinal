@@ -5,6 +5,12 @@
  *      Author: mayacahana
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdbool.h>
+
 #ifndef SPCHESSFILEAUX_H_
 #define SPCHESSFILEAUX_H_
 

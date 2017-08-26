@@ -18,13 +18,6 @@ SPCHESSGame* getStateFromFile(char* path) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
 		exit(0);
 	}
-//	nextChar = fgetc(in);
-//	while (i < 46) { //reading the opening line of the xml
-//		nextChar = fgetc(in);
-//		i++;
-//	}
-//	nextChar = fgetc(in); // last char '<'
-	//next tag - next_turn
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
 	if (strcmp(nextTag, "current_turn") == 0) {
@@ -104,10 +97,20 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		return -1;
 	fprintf(out,
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
-	if (game->currentPlayer == 'B')
-		fputs("0</type>\n\t", out);
+	if (game->currentPlayer == 'W')
+		fputs("0</current_turn>\n\t",out);
 	else {
-		fputs("1</type>\n\t",out);
+		fputs("1</current_turn>\n\t<game_mode>",out);
+	}
+	if (game->gameMode == 2)
+		fputs("2</game_mode>\n\t",out);
+	else {
+		fputs("1</game_mode>\n\t<difficulty>",out);
+		fprintf(out,"%d",game->difficulty);
+		fputs("</difficulty>\n\t<user_color>",out);
+		if(game->userColor == 'W'){
+			fputs("1</user_color>\n\t")
+		}
 	}
 }
 
@@ -119,7 +122,7 @@ void getNextTag(FILE* in, char nextTag[13]) {
 		nextChar = fgetc(in);
 	}
 	nextChar = fgetc(in); // last char '<'
-	//reading the tag
+//reading the tag
 	while (nextChar != '>') {
 		nextTag[i] = nextChar;
 		i++;
