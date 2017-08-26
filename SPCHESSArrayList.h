@@ -20,6 +20,9 @@ typedef struct move_t {
 	int to[2];
 	char piece;
 	char eaten; // empty if not
+	//points ?
+	//move next* ?
+
 } move;
 
 typedef struct sp_array_list_t {

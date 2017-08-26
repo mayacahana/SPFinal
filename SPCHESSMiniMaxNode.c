@@ -16,14 +16,39 @@ int scoringFunc(SPCHESSGame* src, char currentPlayer) {
 	else {
 		strcpy(opponentPlayer, "W");
 	}
-	for (i=0; i<BOARD_SIZE;i++){
-		for(j=0;j<BOARD_SIZE;j++){
-			score+=getPawnValue(src->gameBoard[i][j],currentPlayer);
+	for (i = 0; i < BOARD_SIZE; i++) {
+		for (j = 0; j < BOARD_SIZE; j++) {
+			score += getPawnValue(src->gameBoard[i][j], currentPlayer);
 		}
 	}
 	return score;
 }
 
+int scoringFuncBest(SPCHESSGame* src, char currentPlayer) {
+	if (!src)
+		return 0;
+	int score = 0, tmp = 0, i, j;
+	char opponentPlayer;
+
+	if (strcmp(currentPlayer, "W") == 0)
+		strcpy(opponentPlayer, "B");
+	else {
+		strcpy(opponentPlayer, "W");
+	}
+	/*spChessIfMate return char whose is losing */
+	if (spChessIfMate(src) == opponentPlayer) {
+		return (4000);
+	}
+	if (spChessIfMate(src) == currentPlayer) {
+		return (-4000);
+	}
+	for (i = 0; i < BOARD_SIZE; i++) {
+		for (j = 0; j < BOARD_SIZE; j++) {
+			score += getPawnValue(src->gameBoard[i][j], currentPlayer);
+		}
+	}
+	return score;
+}
 int getPawnValue(char type, char playerColor) {
 	int white_pawn;
 	int white_knight;
@@ -97,3 +122,4 @@ int getPawnValue(char type, char playerColor) {
 		return 0;
 	}
 }
+
