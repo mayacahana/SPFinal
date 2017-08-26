@@ -95,6 +95,11 @@ bool isInBoard(int row, int col);
 SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[2], int to[2]);
 
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
+void getSubArrayFromPiece(char piece, int subArray[DIM]);
+char pawnFromArray(int index, char currentPlayer);
+
+
+
 
 char spChessIfMate(SPCHESSGame* src);
 bool spChessIfPlayer1IsThreatening(src);

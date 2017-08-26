@@ -4,6 +4,7 @@
  *  Created on: 15 באוג׳ 2017
  *      Author: uri
  */
+#include "SPCHESSGame.h"
 
 int scoringFunc(SPCHESSGame* src, char currentPlayer) {
 	if (!src)

@@ -685,7 +685,6 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 	//update piecesArray
 	if (ifPlayer1IsCurrent(src)) {
 
-
 		//find the piece according to current location
 
 		for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -774,11 +773,9 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 			}
 		}
 		if (eaten) {
-			int* subArr = getSubArrayForPawn(eaten);
-			int leftBound = subArr[0];
-			int rightBound = subArr[1];
-			free(subArr);
-			for (int i = leftBound; i <= rightBound; i++) {
+			int subArr[DIM] = { -1 };
+			getSubArrayForPawn(eaten, subArr);
+			for (int i = subArr[0]; i <= subArr[1]; i++) {
 				if (src->piecesPlayer1[i][0] == EATEN
 						&& src->piecesPlayer1[i][1] == EATEN) {
 					src->piecesPlayer1[i][0] = elem->to[0];
@@ -795,11 +792,9 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 			}
 		}
 		if (eaten) {
-			int* subArr = getSubArrayForPawn(eaten);
-			int leftBound = subArr[0];
-			int rightBound = subArr[1];
-			free(subArr);
-			for (int i = leftBound; i <= rightBound; i++) {
+			int subArr[DIM] = { -1 };
+			getSubArrayForPawn(eaten, subArr);
+			for (int i = subArr[0]; i <= subArr[1]; i++) {
 				if (src->movesPlayer2[i][0] == EATEN
 						&& src->movesPlayer2[i][1] == EATEN) {
 					src->movesPlayer2[i][0] = elem->to[0];
@@ -833,38 +828,42 @@ char spChessIfMate(SPCHESSGame* src) {
 
 bool spChessIfPlayer1IsThreatening(SPCHESSGame* src) {
 	bool isMate = false;
-	int to[2] = { src->movesPlayer2[15][0], src->colorPlayer2[15][1] }; //opponant king's location
-	char piece;
-	//find white pieces who can threaten the black king
+	int to[2] = { src->piecesPlayer2[15][0], src->piecesPlayer2[15][1] }; //opponant king's location
+	char piece, king = src->gameBoard[to[0]][to[1]];
+	//find pieces who can threaten the opponant king
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
-		int from[2] = { src->piecesPlayer1[i][0], src->piecesPlayer1[i][1] };
-		piece = src->gameBoard[from[0]][from[1]];
-		move* elem = SpCreateMove(from, to, piece, BLACK_K);
-		if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
-			isMate = true;
+		if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1 >= 0]) {
+			int from[2] = { src->piecesPlayer1[i][0], src->piecesPlayer1[i][1] };
+			piece = src->gameBoard[from[0]][from[1]];
+			move* elem = SpCreateMove(from, to, piece, BLACK_K);
+			if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
+				isMate = true;
+				spDestroyMove(elem);
+				break;
+			}
 			spDestroyMove(elem);
-			break;
 		}
-		spDestroyMove(elem);
 	}
 	return isMate;
 }
 
 bool spChessIfPlayer2IsThreatening(SPCHESSGame* src) {
 	bool isMate = false;
-	int to[2] = { src->movesPlayer1[15][0], src->colorPlayer1[15][1] };
-	char piece;
-	//find white pieces who can threaten the black king
+	int to[2] = { src->piecesPlayer1[15][0], src->piecesPlayer1[15][1] }; //opponant king's location
+	char piece, king = src->gameBoard[to[0]][to[1]];
+	//find pieces who can threaten the opponant king
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
-		int from[2] = { src->piecesPlayer2[i][0], src->piecesPlayer2[i][1] };
-		piece = src->gameBoard[from[0]][from[1]];
-		move* elem = SpCreateMove(from, to, piece, WHITE_K);
-		if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
-			isMate = true;
+		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1 >= 0]) {
+			int from[2] = { src->piecesPlayer1[i][0], src->piecesPlayer1[i][1] };
+			piece = src->gameBoard[from[0]][from[1]];
+			move* elem = SpCreateMove(from, to, piece, king);
+			if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
+				isMate = true;
+				spDestroyMove(elem);
+				break;
+			}
 			spDestroyMove(elem);
-			break;
 		}
-		spDestroyMove(elem);
 	}
 	return isMate;
 }
@@ -927,35 +926,38 @@ char pawnFromArray(int index, char currentPlayer) {
 	}
 	return '\0';
 }
-int* getSubArrayForPawn(char pawn) {
-	int* res = malloc(2 * sizeof(int));
-	pawn = tolower(pawn);
-	switch (pawn) {
-	case ('m'):
-		res[0] = 0;
-		res[1] = 7;
-		return res;
-	case ('n'):
-		res[0] = 8;
-		res[1] = 9;
-		return res;
-	case ('b'):
-		res[0] = 10;
-		res[1] = 11;
-		return res;
-	case ('r'):
-		res[0] = 12;
-		res[1] = 13;
-		return res;
-	case ('q'):
-		res[0] = 14;
-		res[1] = 14;
-		return res;
-	case ('k'):
-		res[0] = 15;
-		res[1] = 15;
-		return res;
+void getSubArrayFromPiece(char piece, int subArray[DIM]) {
+
+	if (piece == WHITE_R || piece == BLACK_R) {
+		subArray[0] = 12;
+		subArray[1] = 13;
+		return;
 	}
-	return res;
+	if (piece == WHITE_N || piece == BLACK_N) {
+		subArray[0] = 8;
+		subArray[1] = 9;
+		return;
+	}
+	if (piece == WHITE_B || piece == BLACK_B) {
+		subArray[0] = 10;
+		subArray[1] = 11;
+		return;
+	}
+	if (piece == WHITE_Q | piece == BLACK_Q) {
+		subArray[0] = 14;
+		subArray[1] = 14;
+		return;
+	}
+	if (piece == WHITE_K || piece == BLACK_K) {
+		subArray[0] = 15;
+		subArray[1] = 15;
+		return;
+	}
+	if (piece == WHITE_P || piece == BLACK_P) {
+		subArray[0] = 0;
+		subArray[1] = 7;
+		return;
+	}
+	return;
 }
 
