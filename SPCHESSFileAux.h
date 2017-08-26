@@ -5,6 +5,12 @@
  *      Author: mayacahana
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdbool.h>
+
 #ifndef SPCHESSFILEAUX_H_
 #define SPCHESSFILEAUX_H_
 
@@ -21,5 +27,12 @@ typedef enum sp_array_list_message_t {
 	SP_ARRAY_LIST_EMPTY
 } SP_ARRAY_LIST_MESSAGE;
 
+SPCHESSGame* getStateFromFile(char* path);
+
+int saveGameToFile(char* path, SPCHESSGame* game);
+
+void getNextTag(FILE* in, char nextTag[13]);
+
+void getNextValue(FILE* in, char nextValue[6]);
 
 #endif /* SPCHESSFILEAUX_H_ */

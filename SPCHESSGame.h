@@ -8,17 +8,14 @@
 #ifndef SPCHESSGAME_H_
 #define SPCHESSGAME_H_
 #include "SPCHESSArrayList.h"
-#include <stdbool.h>
 
 
 //Definitions:
-
 #define BOARD_SIZE 8
 #define SPCHESS_GAME_PLAYER_1_SYMBOL 'W'
 #define SPCHESS_GAME_PLAYER_2_SYMBOL 'B'
 #define SPCHESS_GAME_TIE_SYMBOL '-'
 #define SPCHESS_GAME_EMPTY_ENTRY ' '
-
 #define HISTORY_SIZE 6
 #define MAX_STEPS_PIECE 27
 
@@ -50,12 +47,6 @@ typedef struct spchess_game_t {
 	SPCHESSArrayList* movesPlayer2;
 } SPCHESSGame;
 
-typedef struct move_t{
-    int from[2];
-    int to[2];
-    char piece;
-    char eaten;
-} move;
 
 typedef enum spchess_game_message_t {
 	SPCHESS_GAME_INVALID_MOVE,
@@ -66,7 +57,6 @@ typedef enum spchess_game_message_t {
 } SPCHESS_GAME_MESSAGE;
 
 
-
 SPCHESSGame* spChessGameCreate(int historySize);
 void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]);
 
@@ -74,28 +64,25 @@ SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
 
 void spChessGameDestroy(SPCHESSGame* src);
 
-
 SPCHESS_GAME_MESSAGE spChessMoveHandler(SPCHESSGame*, move* elem);
-bool spChessGameIsValidMove(SPCHESSGame* src, move* elem);
-bool spChessGameIsColorPos(SPCHESSGame* src, move* elem);
+bool spChessGameIsValidMove(SPCHESSGame* src, int from[2], int to[2]);
 bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem);
-int** getLegalMovesForPiece(SPCHESSGame* src, move* elem);
-int** getLegalMovesForRook(SPCHESSGame* src, move* elem);
-int** getLegalMovesForKnight(SPCHESSGame* src, move* elem);
-int** getLegalMovesForBishop(SPCHESSGame* src, move* elem);
-int** getLegalMovesForQueen(SPCHESSGame* src, move* elem);
-int** getLegalMovesForPawn(SPCHESSGame* src, move* elem);
-int** getLegalMovesForKing(SPCHESSGame* src, move* elem);
 bool isSameColorAsCurrent(SPCHESSGame* src, int row, int col);
+void getLegalMovesForPiece(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void getLegalMovesForRook(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void getLegalMovesForKnight(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void getLegalMovesForBishop(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void getLegalMovesForQueen(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void getLegalMovesForWhitePawn(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void getLegalMovesForBlackPawn(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+void  getLegalMovesForKing(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][2]);
+bool isInBoard(int row, int col);
 
+SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[2], int to[2]);
 
+SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 
-
-
-
-
-
-
+char spChessCheckMate(SPCHESSGame* src);
 
 SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src);
 
