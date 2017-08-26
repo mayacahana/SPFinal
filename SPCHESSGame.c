@@ -153,7 +153,8 @@ SPCHESSGame* spChessGameCopy(SPCHESSGame* src) {
 	if (!src)
 		return NULL;
 
-	SPCHESSGame* res = spChessGameCreate(2 * src->movesPlayer1->maxSize, src->gameMode, src->colorPlayer1, src->difficulty);
+	SPCHESSGame* res = spChessGameCreate(2 * src->movesPlayer1->maxSize,
+			src->gameMode, src->colorPlayer1, src->difficulty);
 	if (!res) {
 		spChessGameDestroy(src);
 		printf("Error: spChessGameCopy has failed\n");
@@ -685,7 +686,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 	src->gameBoard[to[0]][to[1]] = piece;
 
 	//update piecesArray
-	if(ifPlayer1IsCurrent(src)) {
+	if (ifPlayer1IsCurrent(src)) {
 		//find the piece according to current location
 	}
 
@@ -847,11 +848,44 @@ void spChessChangePlayer(SPCHESSGame* src) {
 		src->currentPlayer = SPCHESS_GAME_PLAYER_W_SYMBOL;
 }
 
-
 bool ifPlayer1IsCurrent(SPCHESSGame* src) {
-	if(!src)
+	if (!src)
 		return false;
 
 	return (src->colorPlayer1 == src->currentPlayer);
 }
 
+char pawnFromArray(int index, char currentPlayer) {
+	if (currentPlayer == SPCHESS_GAME_PLAYER_W_SYMBOL) {
+		switch (index) {
+		case 0 ... 7:
+			return WHITE_P;
+		case 8 ... 9:
+			return WHITE_N;
+		case 10 ... 11:
+			return WHITE_B;
+		case 12 ... 13:
+			return WHITE_R;
+		case 14:
+			return WHITE_Q;
+		case 15:
+			return WHITE_K;
+		}
+	} else {
+		switch (index) {
+		case 0 ... 7:
+			return BLACK_P;
+		case 8 ... 9:
+			return BLACK_N;
+		case 10 ... 11:
+			return BLACK_B;
+		case 12 ... 13:
+			return BLACK_R;
+		case 14:
+			return BLACK_Q;
+		case 15:
+			return BLACK_K;
+		}
+	}
+	return '\0';
+}
