@@ -82,13 +82,26 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[2], int to[2]
 
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 
-char spChessCheckMate(SPCHESSGame* src);
+char spChessIfMate(SPCHESSGame* src);
+bool spChessIfMateWhite(src);
+bool spChessIfMateBlack(src);
+void findBlackKing(src);
+void findWhiteKing(src);
+
+
+
+
+char spChessGameCheckWinner(SPCHESSGame* src);
 
 SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src);
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src);
 
 void spChessChangePlayer(SPCHESSGame* src);
+
+
+
+
 
 
 #endif /* SPCHESSGAME_H_ */

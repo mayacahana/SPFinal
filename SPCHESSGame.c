@@ -4,7 +4,6 @@
  *  Created on: 15 באוג׳ 2017
  *      Author: uri
  */
-//opop
 
 #include "SPCHESSGame.h"
 
@@ -602,7 +601,6 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[2],
 	}
 	//change the player in the end of the turn
 	spChessChangePlayer(src);
-
 	spDestroyMove(elem);
 	return SPCHESS_GAME_SUCCESS;
 
@@ -635,20 +633,101 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 	return SPCHESS_GAME_SUCCESS;
 }
 
-char spChessCheckMate(SPCHESSGame* src) {
-	if(src)
+//return the symbol of the color which is in the state of mate, if there is, null o/w.
+char spChessifMate(SPCHESSGame* src) {
+	if (src)
 		return '\0';
 
-	return SPCHESS_GAME_PLAYER_1_SYMBOL;// just for compilation
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
+		if (spChessIfMateWhite(src)) // if white is threating the black
+			return SPCHESS_GAME_PLAYER_2_SYMBOL;
+		else
+			return '\0';
+	else {
+		if (spChessIfMateBlack(src)) //if black is threating the white
+			return SPCHESS_GAME_PLAYER_1_SYMBOL;
+		else
+			return '\0';
+	}
 }
 
+bool spChessIfMateWhite(SPCHESSGame* src) {
+	bool isMate = false;
+	int locBlackKing[2] = { -1 };
+	findBlackKing(src, locBlackKing);
+	int to[2] = { locBlackKing[0], locBlackKing[1] };
+	char blackKing = src->gameBoard[locBlackKing[0]][locBlackKing[1]];
+	char piece;
+	//find white pieces who can threaten the black king
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			int from[2] = { i, j };
+			piece = src->gameBoard[i][j];
+			move* elem = SpCreateMove(from, to, piece, blackKing);
+			if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
+				isMate = true;
+				spDestroyMove(elem);
+				break;
+			}
+			spDestroyMove(elem);
+		}
+	}
+	return isMate;
+}
 
+bool spChessIfBlackWhite(SPCHESSGame* src) {
+	bool isMate = false;
+	int locWhiteKing[2] = { -1 };
+	findWhiteKing(src, locWhiteKing);
+	int to[2] = { locWhiteKing[0], locWhiteKing[1] };
+	char whiteKing = src->gameBoard[locWhiteKing[0]][locWhiteKing[1]];
+	char piece;
+	//find white pieces who can threaten the black king
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			int from[2] = { i, j };
+			piece = src->gameBoard[i][j];
+			move* elem = SpCreateMove(from, to, piece, whiteKing);
+			if (spChessMoveHandler == SPCHESS_GAME_SUCCESS) { //found a piece
+				isMate = true;
+				spDestroyMove(elem);
+				break;
+			}
+			spDestroyMove(elem);
+		}
+	}
+	return isMate;
+}
 
+void findBlackKing(SPCHESSGame* src, int locBlackKing[2]) {
+	if (!src)
+		return;
 
+//find the black king on the board
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (src->gameBoard[i][j] == BLACK_K) {
+				locBlackKing[0] = i;
+				locBlackKing[1] = j;
+			}
+		}
+	}
+}
 
+void findWhiteKing(SPCHESSGame* src, int locWhiteKing[2]) {
+	if (!src)
+		return;
 
-
-
+	//find the white king on the board
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (src->gameBoard[i][j] == WHITE_K) {
+				locWhiteKing[0] = i;
+				locWhiteKing[1] = j;
+			}
+		}
+	}
+}
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src) {
 	//if (!src)
