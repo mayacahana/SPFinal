@@ -45,6 +45,10 @@ typedef struct spchess_game_t {
 	char currentPlayer;
 	SPCHESSArrayList* movesPlayer1;
 	SPCHESSArrayList* movesPlayer2;
+	int gameMode;
+	char userColor;
+	char compColor;
+	int difficulty;
 } SPCHESSGame;
 
 

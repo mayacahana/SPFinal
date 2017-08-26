@@ -80,7 +80,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 	assert(fclose(in) == 0);
 	//build board
 	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE);
-	newGame->gameboard = board;
+	newGame->gameBoard = board;
 	newGame->currentPlayer = nextTurn;
 	newGame->gameMode = gameMode;
 	newGame->userColor = userColor;
