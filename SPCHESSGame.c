@@ -687,13 +687,10 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 
 	//update piecesArray
 	if (ifPlayer1IsCurrent(src)) {
-<<<<<<< HEAD
+
 
 		//find the piece according to current location
 
-=======
-		//find the piece according to current location
->>>>>>> 106f4c481c084be24b541848bc39d2a439888ce8
 		for (int i = 0; i < NUM_OF_PIECES; i++) {
 			if (src->movesPlayer1[i][0] == from[0]
 					&& src->movesPlayer1[i][1] == from[1]) {
