@@ -9,11 +9,10 @@
 #define SPCHESSGAME_H_
 #include "SPCHESSArrayList.h"
 
-
 //Definitions:
 #define BOARD_SIZE 8
-#define SPCHESS_GAME_PLAYER_W_SYMBOL 'W'
-#define SPCHESS_GAME_PLAYER_B_SYMBOL 'B'
+#define SPCHESS_GAME_PLAYER_1_SYMBOL 'W'
+#define SPCHESS_GAME_PLAYER_2_SYMBOL 'B'
 #define SPCHESS_GAME_TIE_SYMBOL '-'
 #define SPCHESS_GAME_EMPTY_ENTRY ' '
 #define HISTORY_SIZE 6
@@ -51,11 +50,9 @@ typedef struct spchess_game_t {
 	int piecesPlayer1[NUM_OF_PIECES][DIM];
 	int piecesPlayer2[NUM_OF_PIECES][DIM];
 	int gameMode;
-	char colorPlayer1;
-	char colorPlayer2;
 	int difficulty;
+	char colorUser;
 } SPCHESSGame;
-
 
 typedef enum spchess_game_message_t {
 	SPCHESS_GAME_INVALID_MOVE,
@@ -65,14 +62,9 @@ typedef enum spchess_game_message_t {
 	SPCHESS_GAME_INVALID_COLOR,
 } SPCHESS_GAME_MESSAGE;
 
-
-SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char gameColor, int difficulty);
+SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char colorUser, int difficulty);
 void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]);
 void initPiecesArray(char piecesArray[BOARD_SIZE][BOARD_SIZE], char gameColor);
-
-bool ifPlayer1IsCurrent(SPCHESSGame* src);
-
-
 
 SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
 
@@ -98,27 +90,24 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 void getSubArrayFromPiece(char piece, int subArray[DIM]);
 char pawnFromArray(int index, char currentPlayer);
 
-
-
-
 char spChessIfMate(SPCHESSGame* src);
 bool spChessIfPlayer1IsThreatening(src);
 bool spChessIfPlayer2IsThreatening(src);
 
-
-
-
 char spChessGameCheckWinner(SPCHESSGame* src);
+bool spChessIfPlayer1Win(SPCHESSGame* src);
+bool spChessIfPlayer2Win(SPCHESSGame* src);
+bool existPlayer1KingSaver(SPCHESSGame* src);
+bool existPlayer2KingSaver(SPCHESSGame* src);
+
+char spChessGameCheckTie(SPCHESSGame* src);
+bool existsValidMovePlayer1(SPCHESSGame* src);
+bool existsValidMovePlayer2(SPCHESSGame* src);
 
 SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src);
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src);
 
 void spChessChangePlayer(SPCHESSGame* src);
-
-
-
-
-
 
 #endif /* SPCHESSGAME_H_ */

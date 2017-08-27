@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include "SPCHESSArrayList.h"
 
-move* spCreateMove(int* from, int* to, char piece, char eaten) {
+move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten) {
 
 	move* newMove = (move*) malloc(sizeof(move));
 	newMove->from[0] = from[0];

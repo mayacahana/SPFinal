@@ -20,8 +20,6 @@ typedef struct move_t {
 	int to[DIM];
 	char piece;
 	char eaten; // empty if not
-	//points ?
-	//move next* ?
 
 } move;
 
@@ -38,7 +36,7 @@ typedef enum sp_array_list_message_t {
 	SP_ARRAY_LIST_EMPTY
 } SPCHESS_ARRAY_LIST_MESSAGE;
 
-move* spCreateMove(int* from, int* to, char piece, char eaten);
+move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten);
 void spDestroyMove(move* elem);
 move* spCopyMove(move* elem);
 
