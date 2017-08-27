@@ -4,7 +4,7 @@
  *  Created on: 15 באוג׳ 2017
  *      Author: uri
  */
-#include "SPCHESSGame.h"
+#include "SPCHESSMiniMaxNode.h"
 
 int scoringFunc(SPCHESSGame* src, char currentPlayer) {
 	if (!src)
@@ -95,5 +95,63 @@ int getPieceValue(char piece, char currentPlayer) {
 	default: //EMPTY
 		return 0;
 	}
+}
+
+int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
+bool flag, char colorForFunc) {
+
+	//recursion halt
+	if (maxRecLvl == 0 || spChessIfMate(src) != '\0')
+		return scoringFunc(src, colorForFunc);
+
+	//init value
+	int value = (flag) ? INT_MIN : INT_MAX;
+	int from[DIM];
+	for (int i = 0; i < NUM_OF_PIECES; i++) {
+		//who's pieces to check
+		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
+			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
+				int from[DIM] = { src->piecesPlayer1[i][0],
+						src->piecesPlayer1[i][0] };
+			else
+				continue;
+		else {
+			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
+				int from[DIM] = { src->piecesPlayer1[i][0],
+						src->piecesPlayer1[i][0] };
+			else
+				continue;
+		}
+
+		//location where to go
+		for (int k = 0; k < BOARD_SIZE; k++) {
+			for (int p = 0; p < BOARD_SIZE; p++) {
+				int to[DIM] = { k, p };
+				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS) {
+					value = decider(value, computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag, colorForFunc));
+					if (flag)
+						alpha = decider(alpha, value);
+					else
+						beta = decider(beta, value);
+
+					if(beta <= alpha) {
+						spChessUndoPrevMove(src);
+						break;
+					}
+					spChessUndoPrevMove(src);
+				}
+			}
+		}
+
+	}
+	return value;
+}
+
+int decider(int value, int curr, bool flag) {
+	//if the flag equals TRUE, take a MAX between elems
+	if (flag)
+		return MAX(value, curr);
+	else
+		return MIN(value, curr);
 }
 

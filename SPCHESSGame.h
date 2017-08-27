@@ -84,7 +84,7 @@ void getLegalMovesForBlackPawn(SPCHESSGame* src, move* elem, int legalMoves[MAX_
 void  getLegalMovesForKing(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
 bool isInBoard(int row, int col);
 
-SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[2], int to[2]);
+SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM], int to[DIM]);
 
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 void getSubArrayFromPiece(char piece, int subArray[DIM]);
