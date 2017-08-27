@@ -1105,6 +1105,4 @@ void getSubArrayFromPiece(char piece, int subArray[DIM]) {
 		subArray[1] = 7;
 		return;
 	}
-	return;
 }
-
