@@ -6,6 +6,7 @@
  */
 #include "SPCHESSFileAux.h"
 
+
 SPCHESSGame* getStateFromFile(char* path) {
 	int i = 0;
 	char nextChar;
@@ -79,13 +80,19 @@ SPCHESSGame* getStateFromFile(char* path) {
 	}
 	assert(fclose(in) == 0);
 	//build board
-	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE);
-	newGame->gameboard = board;
+	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE, gameMode, userColor,
+			difficulty);
+	newGame->gameBoard = board;
 	newGame->currentPlayer = nextTurn;
-	newGame->gameMode = gameMode;
-	newGame->userColor = userColor;
-	newGame->compColor = compColor;
-	newGame->difficulty = difficulty;
+	//fill the pieces array accordingly
+
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (board[i][j] != EMPTY) {
+
+			}
+		}
+	}
 	return newGame;
 }
 
