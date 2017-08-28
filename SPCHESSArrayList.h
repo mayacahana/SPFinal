@@ -56,6 +56,8 @@ move* spArrayListGetLast(SPCHESSArrayList* src);
 
 int spArrayListMaxCapacity(SPCHESSArrayList* src);
 
+int spArrayListSize(SPCHESSArrayList* src);
+
 bool spArrayListIsFull(SPCHESSArrayList* src);
 
 bool spArrayListIsEmpty(SPCHESSArrayList* src);

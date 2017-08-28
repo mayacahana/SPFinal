@@ -109,10 +109,17 @@ move* spArrayListGetLast(SPCHESSArrayList* src) {
 	return spArrayListGetAt(src, src->actualSize - 1);
 }
 
-int spArrayListMaxCapacity(SPCHESSArrayList* src) {
+int spArrayListSize(SPCHESSArrayList* src) {
 	if (!src)
 		return -1;
 	return src->actualSize;
+}
+
+int spArrayListMaxCapacity(SPCHESSArrayList* src) {
+	if (!src)
+		return -1;
+
+	return src->maxSize;
 }
 
 bool spArrayListIsFull(SPCHESSArrayList* src) {
