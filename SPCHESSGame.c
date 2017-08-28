@@ -951,12 +951,15 @@ char spChessGameCheckTie(SPCHESSGame* src) {
 	if (!src)
 		return '\0';
 
-	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)  //a tie in white
-		return !spChessIfPlayer2IsThreatening(src)
-				&& !existsValidMovePlayer1(src);
-	else
-		return !spChessIfPlaye12IsThreatening(src)
-				&& !existsValidMovePlayer2(src);
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) { //a tie in white
+		if (!spChessIfPlayer2IsThreatening(src) && !existsValidMovePlayer1(src))
+			return SPCHESS_GAME_PLAYER_1_SYMBOL;
+	} else {
+		if (!spChessIfPlayer1IsThreatening(src) && !existsValidMovePlayer2(src))
+			return SPCHESS_GAME_PLAYER_2_SYMBOL;
+
+	}
+	return '\0';
 
 }
 

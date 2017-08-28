@@ -128,11 +128,11 @@ bool flag, char colorForFunc) {
 			for (int p = 0; p < BOARD_SIZE; p++) {
 				int to[DIM] = { k, p };
 				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS) {
-					value = decider(value, computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag, colorForFunc));
+					value = decider(value, computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag, colorForFunc), flag);
 					if (flag)
-						alpha = decider(alpha, value);
+						alpha = decider(alpha, value, flag);
 					else
-						beta = decider(beta, value);
+						beta = decider(beta, value, flag);
 
 					if(beta <= alpha) {
 						spChessUndoPrevMove(src);
@@ -142,7 +142,6 @@ bool flag, char colorForFunc) {
 				}
 			}
 		}
-
 	}
 	return value;
 }

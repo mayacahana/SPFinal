@@ -25,6 +25,7 @@ move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten) {
 void spDestroyMove(move* elem) {
 	if (!elem)
 		return;
+
 	free(elem);
 }
 
