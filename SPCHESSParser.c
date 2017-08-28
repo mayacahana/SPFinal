@@ -222,7 +222,7 @@ int spParserGameModeCommand(char* str) {
 	char *strcopy = (char*) malloc((strlen(str) + 1) * sizeof(char));
 	if (!strcopy) {
 		perror_message_malloc;
-		free(strcpy);
+		free(strcopy);
 		exit(1);
 	}
 	strcpy(strcopy, str);

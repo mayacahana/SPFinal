@@ -109,17 +109,17 @@ bool flag, char colorForFunc) {
 	int from[DIM];
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		//who's pieces to check
-		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
-			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
-				int from[DIM] = { src->piecesPlayer1[i][0],
-						src->piecesPlayer1[i][0] };
-			else
+		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
+				from[0] = src->piecesPlayer1[i][0];
+				from[1] = src->piecesPlayer1[i][1];
+			} else
 				continue;
-		else {
-			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
-				int from[DIM] = { src->piecesPlayer1[i][0],
-						src->piecesPlayer1[i][0] };
-			else
+		} else {
+			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
+				from[0] = src->piecesPlayer2[i][0];
+				from[1] = src->piecesPlayer2[i][1];
+			} else
 				continue;
 		}
 
@@ -128,21 +128,20 @@ bool flag, char colorForFunc) {
 			for (int p = 0; p < BOARD_SIZE; p++) {
 				int to[DIM] = { k, p };
 				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS) {
-					value = decider(value, computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag, colorForFunc));
+					value = decider(value, computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag, colorForFunc), flag);
 					if (flag)
-						alpha = decider(alpha, value);
+						alpha = decider(alpha, value, flag);
 					else
-						beta = decider(beta, value);
+						beta = decider(beta, value, flag);
 
 					if(beta <= alpha) {
-						spChessUndoPrevMove(src);
+						spChessGameUndoPrevMove(src);
 						break;
 					}
-					spChessUndoPrevMove(src);
+					spChessGameUndoPrevMove(src);
 				}
 			}
 		}
-
 	}
 	return value;
 }

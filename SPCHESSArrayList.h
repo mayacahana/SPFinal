@@ -13,18 +13,20 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
-#define SP_MAX_LINE_LENGTH 1024
+
 #define DIM 2
+
+//represent a move
 typedef struct move_t {
 	int from[DIM];
 	int to[DIM];
 	char piece;
-	char eaten; // empty if not
+	char eaten;
 
 } move;
 
 typedef struct sp_array_list_t {
-	move **elements;
+	move* *elements;
 	int actualSize;
 	int maxSize;
 } SPCHESSArrayList;
@@ -53,6 +55,8 @@ move* spArrayListGetFirst(SPCHESSArrayList* src);
 move* spArrayListGetLast(SPCHESSArrayList* src);
 
 int spArrayListMaxCapacity(SPCHESSArrayList* src);
+
+int spArrayListSize(SPCHESSArrayList* src);
 
 bool spArrayListIsFull(SPCHESSArrayList* src);
 

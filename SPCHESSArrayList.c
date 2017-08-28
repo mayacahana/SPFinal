@@ -14,8 +14,8 @@ move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten) {
 	move* newMove = (move*) malloc(sizeof(move));
 	newMove->from[0] = from[0];
 	newMove->from[1] = from[1];
-	newMove->to[0] = from[0];
-	newMove->to[1] = from[1];
+	newMove->to[0] = to[0];
+	newMove->to[1] = to[1];
 	newMove->piece = piece;
 	newMove->eaten = eaten;
 
@@ -25,6 +25,7 @@ move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten) {
 void spDestroyMove(move* elem) {
 	if (!elem)
 		return;
+
 	free(elem);
 }
 
@@ -108,10 +109,17 @@ move* spArrayListGetLast(SPCHESSArrayList* src) {
 	return spArrayListGetAt(src, src->actualSize - 1);
 }
 
-int spArrayListMaxCapacity(SPCHESSArrayList* src) {
+int spArrayListSize(SPCHESSArrayList* src) {
 	if (!src)
 		return -1;
 	return src->actualSize;
+}
+
+int spArrayListMaxCapacity(SPCHESSArrayList* src) {
+	if (!src)
+		return -1;
+
+	return src->maxSize;
 }
 
 bool spArrayListIsFull(SPCHESSArrayList* src) {
