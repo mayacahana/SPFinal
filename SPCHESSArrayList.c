@@ -14,8 +14,8 @@ move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten) {
 	move* newMove = (move*) malloc(sizeof(move));
 	newMove->from[0] = from[0];
 	newMove->from[1] = from[1];
-	newMove->to[0] = from[0];
-	newMove->to[1] = from[1];
+	newMove->to[0] = to[0];
+	newMove->to[1] = to[1];
 	newMove->piece = piece;
 	newMove->eaten = eaten;
 
