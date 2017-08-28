@@ -111,14 +111,14 @@ bool flag, char colorForFunc) {
 		//who's pieces to check
 		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
-				int from[DIM] = { src->piecesPlayer1[i][0],
-						src->piecesPlayer1[i][1] };
+				from[0] = src->piecesPlayer1[i][0];
+				from[1] = src->piecesPlayer1[i][1];
 			} else
 				continue;
 		} else {
 			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
-				int from[DIM] = { src->piecesPlayer2[i][0],
-						src->piecesPlayer2[i][1] };
+				from[0] = src->piecesPlayer2[i][0];
+				from[1] = src->piecesPlayer2[i][1];
 			} else
 				continue;
 		}
@@ -135,7 +135,7 @@ bool flag, char colorForFunc) {
 						beta = decider(beta, value, flag);
 
 					if(beta <= alpha) {
-						spChessUndoPrevMove(src);
+						spChessGameUndoPrevMove(src);
 						break;
 					}
 					spChessGameUndoPrevMove(src);

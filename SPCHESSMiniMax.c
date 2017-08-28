@@ -32,17 +32,17 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 	//first iteration "manually" to check which child is the best
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		//who's pieces to check
-		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
-			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
-				int from[DIM] = { src->piecesPlayer1[i][0],
-						src->piecesPlayer1[i][1] };
-			else
+		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
+				from[0] = src->piecesPlayer1[i][0];
+				from[1] = src->piecesPlayer1[i][1];
+			 } else
 				continue;
-		else {
-			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0)
-				int from[DIM] = { src->piecesPlayer2[i][0],
-						src->piecesPlayer2[i][1] };
-			else
+		} else {
+			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
+				from[0] = src->piecesPlayer2[i][0];
+				from[1] = src->piecesPlayer2[i][1];
+			} else
 				continue;
 		}
 
@@ -53,9 +53,7 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 
 				if (spChessGameSetMove(copy, from, to)
 						== SPCHESS_GAME_SUCCESS) {
-					childValue = computeValueRec(copy, maxDepth - 1, INT_MIN,
-					INT_MAX,
-					false, currentPlayer);
+					childValue = computeValueRec(copy, maxDepth - 1, INT_MIN,INT_MAX, false, currentPlayer);
 
 					if (childValue > max) {
 						max = childValue;
