@@ -953,10 +953,10 @@ char spChessGameCheckTie(SPCHESSGame* src) {
 
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) { //a tie in white
 		if (!spChessIfPlayer2IsThreatening(src) && !existsValidMovePlayer1(src))
-			return SPCHESS_GAME_PLAYER_1_SYMBOL;
+			return SPCHESS_GAME_TIE_SYMBOL;
 	} else {
 		if (!spChessIfPlayer1IsThreatening(src) && !existsValidMovePlayer2(src))
-			return SPCHESS_GAME_PLAYER_2_SYMBOL;
+			return SPCHESS_GAME_TIE_SYMBOL;
 
 	}
 	return '\0';
