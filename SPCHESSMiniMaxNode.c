@@ -109,17 +109,17 @@ bool flag, char colorForFunc) {
 	int from[DIM];
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		//who's pieces to check
-		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
-			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
+		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
 				int from[DIM] = { src->piecesPlayer1[i][0],
 						src->piecesPlayer1[i][1] };
-			else
+			} else
 				continue;
-		else {
-			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0)
+		} else {
+			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 				int from[DIM] = { src->piecesPlayer2[i][0],
 						src->piecesPlayer2[i][1] };
-			else
+			} else
 				continue;
 		}
 
@@ -138,7 +138,7 @@ bool flag, char colorForFunc) {
 						spChessUndoPrevMove(src);
 						break;
 					}
-					spChessUndoPrevMove(src);
+					spChessGameUndoPrevMove(src);
 				}
 			}
 		}

@@ -64,7 +64,7 @@ typedef enum spchess_game_message_t {
 
 SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char colorUser, int difficulty);
 void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]);
-void initPiecesArray(char piecesArray[NUM_OF_PIECES][DIM], char gameColor);
+void initPiecesArray(int piecesArray[NUM_OF_PIECES][DIM], char gameColor);
 
 SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
 
@@ -91,8 +91,8 @@ void getSubArrayFromPiece(char piece, int subArray[DIM]);
 char pawnFromArray(int index, char currentPlayer);
 
 char spChessIfMate(SPCHESSGame* src);
-bool spChessIfPlayer1IsThreatening(src);
-bool spChessIfPlayer2IsThreatening(src);
+bool spChessIfPlayer1IsThreatening(SPCHESSGame* src);
+bool spChessIfPlayer2IsThreatening(SPCHESSGame* src);
 
 char spChessGameCheckWinner(SPCHESSGame* src);
 bool spChessIfPlayer1Win(SPCHESSGame* src);

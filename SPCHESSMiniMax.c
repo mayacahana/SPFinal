@@ -5,7 +5,7 @@
  *      Author: uri
  */
 
-#include "SPCHESSminiMax.h"
+#include "SPCHESSMiniMax.h"
 
 move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 	if (!src || maxDepth <= 0)
@@ -23,7 +23,7 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 	//check if the game is in terminal state
 	if (spChessGameCheckWinner(copy) != '\0'
 			|| spChessGameCheckTie(copy) != '\0') {
-		spChessGameDestropy(copy);
+		spChessGameDestroy(copy);
 		return NULL;
 	}
 

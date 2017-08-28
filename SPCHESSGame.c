@@ -68,7 +68,7 @@ void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]) {
 			gameBoard[i][j] = EMPTY;
 	}
 }
-void initPiecesArray(char piecesArray[NUM_OF_PIECES][DIM], char gameColor) {
+void initPiecesArray(int piecesArray[NUM_OF_PIECES][DIM], char gameColor) {
 	if (gameColor == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 		//init pawns
 		for (int i = 0; i < BOARD_SIZE; i++) {
@@ -790,7 +790,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 			getSubArrayFromPiece(elem->eaten, subArr);
 			for (int i = subArr[0]; i <= subArr[1]; i++) {
 				if (src->piecesPlayer2[i][0] == EATEN
-						&& src->movesPlayer2[i][1] == EATEN) {
+						&& src->piecesPlayer2[i][1] == EATEN) {
 					src->piecesPlayer2[i][0] = elem->to[0];
 					src->piecesPlayer2[i][1] = elem->to[1];
 				}
@@ -826,7 +826,7 @@ bool spChessIfPlayer1IsThreatening(SPCHESSGame* src) {
 			int from[DIM] =
 					{ src->piecesPlayer1[i][0], src->piecesPlayer1[i][1] };
 			piece = src->gameBoard[from[0]][from[1]];
-			move* elem = SpCreateMove(from, to, piece, king);
+			move* elem = spCreateMove(from, to, piece, king);
 			if (spChessMoveHandler(src, elem) == SPCHESS_GAME_SUCCESS) { //found a piece
 				isMate = true;
 				spDestroyMove(elem);
@@ -848,7 +848,7 @@ bool spChessIfPlayer2IsThreatening(SPCHESSGame* src) {
 			int from[DIM] =
 					{ src->piecesPlayer2[i][0], src->piecesPlayer2[i][1] };
 			piece = src->gameBoard[from[0]][from[1]];
-			move* elem = SpCreateMove(from, to, piece, king);
+			move* elem = spCreateMove(from, to, piece, king);
 			if (spChessMoveHandler(src, elem) == SPCHESS_GAME_SUCCESS) { //found a piece
 				isMate = true;
 				spDestroyMove(elem);
@@ -892,7 +892,6 @@ bool existsPlayer2KingSaver(SPCHESSGame* src) {
 	if (!src)
 		return false;
 
-	move* elem;
 	bool exist = false;
 	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
