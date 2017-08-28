@@ -64,7 +64,7 @@ typedef enum spchess_game_message_t {
 
 SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char colorUser, int difficulty);
 void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]);
-void initPiecesArray(char piecesArray[BOARD_SIZE][BOARD_SIZE], char gameColor);
+void initPiecesArray(char piecesArray[NUM_OF_PIECES][DIM], char gameColor);
 
 SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
 

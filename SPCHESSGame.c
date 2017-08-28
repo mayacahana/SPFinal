@@ -68,7 +68,7 @@ void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]) {
 			gameBoard[i][j] = EMPTY;
 	}
 }
-void initPiecesArray(char piecesArray[BOARD_SIZE][BOARD_SIZE], char gameColor) {
+void initPiecesArray(char piecesArray[NUM_OF_PIECES][DIM], char gameColor) {
 	if (gameColor == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 		//init pawns
 		for (int i = 0; i < BOARD_SIZE; i++) {

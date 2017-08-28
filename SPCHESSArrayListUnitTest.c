@@ -65,6 +65,8 @@ static bool spArrayListBasicAddTest() {
 	elem = spCreateMove(from ,to ,piece, eaten);
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 	ASSERT_TRUE(spArrayListSize(list) == 1);
+
+	spDestroyMove(elem);
 	spArrayListDestroy(list);
 	return true;
 }
