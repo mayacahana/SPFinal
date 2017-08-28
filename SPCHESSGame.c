@@ -688,7 +688,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 				src->piecesPlayer1[i][1] = to[1];
 			}
 		}
-		if (eaten) {
+		if (isEaten) {
 			for (int i = 0; i < NUM_OF_PIECES; i++) {
 				if (src->piecesPlayer2[i][0] == to[0]
 						&& src->piecesPlayer2[i][1] == to[1]) {
@@ -705,7 +705,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 				src->piecesPlayer2[i][1] = to[1];
 			}
 		}
-		if (eaten) {
+		if (isEaten) {
 			for (int i = 0; i < NUM_OF_PIECES; i++) {
 				if (src->piecesPlayer1[i][0] == to[0]
 						&& src->piecesPlayer1[i][1] == to[1]) {
@@ -755,7 +755,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 	//change the game back according to the last move
 	src->gameBoard[elem->from[0]][elem->from[1]] = elem->piece;
 	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't munch
-	bool eaten = elem->eaten != EMPTY;
+	bool isEaten = elem->eaten != EMPTY;
 
 	//update piecesArray
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
@@ -766,9 +766,9 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 				src->piecesPlayer2[i][1] = elem->from[1];
 			}
 		}
-		if (eaten) {
+		if (isEaten) {
 			int subArr[DIM] = { -1 };
-			getSubArrayForPawn(eaten, subArr);
+			getSubArrayFromPiece(elem->eaten, subArr);
 			for (int i = subArr[0]; i <= subArr[1]; i++) {
 				if (src->piecesPlayer1[i][0] == EATEN
 						&& src->piecesPlayer1[i][1] == EATEN) {
@@ -785,14 +785,14 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 				src->piecesPlayer1[i][1] = elem->from[1];
 			}
 		}
-		if (eaten) {
+		if (isEaten) {
 			int subArr[DIM] = { -1 };
-			getSubArrayForPawn(eaten, subArr);
+			getSubArrayFromPiece(elem->eaten, subArr);
 			for (int i = subArr[0]; i <= subArr[1]; i++) {
-				if (src->movesPlayer2[i][0] == EATEN
+				if (src->piecesPlayer2[i][0] == EATEN
 						&& src->movesPlayer2[i][1] == EATEN) {
-					src->movesPlayer2[i][0] = elem->to[0];
-					src->movesPlayer2[i][1] = elem->to[1];
+					src->piecesPlayer2[i][0] = elem->to[0];
+					src->piecesPlayer2[i][1] = elem->to[1];
 				}
 			}
 		}
@@ -818,7 +818,7 @@ char spChessIfMate(SPCHESSGame* src) {
 
 bool spChessIfPlayer1IsThreatening(SPCHESSGame* src) {
 	bool isMate = false;
-	int to[2] = { src->piecesPlayer2[15][0], src->piecesPlayer2[15][1] }; //black king's location
+	int to[DIM] = { src->piecesPlayer2[15][0], src->piecesPlayer2[15][1] }; //black king's location
 	char piece, king = src->gameBoard[to[0]][to[1]];
 	//find pieces who can threaten the black king
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -840,7 +840,7 @@ bool spChessIfPlayer1IsThreatening(SPCHESSGame* src) {
 
 bool spChessIfPlayer2IsThreatening(SPCHESSGame* src) {
 	bool isMate = false;
-	int to[2] = { src->piecesPlayer1[15][0], src->piecesPlayer1[15][1] }; //white king's location
+	int to[DIM] = { src->piecesPlayer1[15][0], src->piecesPlayer1[15][1] }; //white king's location
 	char piece, king = src->gameBoard[to[0]][to[1]];
 	//find pieces who can threaten the white king
 	for (int i = 0; i < NUM_OF_PIECES; i++) {

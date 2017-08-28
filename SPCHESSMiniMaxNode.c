@@ -112,13 +112,13 @@ bool flag, char colorForFunc) {
 		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
 			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
 				int from[DIM] = { src->piecesPlayer1[i][0],
-						src->piecesPlayer1[i][0] };
+						src->piecesPlayer1[i][1] };
 			else
 				continue;
 		else {
-			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0)
-				int from[DIM] = { src->piecesPlayer1[i][0],
-						src->piecesPlayer1[i][0] };
+			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0)
+				int from[DIM] = { src->piecesPlayer2[i][0],
+						src->piecesPlayer2[i][1] };
 			else
 				continue;
 		}
