@@ -7,7 +7,6 @@
 #include "SPCHESSFileAux.h"
 
 SPCHESSGame* getStateFromFile(char* path) {
-	printf("0");
 	int i = 0, j = 0;
 	char nextChar;
 	char nextTag[13];
@@ -17,16 +16,22 @@ SPCHESSGame* getStateFromFile(char* path) {
 	char board[BOARD_SIZE][BOARD_SIZE];
 	int piecesArrayPlayerW[NUM_OF_PIECES][DIM],
 			piecesArrayPlayerB[NUM_OF_PIECES][DIM];
+	printf("%s\n",path);
 	FILE* in = fopen(path, "r");
+
 	if (!in) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
 		exit(0);
 	}
-	printf("1");
+	while (i < 47){
+		nextChar = fgetc(in);
+		i++;
+	}
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
+	//printf("%s",nextTag);
 	if (strcmp(nextTag, "current_turn") == 0) {
-		if (strcmp(nextValue, "black") == 0) {
+		if (strcmp(nextValue, "0") == 0) {
 			nextTurn = SPCHESS_GAME_PLAYER_2_SYMBOL;
 		} else {
 			nextTurn = SPCHESS_GAME_PLAYER_1_SYMBOL;
@@ -34,7 +39,9 @@ SPCHESSGame* getStateFromFile(char* path) {
 	} else {
 		//error
 	}
-	printf("2");
+	getNextTag(in, nextTag);
+	nextChar = fgetc(in);
+
 	//next tag - game_mode
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
@@ -44,12 +51,18 @@ SPCHESSGame* getStateFromFile(char* path) {
 		else
 			gameMode = 2;
 	}
+	getNextTag(in, nextTag);
+	nextChar = fgetc(in);
+
 	//next tag - difficulty
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
 	if (strcmp(nextTag, "difficulty") == 0) {
 		difficulty = (int) (nextValue[0] - '0');
 	}
+	getNextTag(in, nextTag);
+	nextChar = fgetc(in);
+
 	//next tag - user_color
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
@@ -62,16 +75,19 @@ SPCHESSGame* getStateFromFile(char* path) {
 			compColor = SPCHESS_GAME_PLAYER_2_SYMBOL;
 		}
 	}
+	getNextTag(in, nextTag);
+	nextChar = fgetc(in);
+
 	//next tag - board
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
 	if (strcmp(nextTag, "board") == 0) {
 		//rows
-		for (int j = 7; j >= 0; j--) {
+		for (int i = 7; i >= 0; i--) {
 			nextChar = fgetc(in);
 			while (nextChar != '>') //moving on <row_i>
 				nextChar = fgetc(in);
-			for (i = 0; i < 8; i++) {
+			for (j = 0; j < 8; j++) {
 				nextChar = fgetc(in);
 				if (nextChar == '_')
 					board[i][j] = EMPTY;
@@ -178,18 +194,16 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 void getNextTag(FILE* in, char nextTag[13]) {
 	int i = 0;
 	char nextChar = fgetc(in);
+	printf("now Char <: %c\n",nextChar);
+
 	nextChar = fgetc(in);
-	while (nextChar != '<') { /* reading the closing tag */
-		nextChar = fgetc(in);
-	}
-	nextChar = fgetc(in); // last char '<'
-//reading the tag
 	while (nextChar != '>') {
 		nextTag[i] = nextChar;
 		i++;
 		nextChar = fgetc(in);
 	}
 	nextTag[i] = '\0';
+	printf("Tag:%s\n",nextTag);
 }
 void getNextValue(FILE* in, char nextValue[6]) {
 	int i = 0;
