@@ -14,6 +14,7 @@ static bool spFileAuxTest() {
 	spChessGamePrintBoard(src);
 
 
+
 }
 
 int main(){
