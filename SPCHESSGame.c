@@ -502,21 +502,166 @@ void getLegalMovesForKing(SPCHESSGame* src, move* elem,
 
 void getLegalMovesForQueen(SPCHESSGame* src, move* elem,
 		int legalMoves[MAX_STEPS_PIECE][DIM]) {
-	getLegalMovesForBishop(src, elem, legalMoves);
-	int movesAsRook[MAX_STEPS_PIECE][DIM] = { { -1 } };
-	getLegalMovesForRook(src, elem, movesAsRook);
 
+	//moves as Rook
 	int ind = 0;
-	//concatenate two arrays, assuming in the end on the arrays are -1's
-	while (legalMoves[ind][0] != -1)
-		ind++;
+	int row_from = elem->from[0];
+	int col_from = elem->from[1];
 
-	int i = ind;
-	while (movesAsRook[i][0] != -1) {
-		legalMoves[i][0] = movesAsRook[i][0];
-		legalMoves[i][1] = movesAsRook[i][1];
-		i++;
+	//right direction
+	for (int j = col_from + 1; j < BOARD_SIZE; j++) {
+		if (src->gameBoard[row_from][j] == EMPTY) {
+			legalMoves[ind][0] = row_from;
+			legalMoves[ind][1] = j;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, row_from, j)) {
+			legalMoves[ind][0] = row_from;
+			legalMoves[ind][1] = j;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+
 	}
+
+	//left direction
+	for (int j = col_from - 1; j >= 0; j--) {
+		if (src->gameBoard[row_from][j] == EMPTY) {
+			legalMoves[ind][0] = row_from;
+			legalMoves[ind][1] = j;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, row_from, j)) { //opponant piece - cannot continue after this location in this direction
+			legalMoves[ind][0] = row_from;
+			legalMoves[ind][1] = j;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+
+	}
+
+	//up direction
+	for (int i = row_from + 1; i < BOARD_SIZE; i++) {
+		if (src->gameBoard[i][col_from] == EMPTY) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = col_from;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, i, col_from)) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = col_from;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+	}
+
+	//down direction
+	for (int i = row_from - 1; i >= 0; i--) {
+		if (src->gameBoard[i][col_from] == EMPTY) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = col_from;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, i, col_from)) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = col_from;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+	}
+
+
+	//moves as bishop
+	int i, j;
+
+	//up-right direction
+	i = row_from + 1;
+	j = col_from + 1;
+	while (i < BOARD_SIZE && j < BOARD_SIZE) {
+		if (src->gameBoard[i][j] == EMPTY) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, i, j)) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+
+		i++;
+		j++;
+	}
+
+	//up-left direction
+	i = row_from + 1;
+	j = col_from - 1;
+	while (i < BOARD_SIZE && j >= 0) {
+		if (src->gameBoard[i][j] == EMPTY) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, i, j)) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+
+		i++;
+		j--;
+	}
+
+	//down-right direction
+	i = row_from - 1;
+	j = col_from + 1;
+	while (i >= 0 && j < BOARD_SIZE) {
+		if (src->gameBoard[i][j] == EMPTY) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, i, j)) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+
+		i--;
+		j++;
+	}
+
+	//down-left direction
+	i = row_from - 1;
+	j = col_from - 1;
+	while (i >= 0 && j >= 0) {
+		if (src->gameBoard[i][j] == EMPTY) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+		} else if (!isSameColorAsCurrent(src, i, j)) {
+			legalMoves[ind][0] = i;
+			legalMoves[ind][1] = j;
+			ind++;
+			break;
+		} else
+			//same color - cannot continue this direction
+			break;
+
+		i--;
+		j--;
+	}
+
 }
 
 void getLegalMovesForKnight(SPCHESSGame* src, move* elem,
@@ -734,6 +879,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 
 }
 
+//undo move do to the other player
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 	if (!src)
 		return SPCHESS_GAME_INVALID_ARGUMENT;
@@ -756,6 +902,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 	src->gameBoard[elem->from[0]][elem->from[1]] = elem->piece;
 	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't munch
 	bool isEaten = elem->eaten != EMPTY;
+
 
 	//update piecesArray
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
@@ -798,7 +945,6 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 		}
 	}
 	spChessChangePlayer(src); //change the turn
-	spDestroyMove(elem);
 	return SPCHESS_GAME_SUCCESS;
 }
 
