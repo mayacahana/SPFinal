@@ -160,9 +160,9 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	fprintf(out,
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
 	if (game->currentPlayer == 'W')
-		fputs("0</current_turn>\n\t", out);
+		fputs("1</current_turn>\n\t", out);
 	else {
-		fputs("1</current_turn>\n\t<game_mode>", out);
+		fputs("0</current_turn>\n\t<game_mode>", out);
 	}
 	if (game->gameMode == 2)
 		fputs("2</game_mode>\n\t", out);
@@ -173,18 +173,18 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		if (game->colorUser == 'W') {
 			fputs("1</user_color>\n\t<board>",out);
 		} else {
-			fputs("2</user_color>\n\t<board>",out);
+			fputs("0</user_color>\n\t<board>",out);
 		}
 	}
-	for (int j = 7; j >= 0; j--) {
-		fprintf(out, "\n\t\t<row_%d>", j + 1);
-		for (int i = 0; i < 8; i++) {
+	for (int i = 7; i >= 0; i--) {
+		fprintf(out, "\n\t\t<row_%d>", i + 1);
+		for (int j = 0; j < 8; j++) {
 			if (game->gameBoard[i][j] == EMPTY)
 				fputs("_", out);
 			else
 				fputc(game->gameBoard[i][j], out);
 		}
-		fprintf(out, "</row_%d>", j + 1);
+		fprintf(out, "</row_%d>", i + 1);
 	}
 	fprintf(out, "\n\t</board>\n</game>\n");
 	fclose(out);
