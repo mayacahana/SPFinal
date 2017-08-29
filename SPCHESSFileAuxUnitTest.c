@@ -13,7 +13,12 @@ static bool spFileAuxTest() {
 	assert(src!=NULL);
 	spChessGamePrintBoard(src);
 
+<<<<<<< HEAD
 	return true;
+=======
+
+
+>>>>>>> refs/remotes/origin/master
 }
 
 int main(){
