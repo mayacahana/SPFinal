@@ -9,13 +9,15 @@
 
 static bool spFileAuxTest() {
 	char* path = "input.xml";
+
 	SPCHESSGame* src = getStateFromFile(path);
-	//assert(src!=NULL);
+	//ASSERT(src!= NULL);
+
 	spChessGamePrintBoard(src);
+	saveGameToFile("output.xml",src);
+	spChessGameDestroy(src);
 
 	return true;
-
-
 }
 
 int main(){
