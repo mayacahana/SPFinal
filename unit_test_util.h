@@ -21,7 +21,7 @@ extern "C" {
 
 #define ASSERT_FALSE(expression) do { \
                 if((expression)) { \
-                        FAIL("expression is true  ::"); \
+                        FAIL("expression is true ::"); \
                 } \
 		} while (0)
 

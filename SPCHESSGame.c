@@ -20,7 +20,7 @@ SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char colorUser,
 	}
 	initBoardGame(res->gameBoard);
 
-	//2 players mode, difficulty matter only on game mode 1
+	//difficulty matter only on game mode 1
 	if (gameMode == 1)
 		res->difficulty = difficulty;
 
@@ -877,7 +877,7 @@ bool spChessIfPlayer1Win(SPCHESSGame* src) {
 	if (!src)
 		return false;
 
-	return spChessIfPlayer1IsThreatening(src) && !existPlayer2KingSaver(src);
+	return spChessIfPlayer1IsThreatening(src) && !existsPlayer2KingSaver(src);
 
 }
 
@@ -885,7 +885,7 @@ bool spChessIfPlayer2Win(SPCHESSGame* src) {
 	if (!src)
 		return false;
 
-	return spChessIfPlayer2IsThreatening(src) && !existPlayer1KingSaver(src);
+	return spChessIfPlayer2IsThreatening(src) && !existsPlayer1KingSaver(src);
 }
 
 bool existsPlayer2KingSaver(SPCHESSGame* src) {
@@ -1043,35 +1043,32 @@ void spChessChangePlayer(SPCHESSGame* src) {
 
 char pawnFromArray(int index, char currentPlayer) {
 	if (currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
-		switch (index) {
-		case 0 ... 7:
+		if (index >= 0 && index <= 7)
 			return WHITE_P;
-		case 8 ... 9:
+		if (index >= 8 && index <= 9)
 			return WHITE_N;
-		case 10 ... 11:
+		if (index >= 10 && index <= 11)
 			return WHITE_B;
-		case 12 ... 13:
+		if (index >= 12 && index <= 13)
 			return WHITE_R;
-		case 14:
+		if (index == 14)
 			return WHITE_Q;
-		case 15:
+		if (index == 15)
 			return WHITE_K;
-		}
+
 	} else {
-		switch (index) {
-		case 0 ... 7:
+		if (index >= 0 && index <= 7)
 			return BLACK_P;
-		case 8 ... 9:
+		if (index >= 8 && index <= 9)
 			return BLACK_N;
-		case 10 ... 11:
+		if (index >= 10 && index <= 11)
 			return BLACK_B;
-		case 12 ... 13:
+		if (index >= 12 && index <= 13)
 			return BLACK_R;
-		case 14:
+		if (index == 14)
 			return BLACK_Q;
-		case 15:
+		if (index == 15)
 			return BLACK_K;
-		}
 	}
 	return '\0';
 }

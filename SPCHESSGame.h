@@ -97,8 +97,8 @@ bool spChessIfPlayer2IsThreatening(SPCHESSGame* src);
 char spChessGameCheckWinner(SPCHESSGame* src);
 bool spChessIfPlayer1Win(SPCHESSGame* src);
 bool spChessIfPlayer2Win(SPCHESSGame* src);
-bool existPlayer1KingSaver(SPCHESSGame* src);
-bool existPlayer2KingSaver(SPCHESSGame* src);
+bool existsPlayer1KingSaver(SPCHESSGame* src);
+bool existsPlayer2KingSaver(SPCHESSGame* src);
 
 char spChessGameCheckTie(SPCHESSGame* src);
 bool existsValidMovePlayer1(SPCHESSGame* src);
