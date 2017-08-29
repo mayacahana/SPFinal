@@ -14,8 +14,9 @@ static bool spFileAuxTest() {
 	//ASSERT(src!= NULL);
 
 	spChessGamePrintBoard(src);
-
+	saveGameToFile("output.xml",src);
 	spChessGameDestroy(src);
+
 	return true;
 }
 
