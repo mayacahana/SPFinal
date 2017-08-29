@@ -4,12 +4,12 @@ EXEC = chessprog
 GAME_TEST_OBJS = SPCHESSArrayList.o SPCHESSGame.o SPCHESSGameUnitTest.o
 ARRAY_LIST_TEST_OBJS = SPCHESSArrayListUnitTest.o SPCHESSArrayList.o
 PARSER_TEST_OBJS = SPCHESSParser.o SPCHESSParserUnitTest.o
-MINMAXNode_TEST_OBJ = SPMiniMaxNode.o SPMiniMaxNodeUnitTest.o SPFIARGame.o SPArrayList.o
+MINMAXNode_TEST_OBJ = SPCHESSMiniMaxNode.o SPCHESSMiniMaxNodeUnitTest.o SPCHESSGame.o SPCHESSArrayList.o
 MINMAX_TEST_OBJ = SPMiniMaxNode.o SPMiniMax.o SPMiniMaxUnitTest.o SPFIARGame.o SPArrayList.o
 MAINAUX_TEST_OBJS = SPMainAux.o SPArrayList.o SPFIARGame.o SPMiniMax.o SPMiniMaxNode.o
 COMP_FLAG = -std=c99 -Wall -Wextra \
 -Werror -pedantic-errors
-UNIT_TESTS = SPCHESSParserUnitTest SPCHESSArrayListUnitTest SPCHESSGameUnitTest SPMiniMaxUnitTest\
+UNIT_TESTS = SPCHESSParserUnitTest SPCHESSArrayListUnitTest SPCHESSGameUnitTest SPCHESSMiniMaxUnitTest\
 SPMiniMaxNodeUnitTest SPMainAuxUnitTest
 
 $(EXEC): $(OBJS)
@@ -22,7 +22,7 @@ SPCHESSParserUnitTest: $(PARSER_TEST_OBJS)
 	$(CC) $(PARSER_TEST_OBJS) -o $@
 SPMiniMaxUnitTest: $(MINMAX_TEST_OBJ)
 	$(CC) $(MINMAXNode_TEST_OBJ) -o $@
-SPMiniMaxNodeUnitTest: $(MINMAXNode_TEST_OBJ)
+SPCHESSMiniMaxNodeUnitTest: $(MINMAXNode_TEST_OBJ)
 	$(CC) $(MINMAXNode_TEST_OBJ) -o $@
 SPMainAuxUnitTest: $(MAINAUX_TEST_OBJS)
 	$(CC) $(MAINAUX_TEST_OBJS) -o $@
@@ -34,7 +34,7 @@ SPCHESSParserUnitTest.o: SPCHESSParserUnitTest.c SPCHESSParser.h unit_test_util.
 	$(CC) $(COMP_FLAG) -c $*.c
 SPMiniMaxUnitTest.o: SPMiniMaxUnitTest.c SPMiniMax.h SPFIARGame.h SPMiniMaxNode.h unit_test_util.h
 	$(CC) $(COMP_FLAG) -c $*.c
-SPMiniMaxNodeUnitTest.o: SPMiniMaxNodeUnitTest.c SPMiniMaxNode.h unit_test_util.h SPFIARGame.h
+SPCHESSMiniMaxNodeUnitTest.o: SPCHESSMiniMaxNodeUnitTest.c SPCHESSMiniMaxNode.h unit_test_util.h SPCHESSGame.h
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSArrayList.o: SPCHESSArrayList.h SPCHESSArrayList.c
 	$(CC) $(COMP_FLAG) -c $*.c
@@ -42,7 +42,7 @@ SPCHESSGame.o: SPCHESSGame.c SPCHESSGame.h SPCHESSArrayList.h
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSParser.o: SPCHESSParser.c SPCHESSParser.h
 	$(CC) $(COMP_FLAG) -c $*.c
-SPMiniMaxNode.o: SPMiniMaxNode.c SPMiniMaxNode.h SPFIARGame.h
+SPCHESSMiniMaxNode.o: SPCHESSMiniMaxNode.c SPCHESSMiniMaxNode.h SPCHESSGame.h
 	$(CC) $(COMP_FLAG) -c $*.c 
 SPMiniMax.o: SPMiniMax.c SPMiniMax.h SPMiniMaxNode.h SPFIARGame.h
 	$(CC) $(COMP_FLAG) -c $*.c
