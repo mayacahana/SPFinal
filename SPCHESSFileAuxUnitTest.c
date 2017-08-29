@@ -10,7 +10,7 @@
 static bool spFileAuxTest() {
 	char* path = "input.xml";
 	SPCHESSGame* src = getStateFromFile(path);
-	assert(src!=NULL);
+	//assert(src!=NULL);
 	spChessGamePrintBoard(src);
 
 	return true;

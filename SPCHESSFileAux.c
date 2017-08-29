@@ -7,10 +7,11 @@
 #include "SPCHESSFileAux.h"
 
 SPCHESSGame* getStateFromFile(char* path) {
+	printf("0");
 	int i = 0, j = 0;
 	char nextChar;
 	char nextTag[13];
-	char nextValue[6], userColor, compColor, nextTurn;
+	char nextValue[100], userColor, compColor, nextTurn;
 	int gameMode, difficulty;
 	int subArray[DIM];
 	char board[BOARD_SIZE][BOARD_SIZE];
@@ -21,6 +22,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
 		exit(0);
 	}
+	printf("1");
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
 	if (strcmp(nextTag, "current_turn") == 0) {
@@ -32,6 +34,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 	} else {
 		//error
 	}
+	printf("2");
 	//next tag - game_mode
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
@@ -80,7 +83,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 				nextChar = fgetc(in);
 		}
 	}
-	assert(fclose(in) == 0);
+	fclose(in);
 
 	//fill the pieces array accordingly
 	//initialize arrays to -17
@@ -116,17 +119,25 @@ SPCHESSGame* getStateFromFile(char* path) {
 	//build board
 	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE, gameMode, userColor,
 			difficulty);
-	newGame->gameBoard = board;
+	//copy game board
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++)
+			newGame->gameBoard[i][j] = board[i][j];
+	}
 	newGame->currentPlayer = nextTurn;
-	newGame->piecesPlayer1 = piecesArrayPlayerW;
-	newGame->piecesPlayer2 = piecesArrayPlayerB;
+	//copy pieces array
+	for (int i = 0; i < NUM_OF_PIECES; i++) {
+		for (int j = 0; j < DIM; j++) {
+			newGame->piecesPlayer1[i][j] = piecesArrayPlayerW[i][j];
+			newGame->piecesPlayer2[i][j] = piecesArrayPlayerB[i][j];
+		}
+	}
 
 	return newGame;
 }
 
 int saveGameToFile(char* path, SPCHESSGame* game) {
 	FILE* out;
-	int i, j;
 	out = fopen(path, "w");
 	if (!out)
 		return -1;
@@ -143,10 +154,10 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		fputs("1</game_mode>\n\t<difficulty>", out);
 		fprintf(out, "%d", game->difficulty);
 		fputs("</difficulty>\n\t<user_color>", out);
-		if (game->userColor == 'W') {
-			fputs("1</user_color>\n\t<board>");
+		if (game->colorUser == 'W') {
+			fputs("1</user_color>\n\t<board>",out);
 		} else {
-			fputs("2</user_color>\n\t<board>");
+			fputs("2</user_color>\n\t<board>",out);
 		}
 	}
 	for (int j = 7; j >= 0; j--) {
@@ -160,7 +171,7 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		fprintf(out, "</row_%d>", j + 1);
 	}
 	fprintf(out, "\n\t</board>\n</game>\n");
-	assert(fclose(out) == 0);
+	fclose(out);
 	return 0;
 }
 
