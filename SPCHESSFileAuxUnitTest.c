@@ -13,7 +13,7 @@ static bool spFileAuxTest() {
 	assert(src!=NULL);
 	spChessGamePrintBoard(src);
 
-
+	return true;
 }
 
 int main(){

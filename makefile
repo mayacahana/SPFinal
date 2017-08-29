@@ -5,12 +5,13 @@ GAME_TEST_OBJS = SPCHESSArrayList.o SPCHESSGame.o SPCHESSGameUnitTest.o
 ARRAY_LIST_TEST_OBJS = SPCHESSArrayListUnitTest.o SPCHESSArrayList.o
 PARSER_TEST_OBJS = SPCHESSParser.o SPCHESSParserUnitTest.o
 MINMAXNode_TEST_OBJ = SPCHESSMiniMaxNode.o SPCHESSMiniMaxNodeUnitTest.o SPCHESSGame.o SPCHESSArrayList.o
+FILEAUX_TEST_OBJ = SPCHESSFileAux.o SPCHESSFileAuxUnitTest.o SPCHESSGame.o SPCHESSArrayList.o
 MINMAX_TEST_OBJ = SPMiniMaxNode.o SPMiniMax.o SPMiniMaxUnitTest.o SPFIARGame.o SPArrayList.o
 MAINAUX_TEST_OBJS = SPMainAux.o SPArrayList.o SPFIARGame.o SPMiniMax.o SPMiniMaxNode.o
 COMP_FLAG = -std=c99 -Wall -Wextra \
 -Werror -pedantic-errors
 UNIT_TESTS = SPCHESSParserUnitTest SPCHESSArrayListUnitTest SPCHESSGameUnitTest SPCHESSMiniMaxUnitTest\
-SPMiniMaxNodeUnitTest SPMainAuxUnitTest
+SPMiniMaxNodeUnitTest SPCHESSFileAuxUnitTest SPMainAuxUnitTest
 
 $(EXEC): $(OBJS)
 	$(CC) $(OBJS) -o $@
@@ -24,6 +25,8 @@ SPMiniMaxUnitTest: $(MINMAX_TEST_OBJ)
 	$(CC) $(MINMAXNode_TEST_OBJ) -o $@
 SPCHESSMiniMaxNodeUnitTest: $(MINMAXNode_TEST_OBJ)
 	$(CC) $(MINMAXNode_TEST_OBJ) -o $@
+SPCHESSFileAuxUnitTest: $(FILEAUX_TEST_OBJ)
+	$(CC) $(FILEAUX_TEST_OBJ) -o $@	
 SPMainAuxUnitTest: $(MAINAUX_TEST_OBJS)
 	$(CC) $(MAINAUX_TEST_OBJS) -o $@
 SPCHESSGameUnitTest.o: SPCHESSGameUnitTest.c unit_test_util.h SPCHESSArrayList.h SPCHESSGame.h
@@ -36,9 +39,13 @@ SPMiniMaxUnitTest.o: SPMiniMaxUnitTest.c SPMiniMax.h SPFIARGame.h SPMiniMaxNode.
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSMiniMaxNodeUnitTest.o: SPCHESSMiniMaxNodeUnitTest.c SPCHESSMiniMaxNode.h unit_test_util.h SPCHESSGame.h
 	$(CC) $(COMP_FLAG) -c $*.c
+SPCHESSFileAuxUnitTest.o: SPCHESSFileAuxUnitTest.c SPCHESSFileAux.h unit_test_util.h SPCHESSGame.h
+	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSArrayList.o: SPCHESSArrayList.h SPCHESSArrayList.c
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSGame.o: SPCHESSGame.c SPCHESSGame.h SPCHESSArrayList.h
+	$(CC) $(COMP_FLAG) -c $*.c
+SPCHESSFileAux.o: SPCHESSFileAux.c SPCHESSGame.h SPCHESSArrayList.h
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSParser.o: SPCHESSParser.c SPCHESSParser.h
 	$(CC) $(COMP_FLAG) -c $*.c
