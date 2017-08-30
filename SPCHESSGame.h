@@ -83,6 +83,7 @@ void getLegalMovesForWhitePawn(SPCHESSGame* src, move* elem, int legalMoves[MAX_
 void getLegalMovesForBlackPawn(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
 void  getLegalMovesForKing(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
 bool isInBoard(int row, int col);
+char getColorFromPiece(char piece);
 
 SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM], int to[DIM]);
 

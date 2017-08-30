@@ -45,7 +45,7 @@
 //	return true;
 //}
 //
-static bool spChessGameCheckTest() {
+static bool spChessGameCheckMateTest() {
 	SPCHESSGame* res = spChessGameCreate(HISTORY_SIZE, 1,
 	SPCHESS_GAME_PLAYER_1_SYMBOL, 2);
 	ASSERT_TRUE(res!=NULL);
@@ -72,7 +72,8 @@ static bool spChessGameCheckTest() {
 
 	spChessGamePrintBoard(res);
 
-	ASSERT_TRUE(spChessIfMate(res) == SPCHESS_GAME_PLAYER_1_SYMBOL);
+	ASSERT_TRUE(spChessGameCheckWinner(res) == SPCHESS_GAME_PLAYER_2_SYMBOL);
+
 	spChessGameDestroy(res);
 	return true;
 }
@@ -140,7 +141,7 @@ int main() {
 	//RUN_TEST(spChessGameBasicTest);
 	//RUN_TEST(spFiarGameSetMoveTest);
 	//RUN_TEST(spChessGameUndoMoveTest);
-	RUN_TEST(spChessGameCheckTest);
+	RUN_TEST(spChessGameCheckMateTest);
 	//RUN_TEST(spFiarGameValidMoveTest);
 	return 0;
 }
