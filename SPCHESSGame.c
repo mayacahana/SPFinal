@@ -839,9 +839,10 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 
 	SPCHESS_GAME_MESSAGE msg = spChessMoveHandler(src, elem,
 			src->currentPlayer);
-	if (msg != SPCHESS_GAME_SUCCESS)
+	if (msg != SPCHESS_GAME_SUCCESS) {
+		spDestroyMove(elem);
 		return msg;
-
+	}
 	//the move is completly valid thus can change game and history acoordingly
 	src->gameBoard[from[0]][from[1]] = EMPTY;
 	src->gameBoard[to[0]][to[1]] = piece;
@@ -925,7 +926,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 	}
 	//change the game back according to the last move
 	src->gameBoard[elem->from[0]][elem->from[1]] = elem->piece;
-	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't munch
+	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't eaten
 	bool isEaten = elem->eaten != EMPTY;
 
 	//update piecesArray
