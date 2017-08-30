@@ -70,10 +70,10 @@ SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
 
 void spChessGameDestroy(SPCHESSGame* src);
 
-SPCHESS_GAME_MESSAGE spChessMoveHandler(SPCHESSGame*, move* elem);
+SPCHESS_GAME_MESSAGE spChessMoveHandler(SPCHESSGame*, move* elem, char colorToMove);
 bool spChessGameIsValidMove(SPCHESSGame* src, int from[DIM], int to[DIM]);
 bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem);
-bool isSameColorAsCurrent(SPCHESSGame* src, int row, int col);
+bool isSameColorAsGiven(SPCHESSGame* src, int row, int col, char givenColor);
 void getLegalMovesForPiece(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
 void getLegalMovesForRook(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
 void getLegalMovesForKnight(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
