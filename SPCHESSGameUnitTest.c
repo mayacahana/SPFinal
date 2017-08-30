@@ -72,7 +72,7 @@ static bool spChessGameCheckMateTest() {
 
 	spChessGamePrintBoard(res);
 
-	ASSERT_TRUE(spChessGameCheckWinner(res) == SPCHESS_GAME_PLAYER_2_SYMBOL);
+	ASSERT_FALSE(spChessGameCheckTie(res) == SPCHESS_GAME_TIE_SYMBOL);
 
 	spChessGameDestroy(res);
 	return true;

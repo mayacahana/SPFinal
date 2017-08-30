@@ -769,7 +769,8 @@ void getLegalMovesForBlackPawn(SPCHESSGame* src, move* elem,
 	j = col_from - 1;
 	isPiece = src->gameBoard[i][j] != EMPTY;
 
-	if (isInBoard(i, j) && isPiece && !isSameColorAsGiven(src, i, j, currentColor)) {
+	if (isInBoard(i, j) && isPiece
+			&& !isSameColorAsGiven(src, i, j, currentColor)) {
 		legalMoves[ind][0] = i;
 		legalMoves[ind][1] = j;
 		ind++;
@@ -779,7 +780,8 @@ void getLegalMovesForBlackPawn(SPCHESSGame* src, move* elem,
 	i = row_from - 1;
 	j = col_from + 1;
 	isPiece = src->gameBoard[i][j] != EMPTY;
-	if (isInBoard(i, j) && isPiece && !isSameColorAsGiven(src, i, j, currentColor)) {
+	if (isInBoard(i, j) && isPiece
+			&& !isSameColorAsGiven(src, i, j, currentColor)) {
 		legalMoves[ind][0] = i;
 		legalMoves[ind][1] = j;
 		ind++;
@@ -1137,15 +1139,27 @@ char spChessGameCheckTie(SPCHESSGame* src) {
 	if (!src)
 		return '\0';
 
-	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) { //a tie in white
-		if (!spChessIfPlayer2IsThreatening(src) && !existsValidMovePlayer1(src))
-			return SPCHESS_GAME_TIE_SYMBOL;
-	} else {
-		if (!spChessIfPlayer1IsThreatening(src) && !existsValidMovePlayer2(src))
-			return SPCHESS_GAME_TIE_SYMBOL;
+	SPCHESSGame* copy1 = spChessGameCopy(src);
+	if (!copy1)
+		return '\0';
 
+	SPCHESSGame* copy2 = spChessGameCopy(src);
+	if (!copy2)
+		return '\0';
+
+	char tie = '\0';
+
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) { //a tie in white
+		if (!spChessIfPlayer2IsThreatening(copy1) && !existsValidMovePlayer1(copy1))
+			tie = SPCHESS_GAME_TIE_SYMBOL;
+	} else {
+		if (!spChessIfPlayer1IsThreatening(copy2) && !existsValidMovePlayer2(copy2))
+			tie = SPCHESS_GAME_TIE_SYMBOL;
 	}
-	return '\0';
+
+	spChessGameDestroy(copy2);
+	spChessGameDestroy(copy1);
+	return tie;
 
 }
 
