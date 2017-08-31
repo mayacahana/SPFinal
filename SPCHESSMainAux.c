@@ -290,7 +290,9 @@ void resetGame(SPCHESSGame* src) {
 	spChessGameDestroy(src);
 	src = spChessGameCreate(HISTORY_SIZE, DEFAULT_GAME_MODE, DEFAULT_USER_COLOR,
 	DEFAULT_DIFFICULTY);
-	setDefaultSetting(src);
+	//new game starts
+	printf("Specify game setting or type 'start' to begin a game with the current setting:\n");
+	settingState(src);
 }
 
 void computerTurn(SPCHESSGame* src) {

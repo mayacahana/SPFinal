@@ -38,6 +38,4 @@ void computerTurn(SPCHESSGame* src);
 void checkGameStatusForComputer(SPCHESSGame* src);
 char* getNameFromPiece(char piece);
 
-
-
 #endif /* SPCHESSMAINAUX_H_ */
