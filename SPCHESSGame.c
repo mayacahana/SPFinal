@@ -973,6 +973,84 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 	return SPCHESS_GAME_SUCCESS;
 }
 
+SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
+	if (!src)
+		return SPCHESS_GAME_INVALID_ARGUMENT;
+	move* elem;
+
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+		if (spArrayListIsEmpty(src->movesPlayer2))
+			return SPCHESS_GAME_NO_HISTORY;
+
+		elem = spArrayListGetFirst(src->movesPlayer2);
+		spArrayListRemoveFirst(src->movesPlayer2);
+	} else {
+		if (spArrayListIsEmpty(src->movesPlayer1))
+			return SPCHESS_GAME_NO_HISTORY;
+
+		elem = spArrayListGetFirst(src->movesPlayer1);
+		spArrayListRemoveFirst(src->movesPlayer1);
+	}
+	//change the game back according to the last move
+	src->gameBoard[elem->from[0]][elem->from[1]] = elem->piece;
+	src->gameBoard[elem->to[0]][elem->to[1]] = elem->eaten; // can be empty if wasn't eaten
+	bool isEaten = elem->eaten != EMPTY;
+
+	//update piecesArray
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			if (src->piecesPlayer2[i][0] == elem->to[0]
+					&& src->piecesPlayer2[i][1] == elem->to[1]) {
+				src->piecesPlayer2[i][0] = elem->from[0];
+				src->piecesPlayer2[i][1] = elem->from[1];
+			}
+		}
+		if (isEaten) {
+			int subArr[DIM] = { -1, -1 };
+			getSubArrayFromPiece(elem->eaten, subArr);
+			for (int i = subArr[0]; i <= subArr[1]; i++) {
+				if (src->piecesPlayer1[i][0] == EATEN
+						&& src->piecesPlayer1[i][1] == EATEN) {
+					src->piecesPlayer1[i][0] = elem->to[0];
+					src->piecesPlayer1[i][1] = elem->to[1];
+				}
+			}
+		}
+	} else {
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			if (src->piecesPlayer1[i][0] == elem->to[0]
+					&& src->piecesPlayer1[i][1] == elem->to[1]) {
+				src->piecesPlayer1[i][0] = elem->from[0];
+				src->piecesPlayer1[i][1] = elem->from[1];
+			}
+		}
+		if (isEaten) {
+			int subArr[DIM] = { -1, -1 };
+			getSubArrayFromPiece(elem->eaten, subArr);
+			for (int i = subArr[0]; i <= subArr[1]; i++) {
+				if (src->piecesPlayer2[i][0] == EATEN
+						&& src->piecesPlayer2[i][1] == EATEN) {
+					src->piecesPlayer2[i][0] = elem->to[0];
+					src->piecesPlayer2[i][1] = elem->to[1];
+				}
+			}
+		}
+	}
+	spChessChangePlayer(src); //change the turn
+
+	//print the undo move
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+		printf("Undo move for player white: <%d,%c> -> <%d,%c>\n",
+				elem->from[0] + 1, (char) (elem->from[1] + 'A'), elem->to[0] + 1,
+				(char) (elem->to[1] + 'A'));
+	} else { //src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
+		printf("Undo move for player black: <%d,%c> -> <%d,%c>\n",
+				elem->from[0] + 1, (char) (elem->from[1] + 'A'), elem->to[0] + 1,
+				(char) (elem->to[1] + 'A'));
+	}
+	return SPCHESS_GAME_SUCCESS;
+}
+
 //return the symbol of the color which is in the state of mate, if there is, null o/w.
 char spChessIfMate(SPCHESSGame* src) {
 	if (!src)
@@ -1151,10 +1229,12 @@ char spChessGameCheckTie(SPCHESSGame* src) {
 	char tie = '\0';
 
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) { //a tie in white
-		if (!spChessIfPlayer2IsThreatening(copy1) && !existsValidMovePlayer1(copy1))
+		if (!spChessIfPlayer2IsThreatening(copy1)
+				&& !existsValidMovePlayer1(copy1))
 			tie = SPCHESS_GAME_TIE_SYMBOL;
 	} else {
-		if (!spChessIfPlayer1IsThreatening(copy2) && !existsValidMovePlayer2(copy2))
+		if (!spChessIfPlayer1IsThreatening(copy2)
+				&& !existsValidMovePlayer2(copy2))
 			tie = SPCHESS_GAME_TIE_SYMBOL;
 	}
 

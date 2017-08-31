@@ -55,7 +55,7 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 						== SPCHESS_GAME_SUCCESS) {
 					childValue = computeValueRec(copy, maxDepth - 1, INT_MIN,INT_MAX, false, currentPlayer);
 
-					if (childValue > max) {
+					if (childValue > max || max == INT_MIN ) {
 						max = childValue;
 						fromBest[0] = from[0];
 						fromBest[1] = from[1];

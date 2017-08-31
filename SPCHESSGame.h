@@ -90,6 +90,8 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM], int to[
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 void getSubArrayFromPiece(char piece, int subArray[DIM]);
 char pawnFromArray(int index, char currentPlayer);
+SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src);
+
 
 char spChessIfMate(SPCHESSGame* src);
 bool spChessIfPlayer1IsThreatening(SPCHESSGame* src);
