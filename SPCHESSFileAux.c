@@ -23,6 +23,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
 		exit(0);
 	}
+
 	while (i < 47){
 		nextChar = fgetc(in);
 		i++;
