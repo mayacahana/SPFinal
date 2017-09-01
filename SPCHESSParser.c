@@ -42,7 +42,7 @@ SPCHESS_GAME_SETTINGS_Command spParserPraseSettingLine(const char* str) {
 	char *word = strtok(strcopy, " \t\r\n");
 
 	if (!word) {
-		print_message("Error: standard function strtok has failed\n");
+		//printf("Error: standard function strtok has failed\n");
 		free(strcopy);
 		return res;
 	}
@@ -153,11 +153,12 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 	res.validOneStr = false;
 	res.validTwoStr = false;
 	bool seen_cmd = false, seen_cmd_with_one_str_save = false,
-			seen_cmd_with_one_str_get_moves = false, seen_cmd_with_two_str = false;
+			seen_cmd_with_one_str_get_moves = false, seen_cmd_with_two_str =
+					false;
 	int arg = 0;
 	char *word = strtok(strcopy, " \t\r\n"), *pat;
 	if (!word) {
-		print_message("Error: standard function strtok has failed\n");
+		//print_message("Error: standard function strtok has failed\n");
 		free(strcopy);
 		return res;
 	}
@@ -193,7 +194,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 					strcpy(res.strTwo, pat);
 				}
 				seen_cmd_with_two_str = false;
-			} else if (seen_cmd_with_one_str_get_moves && checkPosPat(word)) {//get moves command
+			} else if (seen_cmd_with_one_str_get_moves && checkPosPat(word)) { //get moves command
 				res.strOne = (char *) malloc((strlen(word) + 1) * sizeof(char));
 				strcpy(res.strOne, word);
 				res.validOneStr = true;
@@ -257,10 +258,10 @@ int spParserGameModeCommand(char* str) {
 	return SPCHESS_INVALID_LINE;
 }
 
-
 bool checkPosPat(char *str) {
 
-	if(strlen(str) >=5 && str[0] == '<' && isdigit(str[1]) && str[2] == ',' && isupper(str[3]) && str[4] == '>')
+	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ','
+			&& isupper(str[3]) && str[4] == '>')
 		return true;
 
 	return false;

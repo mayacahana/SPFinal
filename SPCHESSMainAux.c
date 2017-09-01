@@ -37,6 +37,7 @@ void settingState(SPCHESSGame* src) {
 		settingState(src);
 	}
 	if (act.cmd == SPCHESS_USER_COLOR) {
+		//debug
 		setUserColor(src, act);
 		settingState(src);
 	}
@@ -90,8 +91,7 @@ void setDifficulty(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 			printf(
 					"Expert level not supported, please choose a value between 1 to 4:\n");
 		else
-			printf(
-					"Wrong difficulty level. The value should be between 1 to 5\n");
+			printf("Wrong difficulty level. The value should be between 1 to 5\n");
 	} else
 		printf("Error: invalid command");
 }
@@ -100,15 +100,15 @@ void setUserColor(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 	if (src->gameMode != 1)
 		printf("Error: invalid command\n");
 
-	if (act.validIntArg && (act.arg == 0 && act.arg == 1))
-		src->gameMode = act.arg;
+	if (act.validIntArg && (act.arg == 0 || act.arg == 1))
+		src->colorUser = act.arg;
 	else
-		printf("Error: invalid command");
+		printf("Error: invalid command\n");
 
 }
 
 int setLoad(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
-	if (act->validStrArg) {
+	if (act.validStrArg) {
 		//try to open the path, if yes - change the game, according o/w do nothing
 		FILE* in = fopen(act.str, "r");
 		if (!in) {
@@ -118,7 +118,7 @@ int setLoad(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 		}
 		free(in);
 		SPCHESSGame* loaded = getStateFromFile(act.str);
-		// clear src (?)
+		spChessGameClear(src);
 		src = spChessGameCopy(loaded);
 		spChessGameDestroy(loaded);
 		return SUCCESS;
@@ -132,7 +132,7 @@ void printCurrentSetting(SPCHESSGame* src) {
 		return;
 
 	printf("SETTINGS:\nGAME_MODE: %d\n", src->gameMode);
-	if (src->gameMode == 2)
+	if (src->gameMode == 1)
 		printf("DIFFICULTY_LVL: %d\nUSER_CLR: %d\n", src->difficulty,
 				src->colorUser);
 }
@@ -143,15 +143,8 @@ void quitGame(SPCHESSGame* src) {
 	exit(0);
 }
 
-void userTurn(SPCHESSGame* src) {
-	spChessGamePrintBoard(src);
+SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 	checkGameStatusForUser(src);
-	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
-		printf("white player - enter your move:\n");
-	else
-		//src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
-		printf("black player - enter your move:\n");
-
 	char input[SPCHESS_MAX_LINE_LENGTH];
 	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
 		printf("Error: userTurn has failed\n");
@@ -159,7 +152,6 @@ void userTurn(SPCHESSGame* src) {
 	}
 	SPCHESS_GAME_MODE_Command act;
 	act = spParserPraseGameModeLine(input);
-
 	//switch case game command
 	if (act.cmd == SPCHESS_INVALID_LINE) {
 		printf("Error: invalid command\n");
@@ -167,36 +159,34 @@ void userTurn(SPCHESSGame* src) {
 	}
 	if (act.cmd == SPCHESS_MOVE) {
 		if (setUserMove(src, act) == SUCCESS)
-			return;
+			return SPCHESS_MOVE;
 		else
 			//setUserMove(src, act) == FAIL
 			userTurn(src);
 	}
 	if (act.cmd == SPCHESS_SAVE) {
-		if (saveGame(src, act) == SUCCESS)
-			return;
-		else
-			//saveGame(src, act) == FAIL
-			userTurn(src);
+		saveGame(src, act);
+		userTurn(src);
 	}
 	if (act.cmd == SPCHESS_UNDO) {
-		if (undoMove(src) == SUCCESS)
-			return;
-		else
-			//undoMove(src, act) == FAIL
-			userTurn(src);
+		undoMove(src);
+		userTurn(src);
 	}
-	if (act.cmd == SPCHESS_RESET)
+	if (act.cmd == SPCHESS_RESET) {
 		resetGame(src);
+		return SPCHESS_RESET;
+	}
 	if (act.cmd == SPCHESS_QUIT)
 		quitGame(src);
+
+	return SPCHESS_SUCCESS;
 }
 
 int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 	if (act.validTwoStr) {
-		int row_from = act.strOne[1] - 1; //the user enters row as 1-index base
+		int row_from = (act.strOne[1] - '0') - 1; //the user enters row as 1-index base
 		int col_from = (int) (act.strOne[3] - 'A'); //the user enters col as an uppercase letter
-		int row_to = act.strTwo[1] - 1;
+		int row_to = (act.strTwo[1] - '0') - 1;
 		int col_to = (int) (act.strTwo[3] - 'A');
 
 		int from[DIM] = { row_from, col_from };
@@ -287,9 +277,7 @@ int undoMove(SPCHESSGame* src) {
 
 void resetGame(SPCHESSGame* src) {
 	printf("Restarting...\n");
-	spChessGameDestroy(src);
-	src = spChessGameCreate(HISTORY_SIZE, DEFAULT_GAME_MODE, DEFAULT_USER_COLOR,
-	DEFAULT_DIFFICULTY);
+	spChessGameClear(src);
 	//new game starts
 	printf("Specify game setting or type 'start' to begin a game with the current setting:\n");
 	settingState(src);
@@ -334,7 +322,6 @@ void checkGameStatusForComputer(SPCHESSGame* src) {
 	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL) {
 		printf("The game ends in a tie\n");
-
 		//the game has reached terminal state
 		spChessGameDestroy(src);
 		exit(0);
@@ -355,7 +342,17 @@ char* getNameFromPiece(char piece) {
 	if (piece == WHITE_K || piece == BLACK_K)
 		return "king";
 
-	return '\0';
+	return "";
+}
 
+void printTurn(SPCHESSGame* src) {
+	if (!src)
+		return;
+
+	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
+		printf("white player - enter your move:\n");
+	else
+		//src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
+		printf("black player - enter your move:\n");
 }
 

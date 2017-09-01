@@ -13,6 +13,9 @@
 #define BOARD_SIZE 8
 #define SPCHESS_GAME_PLAYER_1_SYMBOL 'W'
 #define SPCHESS_GAME_PLAYER_2_SYMBOL 'B'
+#define DEFAULT_GAME_MODE 1
+#define DEFAULT_DIFFICULTY 2
+#define DEFAULT_USER_COLOR 1
 #define SPCHESS_GAME_TIE_SYMBOL '-'
 #define SPCHESS_GAME_EMPTY_ENTRY ' '
 #define HISTORY_SIZE 6
@@ -67,6 +70,8 @@ void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]);
 void initPiecesArray(int piecesArray[NUM_OF_PIECES][DIM], char gameColor);
 
 SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
+
+void spChessGameClear(SPCHESSGame* src);
 
 void spChessGameDestroy(SPCHESSGame* src);
 

@@ -60,8 +60,8 @@ static bool spParserCheckParseLine() {
 			cmd.cmd == SPCHESS_INVALID_LINE && !cmd.validOneStr
 					&& !cmd.validTwoStr);
 
-	char* pat = "<32,G>";
-	ASSERT_FALSE(checkPosPat(pat));
+	char* pat = "<1,C>";
+	ASSERT_TRUE(checkPosPat(pat));
 
 	return true;
 }

@@ -20,11 +20,10 @@ SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char colorUser,
 	}
 	initBoardGame(res->gameBoard);
 
-	//difficulty matter only on game mode 1
-	if (gameMode == 1)
-		res->difficulty = difficulty;
-
+	res->difficulty = difficulty;
 	res->colorUser = colorUser;
+	res->gameMode = gameMode;
+
 	//player 1 - white - always starts the game
 	res->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
 	res->movesPlayer1 = spArrayListCreate(historySize / 2);
@@ -198,22 +197,48 @@ void spChessGameDestroy(SPCHESSGame* src) {
 
 }
 
+void spChessGameClear(SPCHESSGame* src) {
+	if(!src)
+		return;
+
+	initBoardGame(src->gameBoard);
+
+	src->difficulty = DEFAULT_DIFFICULTY;
+	src->colorUser = DEFAULT_USER_COLOR;
+	src->gameMode = DEFAULT_GAME_MODE;
+
+	//player 1 - white - always starts the game
+	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
+
+	spArrayListDestroy(src->movesPlayer1);
+	spArrayListDestroy(src->movesPlayer2);
+
+	src->movesPlayer1 = spArrayListCreate(HISTORY_SIZE / 2);
+	src->movesPlayer2 = spArrayListCreate(HISTORY_SIZE / 2);
+
+	initPiecesArray(src->piecesPlayer1, SPCHESS_GAME_PLAYER_1_SYMBOL);
+	initPiecesArray(src->piecesPlayer2, SPCHESS_GAME_PLAYER_2_SYMBOL);
+
+}
+
+
+
+
 SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src) {
 	if (!src)
 		return SPCHESS_GAME_INVALID_ARGUMENT;
 
 	for (int i = BOARD_SIZE - 1; i >= 0; i--) {
-		printf("%d", i);
-		//print("%d", i + 1);
+		//printf("%d", i);
+		printf("%d", i + 1);
 		printf("| ");
 		for (int j = 0; j < BOARD_SIZE; j++)
 			printf("%c ", src->gameBoard[i][j]);
 		printf("|\n");
 	}
 	printf("  -----------------\n");
-	//printf("   A B C D E F G H\n");
-	//bring debug
-	printf("   0 1 2 3 4 5 6 7\n");
+	printf("   A B C D E F G H\n");
+	//printf("   0 1 2 3 4 5 6 7\n");
 	return SPCHESS_GAME_SUCCESS;
 }
 

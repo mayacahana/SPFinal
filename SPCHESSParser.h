@@ -35,6 +35,7 @@ typedef enum {
 	SPCHESS_UNDO,
 	SPCHESS_RESET,
 	SPCHESS_INVALID_LINE,
+	SPCHESS_SUCCESS,
 } SPCHESS_COMMAND;
 
 typedef struct game_setting_command_t {
