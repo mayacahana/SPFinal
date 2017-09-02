@@ -153,25 +153,21 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 	SPCHESS_GAME_MODE_Command act;
 	act = spParserPraseGameModeLine(input);
 	//switch case game command
-	if (act.cmd == SPCHESS_INVALID_LINE) {
-		printf("Error: invalid command\n");
-		userTurn(src);
-	}
+
 	if (act.cmd == SPCHESS_MOVE) {
 		if (setUserMove(src, act) == SUCCESS) {
 			checkGameStatusForUser(src);
 			return SPCHESS_MOVE;
-		} else
-			//setUserMove(src, act) == FAIL
-			userTurn(src);
+		} else //setUserMove(src, act) == FAIL
+			return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_SAVE) {
 		saveGame(src, act);
-		userTurn(src);
+		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_UNDO) {
 		undoMove(src);
-		userTurn(src);
+		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_RESET) {
 		resetGame(src);

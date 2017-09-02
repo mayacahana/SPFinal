@@ -780,7 +780,7 @@ void getLegalMovesForWhitePawn(SPCHESSGame* src, move* elem,
 }
 
 void getLegalMovesForBlackPawn(SPCHESSGame* src, move* elem,
-		int legalMoves[MAX_STEPS_PIECE][2]) {
+		int legalMoves[MAX_STEPS_PIECE][DIM]) {
 	int ind = 0;
 
 	int row_from = elem->from[0];
