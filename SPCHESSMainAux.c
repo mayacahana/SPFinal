@@ -91,7 +91,8 @@ void setDifficulty(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 			printf(
 					"Expert level not supported, please choose a value between 1 to 4:\n");
 		else
-			printf("Wrong difficulty level. The value should be between 1 to 5\n");
+			printf(
+					"Wrong difficulty level. The value should be between 1 to 5\n");
 	} else
 		printf("Error: invalid command");
 }
@@ -144,7 +145,6 @@ void quitGame(SPCHESSGame* src) {
 }
 
 SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
-	checkGameStatusForUser(src);
 	char input[SPCHESS_MAX_LINE_LENGTH];
 	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
 		printf("Error: userTurn has failed\n");
@@ -158,9 +158,10 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 		userTurn(src);
 	}
 	if (act.cmd == SPCHESS_MOVE) {
-		if (setUserMove(src, act) == SUCCESS)
+		if (setUserMove(src, act) == SUCCESS) {
+			checkGameStatusForUser(src);
 			return SPCHESS_MOVE;
-		else
+		} else
 			//setUserMove(src, act) == FAIL
 			userTurn(src);
 	}
@@ -279,12 +280,12 @@ void resetGame(SPCHESSGame* src) {
 	printf("Restarting...\n");
 	spChessGameClear(src);
 	//new game starts
-	printf("Specify game setting or type 'start' to begin a game with the current setting:\n");
+	printf(
+			"Specify game setting or type 'start' to begin a game with the current setting:\n");
 	settingState(src);
 }
 
 void computerTurn(SPCHESSGame* src) {
-	checkGameStatusForComputer(src);
 	move* compMove = spChessMiniMaxSuggestMove(src, src->difficulty);
 	spChessGameSetMove(src, compMove->from, compMove->to);
 
@@ -294,6 +295,7 @@ void computerTurn(SPCHESSGame* src) {
 			(char) (compMove->to[1] + 'A'));
 
 	spDestroyMove(compMove);
+	checkGameStatusForComputer(src);
 }
 
 void checkGameStatusForComputer(SPCHESSGame* src) {
