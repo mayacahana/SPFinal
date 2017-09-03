@@ -259,16 +259,16 @@ bool isInBoard(int row, int col) {
 }
 
 bool spChessGameIsKingRisker(SPCHESSGame* src, int from[DIM], int to[DIM]) {
-	if (!src )
+	if (!src)
 		return false;
 
 	SPCHESSGame* copy = spChessGameCopy(src);
 
-	if(spChessGameSetMove(copy, from, to) == SPCHESS_GAME_SUCCESS) {
+	if (spChessGameSetMove(copy, from, to) == SPCHESS_GAME_SUCCESS) {
 		//player has changed!
-		if(copy->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL)
+		if (copy->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL)
 			return spChessIfPlayer2IsThreatening(copy);
-		 else
+		else
 			return spChessIfPlayer1IsThreatening(copy);
 	}
 	spChessGameDestroy(copy);
@@ -1304,7 +1304,8 @@ bool existsValidMovePlayer1(SPCHESSGame* src) {
 					eaten = src->gameBoard[to[0]][to[1]];
 					elem = spCreateMove(from, to, piece, eaten);
 					if (spChessMoveHandler(src, elem,
-					SPCHESS_GAME_PLAYER_1_SYMBOL) == SPCHESS_GAME_SUCCESS) {
+					SPCHESS_GAME_PLAYER_1_SYMBOL) == SPCHESS_GAME_SUCCESS
+							&& !spChessGameIsKingRisker(src, from, to)) {
 						exist = true;
 						spDestroyMove(elem);
 						break;
@@ -1336,7 +1337,8 @@ bool existsValidMovePlayer2(SPCHESSGame* src) {
 					eaten = src->gameBoard[to[0]][to[1]];
 					elem = spCreateMove(from, to, piece, eaten);
 					if (spChessMoveHandler(src, elem,
-					SPCHESS_GAME_PLAYER_2_SYMBOL) == SPCHESS_GAME_SUCCESS) {
+					SPCHESS_GAME_PLAYER_2_SYMBOL) == SPCHESS_GAME_SUCCESS
+							&& !spChessGameIsKingRisker(src, from, to)) {
 						exist = true;
 						spDestroyMove(elem);
 						break;

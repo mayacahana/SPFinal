@@ -154,6 +154,7 @@ SPCHESS_ARRAY_LIST_MESSAGE spArrayListAddAt(SPCHESSArrayList* src, move* elem,
 	for (int i = src->actualSize; i > index; i--)
 		src->elements[i] = src->elements[i - 1];
 
+	//spDestroyMove(src->elements[index]);
 	//insert the new elem
 	src->elements[index] = spCopyMove(elem);
 	src->actualSize = src->actualSize + 1;

@@ -41,7 +41,7 @@ void settingState(SPCHESSGame* src) {
 	}
 	if (act.cmd == SPCHESS_LOAD) {
 		setLoad(src, act);
-		free(act.arg); //(?)
+		free(act.str); //(?)
 		settingState(src);
 	}
 	if (act.cmd == SPCHESS_DEFAULT) {
@@ -202,7 +202,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			printf("The specified position does not contain your piece\n");
 			return FAIL;
 		}
-		if (msg == SPCHESS_GAME_INVALID_MOVE) {
+		if (msg == SPCHESS_GAME_INVALID_MOVE || !spChessGameIsKingRisker(src, from ,to)) {
 			printf("Illegal move\n");
 			return FAIL;
 		}
