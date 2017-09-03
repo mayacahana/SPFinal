@@ -18,7 +18,8 @@ int main() {
 		spChessGameDestroy(game);
 		exit(1);
 	}
-	printf("Specify game setting to type 'start' to begin a game with the current setting:\n");
+	printf(
+			"Specify game setting to type 'start' to begin a game with the current setting:\n");
 	settingState(game);
 	//continue in the game, until the game has reached terminal state or 'quit' command has entered
 	while (true) {
@@ -30,17 +31,22 @@ int main() {
 		} else { //game->gameMode == 1
 			userIsWhite = (game->colorUser == 1);
 			if (userIsWhite) {
-				spChessGamePrintBoard(game);
-				printTurn(game);
-				if (userTurn(game) == SPCHESS_RESET)
-					continue;
-				computerTurn(game);
+				if (game->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+					spChessGamePrintBoard(game);
+					printTurn(game);
+					if (userTurn(game) == SPCHESS_RESET)
+						continue;
+				} else
+					computerTurn(game);
 			} else { // user is black player
-				computerTurn(game);
-				spChessGamePrintBoard(game);
-				printTurn(game);
-				if (userTurn(game) == SPCHESS_RESET)
-					continue;
+				if (game->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL)
+					computerTurn(game);
+				else {
+					spChessGamePrintBoard(game);
+					printTurn(game);
+					if (userTurn(game) == SPCHESS_RESET)
+						continue;
+				}
 			}
 		}
 	}
