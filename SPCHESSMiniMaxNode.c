@@ -21,14 +21,15 @@ int scoringFunc(SPCHESSGame* src, char currentPlayer) {
 	//check if the state is mate (spChessIfMate return the char rep' the threatened side)
 	if (spChessIfMate(src) == opponentPlayer)
 		return 4000; // "plus inf"
+
 	if (spChessIfMate(src) == currentPlayer)
 		return -4000; //"minus inf"
 
 	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
+		for (int j = 0; j < BOARD_SIZE; j++)
 			score += getPieceValue(src->gameBoard[i][j], currentPlayer);
-		}
 	}
+
 	return score;
 }
 
@@ -68,6 +69,8 @@ int getPieceValue(char piece, char currentPlayer) {
 	}
 
 	switch (piece) {
+	case EMPTY:
+		return 0;
 	case WHITE_P:
 		return white_pawn;
 	case BLACK_P:
@@ -92,16 +95,16 @@ int getPieceValue(char piece, char currentPlayer) {
 		return white_king;
 	case BLACK_K:
 		return black_king;
-	default: //EMPTY
-		return 0;
 	}
+	return 0;
 }
 
 int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
-bool flag, char colorForFunc) {
+		bool flag, char colorForFunc) {
 
 	//recursion halt
-	if (maxRecLvl == 0 || spChessIfMate(src) != '\0')
+	if (maxRecLvl == 0 || spChessGameCheckWinner(src) != '\0'
+			|| spChessGameCheckTie(src) != '\0')
 		return scoringFunc(src, colorForFunc);
 
 	//init value
@@ -110,13 +113,16 @@ bool flag, char colorForFunc) {
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		//who's pieces to check
 		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
-			if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
+			if (src->piecesPlayer1[i][0] >= 0
+					&& src->piecesPlayer1[i][1] >= 0) {
 				from[0] = src->piecesPlayer1[i][0];
 				from[1] = src->piecesPlayer1[i][1];
 			} else
 				continue;
+
 		} else {
-			if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
+			if (src->piecesPlayer2[i][0] >= 0
+					&& src->piecesPlayer2[i][1] >= 0) {
 				from[0] = src->piecesPlayer2[i][0];
 				from[1] = src->piecesPlayer2[i][1];
 			} else
@@ -128,17 +134,18 @@ bool flag, char colorForFunc) {
 			for (int p = 0; p < BOARD_SIZE; p++) {
 				int to[DIM] = { k, p };
 				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS) {
-					value = decider(value, computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag, colorForFunc), flag);
+					value = decider(value,
+							computeValueRec(src, maxRecLvl - 1, alpha, beta,
+									!flag, colorForFunc), flag);
+					spChessGameUndoPrevMove(src);
+
 					if (flag)
 						alpha = decider(alpha, value, flag);
 					else
 						beta = decider(beta, value, flag);
 
-					if(beta <= alpha) {
-						spChessGameUndoPrevMove(src);
+					if (beta <= alpha)
 						break;
-					}
-					spChessGameUndoPrevMove(src);
 				}
 			}
 		}

@@ -276,8 +276,7 @@ void resetGame(SPCHESSGame* src) {
 	printf("Restarting...\n");
 	spChessGameClear(src);
 	//new game starts
-	printf(
-			"Specify game setting or type 'start' to begin a game with the current setting:\n");
+	printf("Specify game setting or type 'start' to begin a game with the current setting:\n");
 	settingState(src);
 }
 

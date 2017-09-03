@@ -45,17 +45,15 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 			} else
 				continue;
 		}
-
 		//location where to move
-		for (int k = 0; k < BOARD_SIZE; k++) {
-			for (int p = 0; p < BOARD_SIZE; p++) {
+		for (int k = 0 ; k < BOARD_SIZE; k++) {
+			for (int p = 0 ; p  < BOARD_SIZE; p++) {
 				int to[DIM] = { k, p };
 
 				if (spChessGameSetMove(copy, from, to)
 						== SPCHESS_GAME_SUCCESS) {
 					childValue = computeValueRec(copy, maxDepth - 1, INT_MIN,INT_MAX, false, currentPlayer);
-
-					if (childValue > max || max == INT_MIN ) {
+					if (childValue > max) {
 						max = childValue;
 						fromBest[0] = from[0];
 						fromBest[1] = from[1];

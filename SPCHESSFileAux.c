@@ -158,8 +158,7 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	out = fopen(path, "w");
 	if (!out)
 		return -1;
-	fprintf(out,
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
+	fprintf(out,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
 	if (game->currentPlayer == 'W')
 		fputs("1</current_turn>\n\t", out);
 	else {

@@ -10,14 +10,29 @@
 
 static bool spChessMiniMaxNodeBasicTest() {
 	SPCHESSGame* res = spChessGameCreate(HISTORY_SIZE, 1,
-	SPCHESS_GAME_PLAYER_1_SYMBOL, 2);
+	SPCHESS_GAME_PLAYER_1_SYMBOL, 1);
 	ASSERT_TRUE(res!=NULL);
 
-	ASSERT_TRUE(scoringFunc(res, SPCHESS_GAME_PLAYER_1_SYMBOL) == 0);
+	int from[DIM], to[DIM];
+	for (int i = 0; i < BOARD_SIZE / 2 ; i++) {
+		from[0] = 1;
+		from[1] = i;
+		to[0] = 3;
+		to[1] = i;
+		ASSERT_TRUE(spChessGameSetMove(res, from, to) == SPCHESS_GAME_SUCCESS);
+
+		from[0] = 6;
+		from[1] = i;
+		to[0] = 4;
+		to[1] = i;
+		ASSERT_TRUE(spChessGameSetMove(res, from, to) == SPCHESS_GAME_SUCCESS);
+
+	}
 
 	spChessGamePrintBoard(res);
-	computeValueRec(res, 2, INT_MIN, INT_MAX, true, SPCHESS_GAME_PLAYER_1_SYMBOL);
-	spChessGamePrintBoard(res);
+	printf("the final value is: %d\n",
+			computeValueRec(res, 1, INT_MIN, INT_MAX, true,
+			SPCHESS_GAME_PLAYER_1_SYMBOL));
 
 	spChessGameDestroy(res);
 	return true;

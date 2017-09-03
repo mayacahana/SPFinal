@@ -181,9 +181,14 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				res.cmd = arg;
 				res.validOneStr = false;
 				res.validTwoStr = false;
-			} else if (seen_cmd_with_two_str && checkPosPat(word) && //move commmand
-					strcmp(strtok(NULL, " \t\r\n"), "to") == 0) { //check if: "<x,y> to"
+			} else if (seen_cmd_with_two_str && checkPosPat(word))  { //move commmand
+
 				pat = strtok(NULL, " \t\r\n");
+				if(!pat || strcmp(pat, "to") != 0)
+					break;
+				pat = strtok(NULL, " \t\r\n");
+				if(!pat)
+					break;
 				if (checkPosPat(pat)) { // check if <i,j>
 					res.validTwoStr = true;
 					res.strOne = (char *) malloc(
