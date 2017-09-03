@@ -198,7 +198,7 @@ void spChessGameDestroy(SPCHESSGame* src) {
 }
 
 void spChessGameClear(SPCHESSGame* src) {
-	if(!src)
+	if (!src)
 		return;
 
 	initBoardGame(src->gameBoard);
@@ -220,9 +220,6 @@ void spChessGameClear(SPCHESSGame* src) {
 	initPiecesArray(src->piecesPlayer2, SPCHESS_GAME_PLAYER_2_SYMBOL);
 
 }
-
-
-
 
 SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src) {
 	if (!src)
@@ -260,6 +257,24 @@ bool isInBoard(int row, int col) {
 
 	return isValidRow && isValidCol;
 }
+
+bool spChessGameIsKingRisker(SPCHESSGame* src, int from[DIM], int to[DIM]) {
+	if (!src )
+		return false;
+
+	SPCHESSGame* copy = spChessGameCopy(src);
+
+	if(spChessGameSetMove(copy, from, to) == SPCHESS_GAME_SUCCESS) {
+		//player has changed!
+		if(copy->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL)
+			return spChessIfPlayer2IsThreatening(copy);
+		 else
+			return spChessIfPlayer1IsThreatening(copy);
+	}
+	spChessGameDestroy(copy);
+	return false;
+}
+
 bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem) {
 	if (!src || !elem)
 		return false;
@@ -307,7 +322,7 @@ void getLegalMovesForPiece(SPCHESSGame* src, move* elem,
 		getLegalMovesForBishop(src, elem, legalMoves);
 		return;
 	}
-	if (piece == WHITE_Q | piece == BLACK_Q) {
+	if (piece == WHITE_Q || piece == BLACK_Q) {
 		getLegalMovesForQueen(src, elem, legalMoves);
 		return;
 	}
@@ -842,7 +857,7 @@ SPCHESS_GAME_MESSAGE spChessMoveHandler(SPCHESSGame* src, move* elem,
 	if (!isSameColorAsGiven(src, elem->from[0], elem->from[1], colorToMove))
 		return SPCHESS_GAME_INVALID_COLOR;
 
-	//check if the move is legal for the current piece
+	//check if the move is legal for the current piece or the move is king risker
 	if (!spChessGameValidMoveLoc(src, elem))
 		return SPCHESS_GAME_INVALID_MOVE;
 
@@ -868,6 +883,7 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 		spDestroyMove(elem);
 		return msg;
 	}
+
 	//the move is completly valid thus can change game and history acoordingly
 	src->gameBoard[from[0]][from[1]] = EMPTY;
 	src->gameBoard[to[0]][to[1]] = piece;
@@ -1066,12 +1082,12 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
 	//print the undo move
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 		printf("Undo move for player white: <%d,%c> -> <%d,%c>\n",
-				elem->from[0] + 1, (char) (elem->from[1] + 'A'), elem->to[0] + 1,
-				(char) (elem->to[1] + 'A'));
+				elem->from[0] + 1, (char) (elem->from[1] + 'A'),
+				elem->to[0] + 1, (char) (elem->to[1] + 'A'));
 	} else { //src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
 		printf("Undo move for player black: <%d,%c> -> <%d,%c>\n",
-				elem->from[0] + 1, (char) (elem->from[1] + 'A'), elem->to[0] + 1,
-				(char) (elem->to[1] + 'A'));
+				elem->from[0] + 1, (char) (elem->from[1] + 'A'),
+				elem->to[0] + 1, (char) (elem->to[1] + 'A'));
 	}
 	return SPCHESS_GAME_SUCCESS;
 }
@@ -1410,7 +1426,7 @@ void getSubArrayFromPiece(char piece, int subArray[DIM]) {
 		subArray[1] = 11;
 		return;
 	}
-	if (piece == WHITE_Q | piece == BLACK_Q) {
+	if (piece == WHITE_Q || piece == BLACK_Q) {
 		subArray[0] = 14;
 		subArray[1] = 14;
 		return;

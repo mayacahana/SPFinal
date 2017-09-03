@@ -14,7 +14,7 @@ static bool spChessMiniMaxNodeBasicTest() {
 	ASSERT_TRUE(res!=NULL);
 
 	int from[DIM], to[DIM];
-	for (int i = 0; i < BOARD_SIZE / 2 ; i++) {
+	for (int i = 0; i < BOARD_SIZE / 2; i++) {
 		from[0] = 1;
 		from[1] = i;
 		to[0] = 3;

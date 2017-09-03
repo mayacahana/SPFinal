@@ -22,7 +22,6 @@ void settingState(SPCHESSGame* src) {
 	}
 	SPCHESS_GAME_SETTINGS_Command act;
 	act = spParserPraseSettingLine(input);
-
 	//switch case setting command
 	if (act.cmd == SPCHESS_INVALID_LINE) {
 		printf("Error: invalid command\n");
@@ -37,16 +36,13 @@ void settingState(SPCHESSGame* src) {
 		settingState(src);
 	}
 	if (act.cmd == SPCHESS_USER_COLOR) {
-		//debug
 		setUserColor(src, act);
 		settingState(src);
 	}
 	if (act.cmd == SPCHESS_LOAD) {
-		if (setLoad(src, act) == SUCCESS)
-			return;
-		else
-			//setLoad(src, act) == FAIL
-			settingState(src);
+		setLoad(src, act);
+		free(act.arg); //(?)
+		settingState(src);
 	}
 	if (act.cmd == SPCHESS_DEFAULT) {
 		setDefaultSetting(src);
@@ -88,11 +84,9 @@ void setDifficulty(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 		if (act.arg >= 1 && act.arg <= 4)
 			src->difficulty = act.arg;
 		else if (act.arg == 5)
-			printf(
-					"Expert level not supported, please choose a value between 1 to 4:\n");
+			printf("Expert level not supported, please choose a value between 1 to 4:\n");
 		else
-			printf(
-					"Wrong difficulty level. The value should be between 1 to 5\n");
+			printf("Wrong difficulty level. The value should be between 1 to 5\n");
 	} else
 		printf("Error: invalid command");
 }
@@ -154,15 +148,25 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 	act = spParserPraseGameModeLine(input);
 	//switch case game command
 
+	if (act.cmd == SPCHESS_INVALID_LINE) {
+		printf("Error: invalid command\n");
+		return userTurn(src);
+	}
 	if (act.cmd == SPCHESS_MOVE) {
 		if (setUserMove(src, act) == SUCCESS) {
 			checkGameStatusForUser(src);
+			free(act.strOne);
+			free(act.strTwo);
 			return SPCHESS_MOVE;
-		} else //setUserMove(src, act) == FAIL
+		} else { //setUserMove(src, act) == FAIL
+			free(act.strOne);
+			free(act.strTwo);
 			return userTurn(src);
+		}
 	}
 	if (act.cmd == SPCHESS_SAVE) {
 		saveGame(src, act);
+		free(act.strOne);
 		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_UNDO) {
@@ -276,7 +280,8 @@ void resetGame(SPCHESSGame* src) {
 	printf("Restarting...\n");
 	spChessGameClear(src);
 	//new game starts
-	printf("Specify game setting or type 'start' to begin a game with the current setting:\n");
+	printf(
+			"Specify game setting or type 'start' to begin a game with the current setting:\n");
 	settingState(src);
 }
 

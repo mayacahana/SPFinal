@@ -178,7 +178,7 @@ SPCHESS_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPCHESSArrayList* src, int index)
 	if (src->actualSize == 0)
 		return SP_ARRAY_LIST_EMPTY;
 
-	spDestroyMove(src->elements[index]);
+	//spDestroyMove(src->elements[index]);
 	//shift elements to the left, to overwrite the specified elem
 	for (int i = index; i < src->actualSize - 1; i++) {
 		src->elements[i] = src->elements[i + 1];

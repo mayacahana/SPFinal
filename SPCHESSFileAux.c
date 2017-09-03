@@ -10,21 +10,21 @@ SPCHESSGame* getStateFromFile(char* path) {
 	int i = 0, j = 0;
 	char nextChar;
 	char nextTag[13];
-	char nextValue[100], userColor, compColor, nextTurn;
+	char nextValue[100], userColor, nextTurn;
 	int gameMode, difficulty;
 	int subArray[DIM];
 	char board[BOARD_SIZE][BOARD_SIZE];
 	int piecesArrayPlayerW[NUM_OF_PIECES][DIM],
 			piecesArrayPlayerB[NUM_OF_PIECES][DIM];
-	printf("%s\n",path);
+	printf("%s\n", path);
 	FILE* in = fopen(path, "r");
 
 	if (!in) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
-		exit(0);
+		return NULL;
 	}
 
-	while (i < 47){
+	while (i < 47) {
 		nextChar = fgetc(in);
 		i++;
 	}
@@ -37,8 +37,6 @@ SPCHESSGame* getStateFromFile(char* path) {
 		} else {
 			nextTurn = SPCHESS_GAME_PLAYER_1_SYMBOL;
 		}
-	} else {
-		//error
 	}
 	getNextTag(in, nextTag);
 	nextChar = fgetc(in);
@@ -70,10 +68,10 @@ SPCHESSGame* getStateFromFile(char* path) {
 	if (strcmp(nextTag, "current_turn") == 0) {
 		if (strcmp(nextValue, "black") == 0) {
 			userColor = SPCHESS_GAME_PLAYER_2_SYMBOL;
-			compColor = SPCHESS_GAME_PLAYER_1_SYMBOL;
+			//compColor = SPCHESS_GAME_PLAYER_1_SYMBOL;
 		} else {
 			userColor = SPCHESS_GAME_PLAYER_1_SYMBOL;
-			compColor = SPCHESS_GAME_PLAYER_2_SYMBOL;
+			//compColor = SPCHESS_GAME_PLAYER_2_SYMBOL;
 		}
 	}
 	getNextTag(in, nextTag);
@@ -158,7 +156,8 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	out = fopen(path, "w");
 	if (!out)
 		return -1;
-	fprintf(out,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
+	fprintf(out,
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
 	if (game->currentPlayer == 'W')
 		fputs("1</current_turn>\n\t", out);
 	else {
@@ -171,9 +170,9 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		fprintf(out, "%d", game->difficulty);
 		fputs("</difficulty>\n\t<user_color>", out);
 		if (game->colorUser == 'W') {
-			fputs("1</user_color>\n\t<board>",out);
+			fputs("1</user_color>\n\t<board>", out);
 		} else {
-			fputs("0</user_color>\n\t<board>",out);
+			fputs("0</user_color>\n\t<board>", out);
 		}
 	}
 	for (int i = 7; i >= 0; i--) {
@@ -194,7 +193,7 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 void getNextTag(FILE* in, char nextTag[13]) {
 	int i = 0;
 	char nextChar = fgetc(in);
-	printf("now Char <: %c\n",nextChar);
+	printf("now Char <: %c\n", nextChar);
 
 	nextChar = fgetc(in);
 	while (nextChar != '>') {
@@ -203,7 +202,7 @@ void getNextTag(FILE* in, char nextTag[13]) {
 		nextChar = fgetc(in);
 	}
 	nextTag[i] = '\0';
-	printf("Tag:%s\n",nextTag);
+	printf("Tag:%s\n", nextTag);
 }
 void getNextValue(FILE* in, char nextValue[6]) {
 	int i = 0;

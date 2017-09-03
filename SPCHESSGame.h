@@ -77,6 +77,7 @@ void spChessGameDestroy(SPCHESSGame* src);
 
 SPCHESS_GAME_MESSAGE spChessMoveHandler(SPCHESSGame*, move* elem, char colorToMove);
 bool spChessGameIsValidMove(SPCHESSGame* src, int from[DIM], int to[DIM]);
+bool spChessGameIsKingRisker(SPCHESSGame* src, int from[DIM], int to[DIM]);
 bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem);
 bool isSameColorAsGiven(SPCHESSGame* src, int row, int col, char givenColor);
 void getLegalMovesForPiece(SPCHESSGame* src, move* elem, int legalMoves[MAX_STEPS_PIECE][DIM]);
