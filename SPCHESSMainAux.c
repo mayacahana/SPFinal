@@ -78,8 +78,10 @@ void setGameMode(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 }
 
 void setDifficulty(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
-	if (src->gameMode != 1)
+	if (src->gameMode != 1) {
 		printf("Error: invalid command\n");
+		return;
+	}
 	if (act.validIntArg) {
 		if (act.arg >= 1 && act.arg <= 4)
 			src->difficulty = act.arg;
@@ -92,9 +94,10 @@ void setDifficulty(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 }
 
 void setUserColor(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
-	if (src->gameMode != 1)
+	if (src->gameMode != 1) {
 		printf("Error: invalid command\n");
-
+		return;
+	}
 	if (act.validIntArg && (act.arg == 0 || act.arg == 1))
 		src->colorUser = act.arg;
 	else
@@ -170,7 +173,10 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_UNDO) {
-		undoMove(src);
+		if (undoMove(src) == SUCCESS) {
+			spChessGamePrintBoard(src);
+			printTurn(src);
+		}
 		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_RESET) {
@@ -193,6 +199,10 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		int from[DIM] = { row_from, col_from };
 		int to[DIM] = { row_to, col_to };
 
+		if (spChessGameIsKingRisker(src, from, to)) {
+			printf("Illegal move\n");
+			return FAIL;
+		}
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
 		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
 			printf("Invalid position on the board\n");
@@ -202,7 +212,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			printf("The specified position does not contain your piece\n");
 			return FAIL;
 		}
-		if (msg == SPCHESS_GAME_INVALID_MOVE || spChessGameIsKingRisker(src, from ,to)) {
+		if (msg == SPCHESS_GAME_INVALID_MOVE) {
 			printf("Illegal move\n");
 			return FAIL;
 		}
@@ -216,12 +226,14 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 void checkGameStatusForUser(SPCHESSGame* src) {
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {
-		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL)
+		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			spChessGamePrintBoard(src);
 			printf("Checkmate! white player wins the game\n");
-		else
+		} else {
 			//winner == SPCHESS_GAME_PLAYER_2_SYMBOL
-			printf("CheckMate! black player wins the game\n");
-
+			spChessGamePrintBoard(src);
+			printf("Checkmate! black player wins the game\n");
+		}
 		//the game has reached terminal state
 		spChessGameDestroy(src);
 		exit(0);
@@ -238,6 +250,7 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 	}
 	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL) {
+		spChessGamePrintBoard(src);
 		printf("The game is tied\n");
 
 		//the game has reached terminal state
@@ -279,7 +292,6 @@ int undoMove(SPCHESSGame* src) {
 void resetGame(SPCHESSGame* src) {
 	printf("Restarting...\n");
 	spChessGameClear(src);
-	//new game starts
 	printf(
 			"Specify game setting or type 'start' to begin a game with the current setting:\n");
 	settingState(src);
@@ -301,12 +313,13 @@ void computerTurn(SPCHESSGame* src) {
 void checkGameStatusForComputer(SPCHESSGame* src) {
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {
-		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL)
+		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			spChessGamePrintBoard(src);
 			printf("Checkmate! white player wins the game\n");
-		else
-			//winner == SPCHESS_GAME_PLAYER_2_SYMBOL
-			printf("CheckMate! black player wins the game\n");
-
+		} else { //winner == SPCHESS_GAME_PLAYER_2_SYMBOL
+			spChessGamePrintBoard(src);
+			printf("Checkmate! black player wins the game\n");
+		}
 		//the game has reached terminal state
 		spChessGameDestroy(src);
 		exit(0);
@@ -323,6 +336,7 @@ void checkGameStatusForComputer(SPCHESSGame* src) {
 	}
 	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL) {
+		spChessGamePrintBoard(src);
 		printf("The game ends in a tie\n");
 		//the game has reached terminal state
 		spChessGameDestroy(src);

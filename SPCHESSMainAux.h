@@ -34,7 +34,6 @@ void resetGame(SPCHESSGame* src);
 void printTurn(SPCHESSGame* src);
 
 
-
 void computerTurn(SPCHESSGame* src);
 void checkGameStatusForComputer(SPCHESSGame* src);
 char* getNameFromPiece(char piece);

@@ -133,7 +133,7 @@ int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
 		for (int k = 0; k < BOARD_SIZE; k++) {
 			for (int p = 0; p < BOARD_SIZE; p++) {
 				int to[DIM] = { k, p };
-				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS && !spChessGameIsKingRisker(src, from ,to)) {
+				if (!spChessGameIsKingRisker(src, from ,to) && spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS ) {
 					value = decider(value,
 							computeValueRec(src, maxRecLvl - 1, alpha, beta,
 									!flag, colorForFunc), flag);

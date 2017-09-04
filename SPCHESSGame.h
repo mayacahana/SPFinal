@@ -65,7 +65,7 @@ typedef enum spchess_game_message_t {
 	SPCHESS_GAME_INVALID_COLOR,
 } SPCHESS_GAME_MESSAGE;
 
-SPCHESSGame* spChessGameCreate(int historySize, int gameMode, char colorUser, int difficulty);
+SPCHESSGame* spChessGameCreate(int historySize);
 void initBoardGame(char gameBoard[BOARD_SIZE][BOARD_SIZE]);
 void initPiecesArray(int piecesArray[NUM_OF_PIECES][DIM], char gameColor);
 
@@ -95,7 +95,6 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM], int to[
 
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src);
 void getSubArrayFromPiece(char piece, int subArray[DIM]);
-char pawnFromArray(int index, char currentPlayer);
 SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src);
 
 

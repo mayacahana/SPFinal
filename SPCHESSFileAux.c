@@ -131,9 +131,14 @@ SPCHESSGame* getStateFromFile(char* path) {
 			}
 		}
 	}
-	//build board
-	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE, gameMode, userColor,
-			difficulty);
+	//build game
+	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE);
+
+
+	newGame->gameMode = gameMode;
+	newGame->colorUser = userColor;
+	newGame->difficulty = difficulty;
+
 	//copy game board
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++)
@@ -147,7 +152,6 @@ SPCHESSGame* getStateFromFile(char* path) {
 			newGame->piecesPlayer2[i][j] = piecesArrayPlayerB[i][j];
 		}
 	}
-
 	return newGame;
 }
 
