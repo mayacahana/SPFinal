@@ -41,7 +41,6 @@ void settingState(SPCHESSGame* src) {
 	}
 	if (act.cmd == SPCHESS_LOAD) {
 		setLoad(src, act);
-		free(act.str); //(?)
 		settingState(src);
 	}
 	if (act.cmd == SPCHESS_DEFAULT) {
@@ -86,9 +85,11 @@ void setDifficulty(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 		if (act.arg >= 1 && act.arg <= 4)
 			src->difficulty = act.arg;
 		else if (act.arg == 5)
-			printf("Expert level not supported, please choose a value between 1 to 4:\n");
+			printf(
+					"Expert level not supported, please choose a value between 1 to 4:\n");
 		else
-			printf("Wrong difficulty level. The value should be between 1 to 5\n");
+			printf(
+					"Wrong difficulty level. The value should be between 1 to 5\n");
 	} else
 		printf("Error: invalid command");
 }
@@ -114,10 +115,10 @@ int setLoad(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 			free(in);
 			return FAIL;
 		}
-		free(in);
+		fclose(in);
 		SPCHESSGame* loaded = getStateFromFile(act.str);
 		spChessGameClear(src);
-		src = spChessGameCopy(loaded);
+		spChessGameCopyInfo(src, loaded);
 		spChessGameDestroy(loaded);
 		return SUCCESS;
 	} else {
@@ -227,11 +228,9 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {
 		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL) {
-			spChessGamePrintBoard(src);
 			printf("Checkmate! white player wins the game\n");
 		} else {
 			//winner == SPCHESS_GAME_PLAYER_2_SYMBOL
-			spChessGamePrintBoard(src);
 			printf("Checkmate! black player wins the game\n");
 		}
 		//the game has reached terminal state
@@ -250,7 +249,6 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 	}
 	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL) {
-		spChessGamePrintBoard(src);
 		printf("The game is tied\n");
 
 		//the game has reached terminal state
@@ -314,10 +312,8 @@ void checkGameStatusForComputer(SPCHESSGame* src) {
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {
 		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL) {
-			spChessGamePrintBoard(src);
 			printf("Checkmate! white player wins the game\n");
 		} else { //winner == SPCHESS_GAME_PLAYER_2_SYMBOL
-			spChessGamePrintBoard(src);
 			printf("Checkmate! black player wins the game\n");
 		}
 		//the game has reached terminal state
@@ -337,7 +333,6 @@ void checkGameStatusForComputer(SPCHESSGame* src) {
 	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL) {
 		spChessGamePrintBoard(src);
-		printf("The game ends in a tie\n");
 		//the game has reached terminal state
 		spChessGameDestroy(src);
 		exit(0);

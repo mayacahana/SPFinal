@@ -12,7 +12,6 @@
 #include "SPCHESSMiniMax.h"
 
 #define SPCHESS_MAX_LINE_LENGTH 1024
-
 #define SUCCESS 1
 #define FAIL 0
 
@@ -32,7 +31,6 @@ int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
 int undoMove(SPCHESSGame* src);
 void resetGame(SPCHESSGame* src);
 void printTurn(SPCHESSGame* src);
-
 
 void computerTurn(SPCHESSGame* src);
 void checkGameStatusForComputer(SPCHESSGame* src);

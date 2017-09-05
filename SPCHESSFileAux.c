@@ -10,13 +10,12 @@ SPCHESSGame* getStateFromFile(char* path) {
 	int i = 0, j = 0;
 	char nextChar;
 	char nextTag[13];
-	char nextValue[100], userColor, nextTurn;
-	int gameMode, difficulty;
+	char nextValue[100], nextTurn;
+	int gameMode, difficulty, userColor;
 	int subArray[DIM];
 	char board[BOARD_SIZE][BOARD_SIZE];
 	int piecesArrayPlayerW[NUM_OF_PIECES][DIM],
 			piecesArrayPlayerB[NUM_OF_PIECES][DIM];
-	printf("%s\n", path);
 	FILE* in = fopen(path, "r");
 
 	if (!in) {
@@ -30,15 +29,14 @@ SPCHESSGame* getStateFromFile(char* path) {
 	}
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
-	//printf("%s",nextTag);
 	if (strcmp(nextTag, "current_turn") == 0) {
-		if (strcmp(nextValue, "0") == 0) {
+		if (strcmp(nextValue, "0") == 0)
 			nextTurn = SPCHESS_GAME_PLAYER_2_SYMBOL;
-		} else {
+		else
 			nextTurn = SPCHESS_GAME_PLAYER_1_SYMBOL;
-		}
 	}
 	getNextTag(in, nextTag);
+	nextChar = fgetc(in);
 	nextChar = fgetc(in);
 
 	//next tag - game_mode
@@ -52,46 +50,48 @@ SPCHESSGame* getStateFromFile(char* path) {
 	}
 	getNextTag(in, nextTag);
 	nextChar = fgetc(in);
+	nextChar = fgetc(in);
 
 	//next tag - difficulty
 	getNextTag(in, nextTag);
 	getNextValue(in, nextValue);
+
 	if (strcmp(nextTag, "difficulty") == 0) {
-		difficulty = (int) (nextValue[0] - '0');
-	}
-	getNextTag(in, nextTag);
-	nextChar = fgetc(in);
-
-	//next tag - user_color
-	getNextTag(in, nextTag);
-	getNextValue(in, nextValue);
-	if (strcmp(nextTag, "current_turn") == 0) {
-		if (strcmp(nextValue, "black") == 0) {
-			userColor = SPCHESS_GAME_PLAYER_2_SYMBOL;
-			//compColor = SPCHESS_GAME_PLAYER_1_SYMBOL;
-		} else {
-			userColor = SPCHESS_GAME_PLAYER_1_SYMBOL;
-			//compColor = SPCHESS_GAME_PLAYER_2_SYMBOL;
+		if (strcmp(nextValue, "5") == 0) {
+			printf("Expert level not supported\n");
+			return NULL;
 		}
-	}
-	getNextTag(in, nextTag);
-	nextChar = fgetc(in);
+		difficulty = (int) (nextValue[0] - '0');
+		getNextTag(in, nextTag);
+		nextChar = fgetc(in);
+		nextChar = fgetc(in);
+		//next tag - user_color
+		getNextTag(in, nextTag);
+		getNextValue(in, nextValue);
 
-	//next tag - board
-	getNextTag(in, nextTag);
-	getNextValue(in, nextValue);
+		if (strcmp(nextTag, "user_color") == 0) {
+
+			if (strcmp(nextValue, "0") == 0) {
+				userColor = 0;
+			} else {
+				userColor = 1;
+			}
+		}
+		getNextTag(in, nextTag);
+		nextChar = fgetc(in);
+		nextChar = fgetc(in);
+		//next tag - board
+		getNextTag(in, nextTag);
+		getNextValue(in, nextValue);
+	}
 	if (strcmp(nextTag, "board") == 0) {
-		//rows
-		for (int i = 7; i >= 0; i--) {
+		for (int i = BOARD_SIZE - 1; i >= 0; i--) {
 			nextChar = fgetc(in);
 			while (nextChar != '>') //moving on <row_i>
 				nextChar = fgetc(in);
-			for (j = 0; j < 8; j++) {
+			for (j = 0; j < BOARD_SIZE; j++) {
 				nextChar = fgetc(in);
-				if (nextChar == '_')
-					board[i][j] = EMPTY;
-				else
-					board[i][j] = nextChar;
+				board[i][j] = nextChar;
 			}
 			nextChar = fgetc(in);
 			while (nextChar != '>') //moving on </row_i>
@@ -104,8 +104,8 @@ SPCHESSGame* getStateFromFile(char* path) {
 	//initialize arrays to -17
 	for (i = 0; i < NUM_OF_PIECES; i++) {
 		for (j = 0; j < DIM; j++) {
-			piecesArrayPlayerW[i][j] = -17;
-			piecesArrayPlayerB[i][j] = -17;
+			piecesArrayPlayerW[i][j] = EATEN;
+			piecesArrayPlayerB[i][j] = EATEN;
 		}
 	}
 	for (i = 0; i < BOARD_SIZE; i++) {
@@ -113,16 +113,16 @@ SPCHESSGame* getStateFromFile(char* path) {
 			if (board[i][j] != EMPTY) {
 				getSubArrayFromPiece(board[i][j], subArray);
 				//BLACK
-				if (board[i][j] >= 60 && board[i][j] <= 90) {
-					for (int k = subArray[0]; k < subArray[1]; k++) {
-						if (piecesArrayPlayerB[k][0] == -17) {
+				if (isupper(board[i][j])) {
+					for (int k = subArray[0]; k <= subArray[1]; k++) {
+						if (piecesArrayPlayerB[k][0] == EATEN) {
 							piecesArrayPlayerB[k][0] = i;
 							piecesArrayPlayerB[k][1] = j;
 						}
 					}
 				} else { //WHITE
-					for (int k = subArray[0]; k < subArray[1]; k++) {
-						if (piecesArrayPlayerW[k][0] == -17) {
+					for (int k = subArray[0]; k <= subArray[1]; k++) {
+						if (piecesArrayPlayerW[k][0] == EATEN) {
 							piecesArrayPlayerW[k][0] = i;
 							piecesArrayPlayerW[k][1] = j;
 						}
@@ -134,17 +134,15 @@ SPCHESSGame* getStateFromFile(char* path) {
 	//build game
 	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE);
 
-
 	newGame->gameMode = gameMode;
 	newGame->colorUser = userColor;
 	newGame->difficulty = difficulty;
-
+	newGame->currentPlayer = nextTurn;
 	//copy game board
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++)
 			newGame->gameBoard[i][j] = board[i][j];
 	}
-	newGame->currentPlayer = nextTurn;
 	//copy pieces array
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		for (int j = 0; j < DIM; j++) {
@@ -163,17 +161,17 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	fprintf(out,
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
 	if (game->currentPlayer == 'W')
-		fputs("1</current_turn>\n\t", out);
+		fputs("1</current_turn>\n\t<game_mode>", out);
 	else {
 		fputs("0</current_turn>\n\t<game_mode>", out);
 	}
 	if (game->gameMode == 2)
-		fputs("2</game_mode>\n\t", out);
+		fputs("2</game_mode>\n\t<board>", out);
 	else {
 		fputs("1</game_mode>\n\t<difficulty>", out);
 		fprintf(out, "%d", game->difficulty);
 		fputs("</difficulty>\n\t<user_color>", out);
-		if (game->colorUser == 'W') {
+		if (game->colorUser == 1) {
 			fputs("1</user_color>\n\t<board>", out);
 		} else {
 			fputs("0</user_color>\n\t<board>", out);
@@ -197,8 +195,6 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 void getNextTag(FILE* in, char nextTag[13]) {
 	int i = 0;
 	char nextChar = fgetc(in);
-	printf("now Char <: %c\n", nextChar);
-
 	nextChar = fgetc(in);
 	while (nextChar != '>') {
 		nextTag[i] = nextChar;
@@ -206,7 +202,6 @@ void getNextTag(FILE* in, char nextTag[13]) {
 		nextChar = fgetc(in);
 	}
 	nextTag[i] = '\0';
-	printf("Tag:%s\n", nextTag);
 }
 void getNextValue(FILE* in, char nextValue[6]) {
 	int i = 0;

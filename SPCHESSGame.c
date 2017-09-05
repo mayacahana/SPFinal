@@ -141,6 +141,44 @@ void initPiecesArray(int piecesArray[NUM_OF_PIECES][DIM], char gameColor) {
 
 }
 
+void spChessGameCopyInfo(SPCHESSGame* trg, SPCHESSGame* src) {
+	if (!src)
+		return;
+
+	//copy board
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++)
+			trg->gameBoard[i][j] = src->gameBoard[i][j];
+	}
+
+	//copy piecesArray
+	for (int i = 0; i < NUM_OF_PIECES; i++) {
+		for (int j = 0; j < DIM; j++) {
+			trg->piecesPlayer1[i][j] = src->piecesPlayer1[i][j];
+			trg->piecesPlayer2[i][j] = src->piecesPlayer2[i][j];
+		}
+	}
+
+	//copy currentPlayer
+	trg->currentPlayer = src->currentPlayer;
+	trg->difficulty = src->difficulty;
+	trg->colorUser = src->colorUser;
+	trg->gameMode = src->gameMode;
+
+	spArrayListDestroy(trg->movesPlayer1);
+	spArrayListDestroy(trg->movesPlayer2);
+
+	//copy movesPlayer
+	trg->movesPlayer1 = spArrayListCopy(src->movesPlayer1);
+	if (trg->movesPlayer1 == NULL) {
+		return;
+	}
+	trg->movesPlayer2 = spArrayListCopy(src->movesPlayer2);
+	if (trg->movesPlayer2 == NULL) {
+		return;
+	}
+}
+
 SPCHESSGame* spChessGameCopy(SPCHESSGame* src) {
 	if (!src)
 		return NULL;
