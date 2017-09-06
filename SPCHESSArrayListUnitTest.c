@@ -24,7 +24,7 @@ static bool spArrayListBasicGetTest() {
 	spArrayListRemoveFirst(list);
 
 	ASSERT_TRUE(spArrayListIsEmpty(list));
-
+	spDestroyMove(elem);
 	spArrayListDestroy(list);
 	return true;
 }
@@ -49,6 +49,7 @@ static bool spArrayListBasicCopyTest() {
 					== spArrayListGetFirst(list)->to[0]);
 	ASSERT_TRUE(spArrayListMaxCapacity(copy) == spArrayListMaxCapacity(list));
 
+	spDestroyMove(elem);
 	spArrayListDestroy(copy);
 	spArrayListDestroy(list);
 	return true;
@@ -66,24 +67,30 @@ static bool spArrayListBasicRemoveTest() {
 	char piece = 'r';
 	char eaten = 'M';
 	elem = spCreateMove(from, to, piece, eaten);
+	spDestroyMove(elem);
+
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 	ASSERT_TRUE(spArrayListSize(list) == 1);
 
-	move* elem1;
+	spDestroyMove(elem);
+
 	int from1[DIM] = { 7, 7 };
 	int to1[DIM] = { 2, 1 };
 	char piece1 = 'Q';
 	char eaten1 = 'k';
 	elem = spCreateMove(from1, to1, piece1, eaten1);
+
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 	ASSERT_TRUE(spArrayListSize(list) == 2);
 
-	move* elem2;
+	spDestroyMove(elem);
+
 	int from2[DIM] = { 3, 4 };
 	int to2[DIM] = { 5, 0 };
 	char piece2 = 'b';
 	char eaten2 = 'B';
 	elem = spCreateMove(from2, to2, piece2, eaten2);
+
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 
 	ASSERT_TRUE(spArrayListSize(list) == CAPACITY_SIZE);
@@ -97,7 +104,7 @@ static bool spArrayListBasicRemoveTest() {
 	ASSERT_TRUE(spArrayListIsEmpty(list));
 
 	ASSERT_TRUE(spArrayListRemoveFirst(list) == SP_ARRAY_LIST_INVALID_ARGUMENT);
-
+	spDestroyMove(elem);
 	spArrayListDestroy(list);
 	return true;
 }
@@ -114,27 +121,32 @@ static bool spArrayListBasicAddTest() {
 	elem = spCreateMove(from, to, piece, eaten);
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 	ASSERT_TRUE(spArrayListSize(list) == 1);
+	spDestroyMove(elem);
 
-	move* elem1;
 	int from1[DIM] = { 7, 7 };
 	int to1[DIM] = { 2, 1 };
 	char piece1 = 'Q';
 	char eaten1 = 'k';
 	elem = spCreateMove(from1, to1, piece1, eaten1);
+
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 	ASSERT_TRUE(spArrayListSize(list) == 2);
 
-	move* elem2;
+	spDestroyMove(elem);
+
 	int from2[DIM] = { 3, 4 };
 	int to2[DIM] = { 5, 0 };
 	char piece2 = 'b';
 	char eaten2 = 'B';
 	elem = spCreateMove(from2, to2, piece2, eaten2);
+
 	ASSERT_TRUE(spArrayListAddFirst(list, elem) == SP_ARRAY_LIST_SUCCESS);
 	ASSERT_TRUE(spArrayListSize(list) == 3);
 
 	ASSERT_TRUE(spArrayListSize(list) == CAPACITY_SIZE);
 	ASSERT_TRUE(spArrayListIsFull(list));
+	spDestroyMove(elem);
+
 	spArrayListDestroy(list);
 	return true;
 }

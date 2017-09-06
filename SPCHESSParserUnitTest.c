@@ -30,18 +30,24 @@ static bool spParserCheckParseLine() {
 	cmd = spParserPraseGameModeLine("move <2,A> to <3,A>");
 	ASSERT_TRUE(
 			cmd.cmd == SPCHESS_MOVE && !cmd.validOneStr && cmd.validTwoStr
-					&& strcmp(cmd.strOne, "<2,A>") == 0 &&
-					 strcmp(cmd.strTwo, "<3,A>") == 0);
+					&& strcmp(cmd.strOne, "<2,A>") == 0
+					&& strcmp(cmd.strTwo, "<3,A>") == 0);
 
+	free(cmd.strOne);
+	free(cmd.strTwo);
 	cmd = spParserPraseGameModeLine("get_moves <2,B>");
 	ASSERT_TRUE(
 			cmd.cmd == SPCHESS_GET_MOVES && cmd.validOneStr && !cmd.validTwoStr
 					&& strcmp(cmd.strOne, "<2,B>") == 0);
 
+	free(cmd.strOne);
+
 	cmd = spParserPraseGameModeLine("save path");
 	ASSERT_TRUE(
 			cmd.cmd == SPCHESS_SAVE && cmd.strOne
 					&& strcmp(cmd.strOne, "path") == 0);
+
+	free(cmd.strOne);
 
 	cmd = spParserPraseGameModeLine("undo");
 	ASSERT_TRUE(
@@ -55,7 +61,7 @@ static bool spParserCheckParseLine() {
 	ASSERT_TRUE(
 			cmd.cmd == SPCHESS_QUIT && !cmd.validOneStr && !cmd.validTwoStr);
 
-	cmd = spParserPraseGameModeLine("invalid command");
+	cmd = spParserPraseGameModeLine("invalid fgfg");
 	ASSERT_TRUE(
 			cmd.cmd == SPCHESS_INVALID_LINE && !cmd.validOneStr
 					&& !cmd.validTwoStr);

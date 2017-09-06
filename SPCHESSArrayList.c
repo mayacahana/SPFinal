@@ -52,7 +52,7 @@ SPCHESSArrayList* spArrayListCreate(int maxSize) {
 		free(res);
 		exit(1);
 	}
-	res->elements = (move**) malloc(sizeof(move) * maxSize);
+	res->elements = (move**) malloc(sizeof(move*) * maxSize);
 	if (!(res->elements)) {
 		printf("spArrayListCreate has failed\n");
 		free(res);
@@ -157,6 +157,7 @@ SPCHESS_ARRAY_LIST_MESSAGE spArrayListAddAt(SPCHESSArrayList* src, move* elem,
 	//spDestroyMove(src->elements[index]);
 	//insert the new elem
 	src->elements[index] = spCopyMove(elem);
+	//src->elements[index] = elem;
 	src->actualSize = src->actualSize + 1;
 	return SP_ARRAY_LIST_SUCCESS;
 }
@@ -179,7 +180,7 @@ SPCHESS_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPCHESSArrayList* src, int index)
 	if (src->actualSize == 0)
 		return SP_ARRAY_LIST_EMPTY;
 
-	//spDestroyMove(src->elements[index]);
+	spDestroyMove(src->elements[index]);
 	//shift elements to the left, to overwrite the specified elem
 	for (int i = index; i < src->actualSize - 1; i++) {
 		src->elements[i] = src->elements[i + 1];

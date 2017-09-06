@@ -41,6 +41,7 @@ void settingState(SPCHESSGame* src) {
 	}
 	if (act.cmd == SPCHESS_LOAD) {
 		setLoad(src, act);
+		free(act.str);
 		settingState(src);
 	}
 	if (act.cmd == SPCHESS_DEFAULT) {

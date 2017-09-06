@@ -302,18 +302,17 @@ bool spChessGameIsKingRisker(SPCHESSGame* src, int from[DIM], int to[DIM]) {
 		return false;
 
 	SPCHESSGame* copy = spChessGameCopy(src);
-
+	bool risker = false;
 	if (spChessGameSetMove(copy, from, to) == SPCHESS_GAME_SUCCESS) {
 		//player has changed!
 		if (copy->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL)
-			return spChessIfPlayer2IsThreatening(copy);
+			risker = spChessIfPlayer2IsThreatening(copy);
 		else
-			return spChessIfPlayer1IsThreatening(copy);
-
+			risker = spChessIfPlayer1IsThreatening(copy);
 		spChessGameUndoPrevMove(copy);
 	}
 	spChessGameDestroy(copy);
-	return false;
+	return risker;
 }
 
 bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem) {
@@ -1008,7 +1007,6 @@ char spChessIfMate(SPCHESSGame* src) {
 		spChessGameDestroy(copy);
 		return SPCHESS_GAME_PLAYER_1_SYMBOL;
 	}
-
 	spChessGameDestroy(copy);
 	return '\0';
 
@@ -1076,11 +1074,11 @@ char spChessGameCheckWinner(SPCHESSGame* src) {
 	if (!copy2)
 		return '\0';
 
-	if (spChessIfPlayer1Win(copy1)) {
+	if (spChessIfPlayer1Win(copy1))
 		winner = SPCHESS_GAME_PLAYER_1_SYMBOL;
-	} else if (spChessIfPlayer2Win(copy2)) {
+	else if (spChessIfPlayer2Win(copy2))
 		winner = SPCHESS_GAME_PLAYER_2_SYMBOL;
-	}
+
 	spChessGameDestroy(copy2);
 	spChessGameDestroy(copy1);
 	return winner;

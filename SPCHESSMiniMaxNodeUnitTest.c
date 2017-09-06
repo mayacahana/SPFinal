@@ -9,8 +9,7 @@
 #include "SPCHESSMiniMaxNode.h"
 
 static bool spChessMiniMaxNodeBasicTest() {
-	SPCHESSGame* res = spChessGameCreate(HISTORY_SIZE, 1,
-	SPCHESS_GAME_PLAYER_1_SYMBOL, 1);
+	SPCHESSGame* res = spChessGameCreate(HISTORY_SIZE);
 	ASSERT_TRUE(res!=NULL);
 
 	int from[DIM], to[DIM];

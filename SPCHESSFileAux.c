@@ -11,7 +11,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 	char nextChar;
 	char nextTag[13];
 	char nextValue[100], nextTurn;
-	int gameMode, difficulty, userColor;
+	int gameMode, difficulty = 2, userColor = 1;
 	int subArray[DIM];
 	char board[BOARD_SIZE][BOARD_SIZE];
 	int piecesArrayPlayerW[NUM_OF_PIECES][DIM],

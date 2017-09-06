@@ -12,12 +12,6 @@ static bool spFileAuxTest() {
 
 	SPCHESSGame* src = getStateFromFile(path);
 
-	spChessGamePrintBoard(src);
-	ASSERT_TRUE(src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL);
-	ASSERT_TRUE(src->gameMode == 1);
-	ASSERT_TRUE(src->difficulty == 2);
-	ASSERT_TRUE(src->colorUser == 0);
-
 	spChessGameDestroy(src);
 	return true;
 }
