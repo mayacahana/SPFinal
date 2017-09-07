@@ -11,7 +11,6 @@
 #include "SPCHESSFileAux.h"
 #include "SPCHESSMiniMax.h"
 
-#define SPCHESS_MAX_LINE_LENGTH 1024
 #define SUCCESS 1
 #define FAIL 0
 

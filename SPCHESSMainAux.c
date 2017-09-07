@@ -205,6 +205,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			printf("Illegal move\n");
 			return FAIL;
 		}
+
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
 		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
 			printf("Invalid position on the board\n");

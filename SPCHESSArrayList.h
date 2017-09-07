@@ -8,11 +8,11 @@
 #ifndef SPCHESSARRAYLIST_H_
 #define SPCHESSARRAYLIST_H_
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <stdbool.h>
 
 #define DIM 2
 
@@ -57,7 +57,6 @@ move* spArrayListGetLast(SPCHESSArrayList* src);
 int spArrayListMaxCapacity(SPCHESSArrayList* src);
 
 int spArrayListSize(SPCHESSArrayList* src);
-
 bool spArrayListIsFull(SPCHESSArrayList* src);
 
 bool spArrayListIsEmpty(SPCHESSArrayList* src);

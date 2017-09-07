@@ -833,13 +833,14 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 		//if the list moves is full, make room by removing the last elem
 		if (spArrayListIsFull(src->movesPlayer1))
 			spArrayListRemoveLast(src->movesPlayer1);
-		spArrayListAddFirst(src->movesPlayer1, elem);
 
+		spArrayListAddFirst(src->movesPlayer1, elem);
 	} else { //currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL
 		if (spArrayListIsFull(src->movesPlayer2))
 			spArrayListRemoveLast(src->movesPlayer2);
 		spArrayListAddFirst(src->movesPlayer2, elem);
 	}
+
 	//change the player in the end of the turn
 	spChessChangePlayer(src);
 	spDestroyMove(elem);

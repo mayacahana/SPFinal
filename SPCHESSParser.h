@@ -14,9 +14,6 @@
 #include <stdbool.h>
 #define SP_MAX_LINE_LENGTH 1024
 #define perror_message_malloc (perror("Error: standard function malloc has failed"))
-#define perror_message_scanf (perror("Error: standard function scanf has failed"))
-#define perror_message_printf (perror("Error: standard function printf has failed"))
-#define print_message(message) (printf("%s\n", message))
 
 bool spParserIsInt(const char* str);
 
