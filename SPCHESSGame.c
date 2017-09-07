@@ -309,6 +309,7 @@ bool spChessGameIsKingRisker(SPCHESSGame* src, int from[DIM], int to[DIM]) {
 			risker = spChessIfPlayer2IsThreatening(copy);
 		else
 			risker = spChessIfPlayer1IsThreatening(copy);
+
 		spChessGameUndoPrevMove(copy);
 	}
 	spChessGameDestroy(copy);
@@ -833,7 +834,6 @@ SPCHESS_GAME_MESSAGE spChessGameSetMove(SPCHESSGame* src, int from[DIM],
 		//if the list moves is full, make room by removing the last elem
 		if (spArrayListIsFull(src->movesPlayer1))
 			spArrayListRemoveLast(src->movesPlayer1);
-
 		spArrayListAddFirst(src->movesPlayer1, elem);
 	} else { //currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL
 		if (spArrayListIsFull(src->movesPlayer2))

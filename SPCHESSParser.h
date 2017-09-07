@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
-#define SP_MAX_LINE_LENGTH 1024
+#define SPCHESS_MAX_LINE_LENGTH 1024
 #define perror_message_malloc (perror("Error: standard function malloc has failed"))
 
 bool spParserIsInt(const char* str);

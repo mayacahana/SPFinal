@@ -16,7 +16,7 @@ void setDefaultSetting(SPCHESSGame* src) {
 void settingState(SPCHESSGame* src) {
 
 	char input[SPCHESS_MAX_LINE_LENGTH];
-	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+	if (!fgets(input, SPCHESS_MAX_LINE_LENGTH, stdin)) {
 		printf("Error: settingState has failed\n");
 		exit(1);
 	}
@@ -145,7 +145,7 @@ void quitGame(SPCHESSGame* src) {
 
 SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 	char input[SPCHESS_MAX_LINE_LENGTH];
-	if (!fgets(input, SP_MAX_LINE_LENGTH, stdin)) {
+	if (!fgets(input, SPCHESS_MAX_LINE_LENGTH, stdin)) {
 		printf("Error: userTurn has failed\n");
 		exit(1);
 	}
@@ -205,7 +205,6 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			printf("Illegal move\n");
 			return FAIL;
 		}
-
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
 		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
 			printf("Invalid position on the board\n");

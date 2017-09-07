@@ -59,9 +59,6 @@ SPCHESSArrayList* spArrayListCreate(int maxSize) {
 		exit(1);
 	}
 
-	for (int i = 0; i < maxSize; i++)
-		res->elements[i] = NULL;
-
 	//init values
 	res->maxSize = maxSize;
 	res->actualSize = 0;
@@ -82,10 +79,6 @@ SPCHESSArrayList* spArrayListCopy(SPCHESSArrayList* src) {
 	//copy the array
 	for (int i = 0; i < copy->actualSize; i++) {
 		copy->elements[i] = spCopyMove(src->elements[i]);
-		if(copy->elements[i] == NULL && src->elements[i] != NULL) {
-			spArrayListDestroy(src);
-			return NULL;
-		}
 	}
 	return copy;
 }
@@ -93,6 +86,7 @@ SPCHESSArrayList* spArrayListCopy(SPCHESSArrayList* src) {
 void spArrayListDestroy(SPCHESSArrayList* src) {
 	if (!src)
 		return;
+
 	for (int i = 0; i < src->actualSize; i++)
 		spDestroyMove(src->elements[i]);
 
@@ -164,7 +158,7 @@ SPCHESS_ARRAY_LIST_MESSAGE spArrayListAddAt(SPCHESSArrayList* src, move* elem,
 		src->elements[i] = src->elements[i - 1];
 
 	//insert the new elem
-	src->elements[index] = elem;
+	src->elements[index] = spCopyMove(elem);
 	src->actualSize = src->actualSize + 1;
 	return SP_ARRAY_LIST_SUCCESS;
 }
@@ -187,13 +181,12 @@ SPCHESS_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPCHESSArrayList* src, int index)
 	if (src->actualSize == 0)
 		return SP_ARRAY_LIST_EMPTY;
 
-	spDestroyMove(src->elements[index]);
+	//spDestroyMove(src->elements[index]);
 	//shift elements to the left, to overwrite the specified elem
 	for (int i = index; i < src->actualSize - 1; i++) {
 		src->elements[i] = src->elements[i + 1];
 	}
 	src->actualSize = src->actualSize - 1;
-	src->elements[src->actualSize] = NULL;
 	return SP_ARRAY_LIST_SUCCESS;
 }
 
