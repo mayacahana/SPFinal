@@ -203,6 +203,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 
 		if (spChessGameIsKingRisker(src, from, to)) {
 			printf("Illegal move\n");
+			printTurn(src);
 			return FAIL;
 		}
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
@@ -216,6 +217,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		}
 		if (msg == SPCHESS_GAME_INVALID_MOVE) {
 			printf("Illegal move\n");
+			printTurn(src);
 			return FAIL;
 		}
 		return SUCCESS;
@@ -266,7 +268,7 @@ int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			return FAIL;
 		}
 		//not sure:
-		printf("Game was successfully saved");
+		printf("Game was successfully saved\n");
 		return SUCCESS;
 	} else {
 		printf("Error: invalid command\n");
