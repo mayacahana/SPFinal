@@ -133,7 +133,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 			}
 		}
 	}
-
+	//create new game
 	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE);
 
 	newGame->gameMode = gameMode;
