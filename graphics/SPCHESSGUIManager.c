@@ -5,8 +5,7 @@
  *      Author: uri
  */
 #include "SPCHESSGUIManager.h"
-#include <stdio.h>
-#include <stdlib.h>
+
 
 SPCHESSGuiManager* spManagerCreate() {
 	SPCHESSGuiManager* res = (SPCHESSGuiManager*) malloc(
@@ -15,7 +14,7 @@ SPCHESSGuiManager* spManagerCreate() {
 		return NULL;
 
 	res->mainWin = spMainWindowCreate();
-	if (!(res->mainWin)) {
+	if (res->mainWin == NULL) {
 		free(res);
 		return NULL;
 	}
@@ -46,7 +45,7 @@ void spManagerDraw(SPCHESSGuiManager* src) {
 	if (src->activeWin == SPCHESS_MAIN_WINDOW_ACTIVE)
 		spMainWindowDraw(src->mainWin);
 	else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
-		spGameWindowDraw(src->loadWin);
+		spLoadWindowDraw(src->loadWin);
 	else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
 		spGameWindowDraw(src->gameWin);
 }
@@ -104,9 +103,9 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 	if (event == SPCHESS_LOAD_SLOT) {
 		//save choice of the slot to know which game to load
 	}
-	if (event == SPCHESS_LOAD_QUIT) {
+	if (event == SPCHESS_LOAD_QUIT)
 		return SPCHESS_MANAGER_QUIT;
-	}
+
 	return SPCHESS_MANAGER_NONE;
 
 }

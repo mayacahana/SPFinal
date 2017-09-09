@@ -10,6 +10,9 @@
 
 #include <SDL2/SDL.h>
 #include "SPCHESSGUIMainWin.h"
+#include "SPCHESSGUILoadWin.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef enum {
 	SPCHESS_MAIN_WINDOW_ACTIVE,

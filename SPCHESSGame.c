@@ -1041,7 +1041,7 @@ bool spChessIfPlayer2IsThreatening(SPCHESSGame* src) {
 	int to[DIM] = { src->piecesPlayer1[15][0], src->piecesPlayer1[15][1] }; //white king's location
 	char piece, king = src->gameBoard[to[0]][to[1]];
 
-	//find pieces who can threaten the white king
+//find pieces who can threaten the white king
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 			int from[DIM] =
@@ -1106,7 +1106,7 @@ bool existsPlayer2KingSaver(SPCHESSGame* src) {
 
 	src->currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL; // (?)
 	bool exist = false;
-	//check if there is a move that after it the king is not threated
+//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 			int from[DIM] =
@@ -1136,7 +1136,7 @@ bool existsPlayer1KingSaver(SPCHESSGame* src) {
 
 	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL; // (?)
 	bool exist = false;
-	//check if there is a move that after it the king is not threated
+//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
 			int from[DIM] =
@@ -1198,7 +1198,7 @@ bool existsValidMovePlayer1(SPCHESSGame* src) {
 	move* elem;
 	bool exist = false;
 	char piece, eaten;
-	//check if there is a move that after it the king is not threated
+//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
 			int from[DIM] =
@@ -1231,7 +1231,7 @@ bool existsValidMovePlayer2(SPCHESSGame* src) {
 	move* elem;
 	bool exist = false;
 	char piece, eaten;
-	//check if there is a move that after it the king is not threated
+//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 			int from[DIM] =
@@ -1258,9 +1258,9 @@ bool existsValidMovePlayer2(SPCHESSGame* src) {
 }
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src) {
-	//if (!src)
-	//	SPCHESS_GAME_EMPTY_ENTRY;
-	//for some reason, the above if statment doesn't compile on NOVA
+//if (!src)
+//	SPCHESS_GAME_EMPTY_ENTRY;
+//for some reason, the above if statment doesn't compile on NOVA
 	return src->currentPlayer;
 }
 
@@ -1282,7 +1282,7 @@ char getColorFromPiece(char piece) {
 			|| piece == WHITE_B || piece == WHITE_Q || piece == WHITE_P) {
 		return SPCHESS_GAME_PLAYER_1_SYMBOL;
 	}
-	//it is a black piece
+//it is a black piece
 	return SPCHESS_GAME_PLAYER_2_SYMBOL;
 }
 

@@ -12,7 +12,6 @@ SPCHESSGame* getStateFromFile(char* path) {
 	char nextTag[13];
 	char nextValue[100], nextTurn;
 	int gameMode, difficulty = 2, userColor = 1;
-	int subArray[DIM];
 	char board[BOARD_SIZE][BOARD_SIZE];
 	int piecesArrayPlayerW[NUM_OF_PIECES][DIM],
 			piecesArrayPlayerB[NUM_OF_PIECES][DIM];
@@ -111,20 +110,23 @@ SPCHESSGame* getStateFromFile(char* path) {
 	for (i = 0; i < BOARD_SIZE; i++) {
 		for (j = 0; j < BOARD_SIZE; j++) {
 			if (board[i][j] != EMPTY) {
+				int subArray[DIM] = {-1, -1};
 				getSubArrayFromPiece(board[i][j], subArray);
 				//BLACK
 				if (isupper(board[i][j])) {
 					for (int k = subArray[0]; k <= subArray[1]; k++) {
-						if (piecesArrayPlayerB[k][0] == EATEN) {
+						if (piecesArrayPlayerB[k][0] == EATEN && piecesArrayPlayerB[k][1] == EATEN) {
 							piecesArrayPlayerB[k][0] = i;
 							piecesArrayPlayerB[k][1] = j;
+							break;
 						}
 					}
 				} else { //WHITE
 					for (int k = subArray[0]; k <= subArray[1]; k++) {
-						if (piecesArrayPlayerW[k][0] == EATEN) {
+						if (piecesArrayPlayerW[k][0] == EATEN && piecesArrayPlayerB[k][1] == EATEN) {
 							piecesArrayPlayerW[k][0] = i;
 							piecesArrayPlayerW[k][1] = j;
+							break;
 						}
 					}
 				}
