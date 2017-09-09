@@ -13,7 +13,8 @@ typedef enum {
 	SPCHESS_MAIN_NEW_GAME,
 	SPCHESS_MAIN_INVALID_ARGUMENT,
 	SPCHESS_MAIN_LOAD,
-	SPCHESS_MAIN_NONE
+	SPCHESS_MAIN_NONE,
+	SPCHESS_MAIN_QUIT
 } SPCHESS_MAIN_EVENT;
 
 typedef struct spchessmainwin_t {
@@ -35,6 +36,5 @@ SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src, SDL_Event* event
 int isClickOnNewGame(int x, int y);
 int isClickOnLoad(int x, int y);
 int isClickOnExit(int x, int y);
-
 
 #endif /* GRAPHICS_SPCHESSGUIMAINWIN_H_ */

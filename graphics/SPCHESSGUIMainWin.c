@@ -10,21 +10,21 @@
 #include <stdio.h>
 
 int isClickOnNewGame(int x, int y) {
-	if ((x >= 75 && x <= 250) && (y >= 100 && y <= 200)) {
+	if ((x >= 75 && x <= 75 + 250) && (y >= 100 && y <= 100 + 100)) {
 		return 1;
 	}
 	return 0;
 }
 
 int isClickOnExit(int x, int y) {
-	if ((x >= 75 && x <= 250) && (y >= 400 && y <= 500)) {
+	if ((x >= 75 && x <= 75 + 250) && (y >= 250 && y <= 250 + 100)) {
 		return 1;
 	}
 	return 0;
 }
 
 int isClickOnLoad(int x, int y) {
-	if ((x >= 75 && x <= 250) && (y >= 250 && y <= 350)) {
+	if ((x >= 75 && x <= 75 + 250) && (y >= 400 && y <= 400 + 100)) {
 		return 1;
 	}
 	return 0;
@@ -144,9 +144,9 @@ void spMainWindowDraw(SPCHESSMainWin* src) {
 }
 
 SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src, SDL_Event* event) {
-	if (!event) {
+	if (!src || !event)
 		return SPCHESS_MAIN_INVALID_ARGUMENT;
-	}
+
 
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
@@ -156,11 +156,11 @@ SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src, SDL_Event* event
 			return SPCHESS_MAIN_LOAD;
 		else if(isClickOnExit(event->button.x, event->button.y))
 			return SPCHESS_MAIN_EXIT;
-
 		break;
+
 	case SDL_WINDOWEVENT:
 		if (event->window.event == SDL_WINDOWEVENT_CLOSE)
-			return SPCHESS_MAIN_EXIT;
+			return SPCHESS_MAIN_QUIT;
 		break;
 	default:
 		return SPCHESS_MAIN_NONE;
