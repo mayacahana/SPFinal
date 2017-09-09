@@ -265,6 +265,8 @@ int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			printf("File cannot be created or modified\n");
 			return FAIL;
 		}
+		//not sure:
+		printf("Game was successfully saved");
 		return SUCCESS;
 	} else {
 		printf("Error: invalid command\n");
