@@ -209,10 +209,12 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
 		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
 			printf("Invalid position on the board\n");
+			printTurn(src);
 			return FAIL;
 		}
 		if (msg == SPCHESS_GAME_INVALID_COLOR) {
 			printf("The specified position does not contain your piece\n");
+			printTurn(src);
 			return FAIL;
 		}
 		if (msg == SPCHESS_GAME_INVALID_MOVE) {
