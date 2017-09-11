@@ -23,7 +23,7 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 		return NULL;
 	}
 	res->loadWindow = SDL_CreateWindow("Load", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_OPENGL);
+	SDL_WINDOWPOS_CENTERED, 1000, 1000, SDL_WINDOW_OPENGL);
 	if (res->loadWindow == NULL) {
 		spLoadWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
@@ -109,8 +109,7 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 		SDL_FreeSurface(loadingSurface);
 	}
 
-	//boolean indicates whether a slot was picked
-	res->slotWasClicked = false;
+	res->slotPicked = -1;
 	return res;
 }
 
@@ -145,11 +144,11 @@ void spLoadWindowDraw(SPCHESSLoadWin* src) {
 	if (!src)
 		return;
 
-	SDL_Rect backR = { .x = 75, .y = 500, .h = 100, .w = 250 };
-	SDL_Rect loadR = { .x = 400, .y = 500, .h = 100, .w = 250 };
-
 	SDL_SetRenderDrawColor(src->loadRenderer, 255, 255, 255, 255);
 	SDL_RenderClear(src->loadRenderer);
+
+	SDL_Rect backR = { .x = 75, .y = 500, .h = 100, .w = 250 };
+	SDL_Rect loadR = { .x = 400, .y = 500, .h = 100, .w = 250 };
 
 	int numOfSlotsToDraw = countSavedFiles();
 	for (int i = 0; i < numOfSlotsToDraw; i++) {
@@ -157,7 +156,7 @@ void spLoadWindowDraw(SPCHESSLoadWin* src) {
 		SDL_RenderCopy(src->loadRenderer, src->slotsTexture[i], NULL, &slotR);
 	}
 	SDL_RenderCopy(src->loadRenderer, src->backTexture, NULL, &backR);
-	if (src->slotWasClicked)
+	if (src->slotPicked >= 0)
 		SDL_RenderCopy(src->loadRenderer, src->loadTexture, NULL, &loadR);
 	else
 		SDL_RenderCopy(src->loadRenderer, src->inactiveLoadTexture, NULL,
@@ -175,11 +174,11 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 	case SDL_MOUSEBUTTONUP:
 		if (isClickOnBack(event->button.x, event->button.y))
 			return SPCHESS_LOAD_BACK;
-		else if (isClickOnSlot(event->button.x, event->button.y)) {
-			src->slotWasClicked = true;
+		else if (isClickOnSlot(event->button.x, event->button.y) > 0) {
+			src->slotPicked = isClickOnSlot(event->button.x, event->button.y) - 1;
 			return SPCHESS_LOAD_SLOT;
 		} else if (isClickOnLoad(event->button.x, event->button.y)
-				&& src->slotWasClicked)
+				&& src->slotPicked >= 0)
 			return SPCHESS_LOAD_LOAD;
 		break;
 
@@ -214,7 +213,7 @@ int isClickOnSlot(int x, int y) {
 	for (int i = 0; i < numOfSlotsToDraw; i++) {
 		if ((x >= 240 && x <= 250)
 				&& (y >= (100 + 150 * i) && y <= (100 + 150 * i) + 100))
-			return 1;
+			return i + 1;
 	}
 	return 0;
 }

@@ -6,7 +6,6 @@
  */
 #include "SPCHESSGUIManager.h"
 
-
 SPCHESSGuiManager* spManagerCreate() {
 	SPCHESSGuiManager* res = (SPCHESSGuiManager*) malloc(
 			sizeof(SPCHESSGuiManager));
@@ -20,6 +19,7 @@ SPCHESSGuiManager* spManagerCreate() {
 	}
 	res->gameWin = NULL;
 	res->loadWin = NULL;
+	res->setWin = NULL;
 	res->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 	return res;
 }
@@ -33,6 +33,9 @@ void spManagerDestroy(SPCHESSGuiManager* src) {
 	}
 	if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE) {
 		spGameWindowDestroy(src->loadWin);
+	}
+	if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE) {
+		spSetWindowDestroy(src->setWin);
 	}
 	spMainWindowDestroy(src->mainWin);
 	free(src);
@@ -48,6 +51,8 @@ void spManagerDraw(SPCHESSGuiManager* src) {
 		spLoadWindowDraw(src->loadWin);
 	else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
 		spGameWindowDraw(src->gameWin);
+	else if(src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
+		spSetWindowDraw(src->setWin);
 }
 
 SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
@@ -57,9 +62,9 @@ SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
 
 	if (event == SPCHESS_MAIN_NEW_GAME) {
 		spMainWindowHide(src->mainWin);
-		src->gameWin = spGameWindowCreate();
-		if (src->gameWin == NULL) {
-			printf("couldn't create game window\n");
+		src->setWin = spSetWindowCreate();
+		if (src->setWin == NULL) {
+			printf("couldn't create set window\n");
 			return SPCHESS_MANAGER_QUIT;
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
@@ -86,8 +91,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 		return SPCHESS_MANAGER_NONE;
 
 	if (event == SPCHESS_LOAD_BACK) {
-		spLoadWindowDestroy(src->loadWin);
-		src->loadWin = NULL;
+		spLoalWindowHide(src->loadWin);
 		spMainWindowShow(src->mainWin);
 		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 	}
@@ -100,9 +104,6 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 	}
-	if (event == SPCHESS_LOAD_SLOT) {
-		//save choice of the slot to know which game to load
-	}
 	if (event == SPCHESS_LOAD_QUIT)
 		return SPCHESS_MANAGER_QUIT;
 
@@ -110,7 +111,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 
 }
 
-//implements dueToGame function
+//implements dueToGame, dueToSet function
 
 SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 		SDL_Event* event) {
@@ -132,6 +133,10 @@ SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 				event);
 		spManagerDraw(src);
 		return handleManagerDueToLoadEvent(src, loadEvent);
+	} else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE) {
+		SPCHESS_SET_EVENT setEvent = spSetWindowHandleEvent(src->setWin, event);
+		spManagerDraw(src);
+		return handleManagerDueToSetEvent(src, setEvent);
 	}
 	return SPCHESS_MANAGER_NONE;
 }

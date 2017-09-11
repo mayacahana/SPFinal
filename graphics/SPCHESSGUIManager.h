@@ -18,6 +18,7 @@ typedef enum {
 	SPCHESS_MAIN_WINDOW_ACTIVE,
 	SPCHESS_GAME_WINDOW_ACTIVE,
 	SPCHESS_LOAD_WINDOW_ACTIVE,
+	SPCHESS_SET_WINDOW_ACTIVE
 } SPCHESS_ACTIVE_WINDOW;
 
 typedef enum {
@@ -28,6 +29,7 @@ typedef struct spchessguimanager_t {
 	SPCHESSGameWin* gameWin;
 	SPCHESSMainWin* mainWin;
 	SPCHESSLoadWin* loadWin;
+	PCHESSSetWin* setWin;
 	SPCHESS_ACTIVE_WINDOW activeWin;
 } SPCHESSGuiManager;
 
@@ -40,7 +42,7 @@ SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src, SPCHESS_MAIN_EVENT event);
 SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHESS_GAME_EVENT event);
 SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src, SPCHESS_LOAD_EVENT event);
-
+SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src, SPCHESS_SET_EVENT event);
 
 
 #endif /* GRAPHICS_SPCHESSGUIMANAGER_H_ */

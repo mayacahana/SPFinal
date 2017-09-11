@@ -100,7 +100,7 @@ int getPieceValue(char piece, char currentPlayer) {
 }
 
 int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
-		bool flag, char colorForFunc) {
+bool flag, char colorForFunc) {
 
 	//recursion halt
 	if (maxRecLvl == 0 || spChessGameCheckWinner(src) != '\0'
@@ -133,7 +133,7 @@ int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
 		for (int k = 0; k < BOARD_SIZE; k++) {
 			for (int p = 0; p < BOARD_SIZE; p++) {
 				int to[DIM] = { k, p };
-				if (!spChessGameIsKingRisker(src, from ,to) && spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS ) {
+				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS) {
 					value = decider(value,
 							computeValueRec(src, maxRecLvl - 1, alpha, beta,
 									!flag, colorForFunc), flag);

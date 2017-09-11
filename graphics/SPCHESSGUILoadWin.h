@@ -36,7 +36,7 @@ typedef struct spchessloadwin_t {
 	SDL_Texture* loadTexture;
 	SDL_Texture* inactiveLoadTexture;
 	SDL_Texture* slotsTexture[NUM_SLOTS];
-	bool slotWasClicked;
+	int slotPicked;
 } SPCHESSLoadWin;
 
 SPCHESSLoadWin* spLoadWindowCreate();
