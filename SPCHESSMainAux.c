@@ -245,10 +245,10 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 	char whoisincheck = spChessIfMate(src);
 	if (whoisincheck != '\0') {
 		if (whoisincheck == SPCHESS_GAME_PLAYER_1_SYMBOL)
-			printf("Check: white King is threatend!\n");
+			printf("Check: white King is threatened!\n");
 		else
 			// whoisincheck == SPCHESS_GAME_PLAYER_2_SYMBOL
-			printf("Check: black King is threatend!\n");
+			printf("Check: black King is threatened!\n");
 
 		return;
 	}
