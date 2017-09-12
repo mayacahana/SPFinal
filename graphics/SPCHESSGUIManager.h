@@ -9,8 +9,9 @@
 #define GRAPHICS_SPCHESSGUIMANAGER_H_
 
 #include <SDL2/SDL.h>
-#include "SPCHESSGUIMainWin.h"
+#include <SDL2/SDL_video.h>
 #include "SPCHESSGUILoadWin.h"
+#include "SPCHESSGUIMainWin.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,7 +19,8 @@ typedef enum {
 	SPCHESS_MAIN_WINDOW_ACTIVE,
 	SPCHESS_GAME_WINDOW_ACTIVE,
 	SPCHESS_LOAD_WINDOW_ACTIVE,
-	SPCHESS_SET_WINDOW_ACTIVE
+	SPCHESS_SET_WINDOW_ACTIVE,
+	SPCHESS_NO_WINDOW
 } SPCHESS_ACTIVE_WINDOW;
 
 typedef enum {
@@ -29,8 +31,9 @@ typedef struct spchessguimanager_t {
 	SPCHESSGameWin* gameWin;
 	SPCHESSMainWin* mainWin;
 	SPCHESSLoadWin* loadWin;
-	PCHESSSetWin* setWin;
+	SPCHESSSetWin* setWin;
 	SPCHESS_ACTIVE_WINDOW activeWin;
+	SPCHESS_ACTIVE_WINDOW prevWin;
 } SPCHESSGuiManager;
 
 SPCHESSGuiManager* spManagerCreate();

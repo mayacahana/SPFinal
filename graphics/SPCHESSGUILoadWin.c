@@ -8,9 +8,9 @@
 
 int countSavedFiles() {
 	int cnt = 0;
-	while (cnt < NUM_SLOTS && (access(saved_files[cnt], F_OK) != -1)) {
+	while (cnt < NUM_SLOTS && (access(saved_files[cnt], F_OK) != -1))
 		cnt++;
-	}
+
 	return cnt;
 }
 
@@ -38,75 +38,38 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 		return NULL;
 	}
 
-	//back button
-	loadingSurface = SDL_LoadBMP("./graphics/images/back.bmp");
-	if (loadingSurface == NULL) {
-		spLoadWindowDestroy(res);
-		printf("couldn't create back.bmp surface\n");
-		return NULL;
-	}
-	res->backTexture = SDL_CreateTextureFromSurface(res->loadRenderer,
-			loadingSurface);
-	if (res->backTexture == NULL) {
-		SDL_FreeSurface(loadingSurface);
-		spMainWindowDestroy(res);
-		printf("couldn't create back.bmp texture\n");
-		return NULL;
-	}
-	SDL_FreeSurface(loadingSurface);
+	res->numOfBtns = NUM_OF_LOAD_BUTTONS;
+	const char* activeImages[NUM_OF_LOAD_BUTTONS] = { ACT_IMG("slot0"), ACT_IMG(
+			"slot1"), ACT_IMG("slot2"), ACT_IMG("slot3"), ACT_IMG("slot4"),
+			ACT_IMG("back"), ACT_IMG("load") };
 
-	//load button - inactive
-	loadingSurface = SDL_LoadBMP("./graphics/images/inactive_load.bmp");
-	if (loadingSurface == NULL) {
-		spLoadWindowDestroy(res);
-		printf("couldn't create inactive_load.bmp surface\n");
-		return NULL;
-	}
-	res->inactiveLoadTexture = SDL_CreateTextureFromSurface(res->loadRenderer,
-			loadingSurface);
-	if (res->inactiveLoadTexture == NULL) {
-		SDL_FreeSurface(loadingSurface);
-		spMainWindowDestroy(res);
-		printf("couldn't create inactive_load.bmp texture\n");
-		return NULL;
-	}
-	SDL_FreeSurface(loadingSurface);
+	const char* inactiveImages[NUM_OF_LOAD_BUTTONS] = { INACT_IMG("slot0"),
+			INACT_IMG("slot1"), INACT_IMG("slot2"), INACT_IMG("slot3"),
+			INACT_IMG("slot4"), INACT_IMG("back"), INACT_IMG("load") };
 
-	//load button - inactive
-	loadingSurface = SDL_LoadBMP("./graphics/images/active_load.bmp");
-	if (loadingSurface == NULL) {
-		spLoadWindowDestroy(res);
-		printf("couldn't create active_load.bmp surface\n");
-		return NULL;
-	}
-	res->loadTexture = SDL_CreateTextureFromSurface(res->loadRenderer,
-			loadingSurface);
-	if (res->loadTexture == NULL) {
-		SDL_FreeSurface(loadingSurface);
-		spMainWindowDestroy(res);
-		printf("couldn't create active_load.bmp texture\n");
-		return NULL;
-	}
-	SDL_FreeSurface(loadingSurface);
+	int xBtns[NUM_OF_LOAD_BUTTONS] = { 100, 100, 100, 100, 100, 75, 375 };
+	int yBtns[NUM_OF_LOAD_BUTTONS] = { 100, 250, 400, 550 };
 
-	//slots buttons
-	for (int i = 0; i < NUM_SLOTS; i++) {
+	bool visible[NUM_OF_LOAD_BUTTONS] = { false, false, false, false, false,
+	true, true };
 
-		loadingSurface = SDL_LoadBMP(slot_num(i));
-		if (loadingSurface == NULL) {
-			spLoadWindowDestroy(res);
-			printf("couldn't create slot_num%d.bmp surface\n", i);
-			return NULL;
-		}
-		res->slotsTexture[i] = SDL_CreateTextureFromSurface(res->loadRenderer,
-				loadingSurface);
-		if (res->slotsTexture[i] == NULL) {
-			SDL_FreeSurface(loadingSurface);
-			spMainWindowDestroy(res);
-			printf("couldn't create slot_num%d.bmp texture\n", i);
-			return NULL;
-		}
-		SDL_FreeSurface(loadingSurface);
+	int numOfSlots = countSavedFiles();
+	for (int i = 0; i < NUM_SLOTS; i++)
+		visible[i] = true;
+
+	bool active[NUM_OF_LOAD_BUTTONS] = { true, true, true, true, true, true,
+	false };
+	SPCHESS_BUTTON_TYPE types[NUM_OF_LOAD_BUTTONS] = { BUTTON_LOAD_SLOT0,
+			BUTTON_LOAD_SLOT1, BUTTON_LOAD_SLOT2, BUTTON_LOAD_SLOT3,
+			BUTTON_LOAD_SLOT4, BUTTON_LOAD_BACK, BUTTON_LOAD_LOAD };
+
+	res->btns = createButtons(res->loadRenderer, activeImages, inactiveImages,
+			xBtns, yBtns, visible, active, types, res->numOfBtns);
+
+	if (res->btns == NULL) {
+		SDL_DestroyRenderer(res->loadRenderer);
+		SDL_DestroyWindow(res->loadWindow);
+		free(res);
 	}
 
 	res->slotPicked = -1;
@@ -117,19 +80,11 @@ void spLoadWindowDestroy(SPCHESSLoadWin* src) {
 	if (!src)
 		return;
 
-	if (src->backTexture != NULL)
-		SDL_DestroyTexture(src->backTexture);
+	if (src->btns != NULL)
+		destroyButtons(src->btns);
 
-	if (src->loadTexture != NULL)
-		SDL_DestroyTexture(src->loadTexture);
-
-	if (src->inactiveLoadTexture != NULL)
-		SDL_DestroyTexture(src->inactiveLoadTexture);
-
-	for (int i = 0; i < NUM_SLOTS; i++) {
-		if (src->slotsTexture[i] != NULL)
-			SDL_DestroyTexture(src->slotsTexture[i]);
-	}
+	if(src->game != NULL)
+		spChessGameDestroy(src->game);
 
 	if (src->loadRenderer != NULL)
 		SDL_DestroyRenderer(src->loadRenderer);
@@ -141,26 +96,13 @@ void spLoadWindowDestroy(SPCHESSLoadWin* src) {
 }
 
 void spLoadWindowDraw(SPCHESSLoadWin* src) {
-	if (!src)
+	if (src == NULL)
 		return;
 
 	SDL_SetRenderDrawColor(src->loadRenderer, 255, 255, 255, 255);
 	SDL_RenderClear(src->loadRenderer);
-
-	SDL_Rect backR = { .x = 75, .y = 500, .h = 100, .w = 250 };
-	SDL_Rect loadR = { .x = 400, .y = 500, .h = 100, .w = 250 };
-
-	int numOfSlotsToDraw = countSavedFiles();
-	for (int i = 0; i < numOfSlotsToDraw; i++) {
-		SDL_Rect slotR = { .x = 240, .y = 100 + 150 * i, .h = 100, .w = 250 };
-		SDL_RenderCopy(src->loadRenderer, src->slotsTexture[i], NULL, &slotR);
-	}
-	SDL_RenderCopy(src->loadRenderer, src->backTexture, NULL, &backR);
-	if (src->slotPicked >= 0)
-		SDL_RenderCopy(src->loadRenderer, src->loadTexture, NULL, &loadR);
-	else
-		SDL_RenderCopy(src->loadRenderer, src->inactiveLoadTexture, NULL,
-				&loadR);
+	for (int i = 0; i < src->numOfBtns; i++)
+		drawButton(src->btns[i]);
 
 	SDL_RenderPresent(src->loadRenderer);
 }
@@ -168,28 +110,44 @@ void spLoadWindowDraw(SPCHESSLoadWin* src) {
 SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 		SDL_Event* event) {
 	if (!src || !event)
-		return SPCHESS_MAIN_INVALID_ARGUMENT;
+		return SPCHESS_LOAD_INVALID_ARGUMENT;
 
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		if (isClickOnBack(event->button.x, event->button.y))
+		SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->btns, src->numOfBtns,
+				event, false);
+		if (btn == BUTTON_LOAD_BACK)
 			return SPCHESS_LOAD_BACK;
-		else if (isClickOnSlot(event->button.x, event->button.y) > 0) {
-			src->slotPicked = isClickOnSlot(event->button.x, event->button.y) - 1;
+		if (btn >= BUTTON_LOAD_SLOT0 && btn <= BUTTON_LOAD_SLOT4) {
+
+			//de-activate all slots
+			src->btns->active[0] = false;
+			src->btns->active[1] = false;
+			src->btns->active[2] = false;
+			src->btns->active[3] = false;
+			src->btns->active[4] = false;
+
+			src->btns->active[btn - 3] = true; //chosen slot is activated (assuming BUTTOM_LOAD_SLOT0 = 3)
+			src->slotPicked = btn - 3;
+			src->btns->active[6] = true; //change active of load btn
 			return SPCHESS_LOAD_SLOT;
-		} else if (isClickOnLoad(event->button.x, event->button.y)
-				&& src->slotPicked >= 0)
-			return SPCHESS_LOAD_LOAD;
+		}
+		if (btn == SPCHESS_LOAD_LOAD && src->slotPicked != -1) {
+			SPCHESSGame* loaded = getStateFromFile(saved_files[src->slotPicked]);
+			spChessGameClear(src->game);
+			spChessGameCopyInfo(src->game, loaded);
+			spChessGameDestroy(loaded);
+		}
 		break;
 
 	case SDL_WINDOWEVENT:
 		if (event->window.event == SDL_WINDOWEVENT_CLOSE)
-			return SPCHESS_LOAD_QUIT;
+			return SPCHESS_MAIN_QUIT;
 		break;
 	default:
-		return SPCHESS_LOAD_NONE;
+		return SPCHESS_MAIN_NONE;
 	}
-	return SPCHESS_LOAD_NONE;
+	return SPCHESS_MAIN_NONE;
 
 }
 

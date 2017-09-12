@@ -21,22 +21,23 @@ SPCHESSGuiManager* spManagerCreate() {
 	res->loadWin = NULL;
 	res->setWin = NULL;
 	res->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+	res->prevWin = SPCHESS_NO_WINDOW;
 	return res;
 }
 
 void spManagerDestroy(SPCHESSGuiManager* src) {
-	if (!src) {
+	if (!src)
 		return;
-	}
-	if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE) {
+
+	if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
 		spGameWindowDestroy(src->gameWin);
-	}
-	if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE) {
+
+	if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
 		spGameWindowDestroy(src->loadWin);
-	}
-	if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE) {
+
+	if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDestroy(src->setWin);
-	}
+
 	spMainWindowDestroy(src->mainWin);
 	free(src);
 }
@@ -51,7 +52,7 @@ void spManagerDraw(SPCHESSGuiManager* src) {
 		spLoadWindowDraw(src->loadWin);
 	else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
 		spGameWindowDraw(src->gameWin);
-	else if(src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
+	else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDraw(src->setWin);
 }
 
@@ -68,6 +69,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
 			return SPCHESS_MANAGER_QUIT;
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_MAIN_LOAD) {
 		spMainWindowHide(src->mainWin);
@@ -77,6 +79,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
 			return SPCHESS_MANAGER_QUIT;
 		}
 		src->activeWin = SPCHESS_LOAD_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_MAIN_EXIT || event == SPCHESS_MAIN_QUIT) {
 		return SPCHESS_MANAGER_QUIT;
@@ -91,9 +94,14 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 		return SPCHESS_MANAGER_NONE;
 
 	if (event == SPCHESS_LOAD_BACK) {
-		spLoalWindowHide(src->loadWin);
-		spMainWindowShow(src->mainWin);
-		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+		spLoadWindowHide(src->loadWin);
+		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
+			spMainWindowShow(src->mainWin);
+			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+		} else if (src->prevWin == SPCHESS_GAME_WINDOW_ACTIVE) {
+			spGameWindowShow(src->gameWin);
+			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		}
 	}
 	if (event == SPCHESS_LOAD_LOAD) {
 		spLoadWindowHide(src->loadWin);
@@ -111,7 +119,39 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 
 }
 
-//implements dueToGame, dueToSet function
+//implements dueToGamefunction
+//make sure when click restart or load save the gameWin as prevWin
+
+SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
+		SPCHESS_SET_EVENT event) {
+	if (!src)
+		return SPCHESS_MANAGER_NONE;
+
+	if (event == SPCHESS_SET_BACK) {
+
+		spSetWindowHide(src->loadWin);
+		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
+			spMainWindowShow(src->mainWin);
+			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+		} else if (src->prevWin == SPCHESS_GAME_WINDOW_ACTIVE) {
+			spGameWindowShow(src->gameWin);
+			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		}
+	}
+	if (event == SPCHESS_SET_START) {
+		spSetWindowHide(src->setWin);
+		src->gameWin = spGameWindowCreate();
+		if (src->gameWin == NULL) {
+			printf("couldn't create game window\n");
+			return SPCHESS_MANAGER_QUIT;
+		}
+		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+	}
+	if (event == SPCHESS_SET_QUIT)
+		return SPCHESS_MANAGER_QUIT;
+
+	return SPCHESS_MANAGER_NONE;
+}
 
 SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 		SDL_Event* event) {

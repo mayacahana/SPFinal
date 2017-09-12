@@ -9,36 +9,14 @@
 #include <SDL2/SDL_video.h>
 #include <stdio.h>
 
-int isClickOnNewGame(int x, int y) {
-	if ((x >= 75 && x <= 75 + 250) && (y >= 100 && y <= 100 + 100)) {
-		return 1;
-	}
-	return 0;
-}
-
-int isClickOnExit(int x, int y) {
-	if ((x >= 75 && x <= 75 + 250) && (y >= 250 && y <= 250 + 100)) {
-		return 1;
-	}
-	return 0;
-}
-
-int isClickOnLoad(int x, int y) {
-	if ((x >= 75 && x <= 75 + 250) && (y >= 400 && y <= 400 + 100)) {
-		return 1;
-	}
-	return 0;
-}
-
 SPCHESSMainWin* spMainWindowCreate() {
 	SPCHESSMainWin* res = NULL;
-	SDL_Surface* loadingSurface = NULL;
 	res = (SPCHESSMainWin*) calloc(sizeof(SPCHESSMainWin), sizeof(char));
 	if (res == NULL)
 		return NULL;
 
-	res->mainWindow = SDL_CreateWindow("Chess Game", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_OPENGL);
+	res->mainWindow = SDL_CreateWindow("Main Window", SDL_WINDOWPOS_CENTERED,
+	SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_OPENGL);
 
 	if (res->mainWindow == NULL) {
 		spMainWindowDestroy(res);
@@ -52,57 +30,28 @@ SPCHESSMainWin* spMainWindowCreate() {
 		printf("Could not create window: %s\n", SDL_GetError());
 		return NULL;
 	}
-	//new game button
-	loadingSurface = SDL_LoadBMP("./graphics/images/new_game.bmp");
-	if (loadingSurface == NULL) {
-		spMainWindowDestroy(res);
-		printf("couldn't create new_game.bmp surface\n");
-		return NULL;
-	}
-	res->newGameTexture = SDL_CreateTextureFromSurface(res->mainRenderer,
-			loadingSurface);
-	if (res->newGameTexture == NULL) {
-		SDL_FreeSurface(loadingSurface);
-		spMainWindowDestroy(res);
-		printf("couldn't create new_game.bmp texture\n");
-		return NULL;
-	}
-	SDL_FreeSurface(loadingSurface);
+	res->numOfBtns = NUM_OF_MAIN_BUTTONS;
+	const char* activeImages[NUM_OF_MAIN_BUTTONS] = { ACT_IMG("new_game"),
+			ACT_IMG("load"), ACT_IMG("exit") };
 
-	//load button
-	loadingSurface = SDL_LoadBMP("./graphics/images/load.bmp");
-	if (loadingSurface == NULL) {
-		spMainWindowDestroy(res);
-		printf("couldn't create load.bmp surface\n");
-		return NULL;
-	}
-	res->loadTexture = SDL_CreateTextureFromSurface(res->mainRenderer,
-			loadingSurface);
-	if (res->loadTexture == NULL) {
-		SDL_FreeSurface(loadingSurface);
-		spMainWindowDestroy(res);
-		printf("couldn't create load.bmp texture\n");
-		return NULL;
-	}
-	SDL_FreeSurface(loadingSurface);
+	const char* inactiveImages[NUM_OF_MAIN_BUTTONS] = { INACT_IMG("new_game"),
+			INACT_IMG("load"), INACT_IMG("exit") };
 
-	//exit button
-	loadingSurface = SDL_LoadBMP("./graphics/images/exit.bmp");
-	if (loadingSurface == NULL) {
-		spMainWindowDestroy(res);
-		printf("couldn't create exit.bmp surface\n");
-		return NULL;
-	}
-	res->exitTexture = SDL_CreateTextureFromSurface(res->mainRenderer,
-			loadingSurface);
-	if (res->exitTexture == NULL) {
-		SDL_FreeSurface(loadingSurface);
-		spMainWindowDestroy(res);
-		printf("couldn't create exit.bmp texture\n");
-		return NULL;
-	}
-	SDL_FreeSurface(loadingSurface);
+	int xBtns[NUM_OF_MAIN_BUTTONS] = { 100, 100, 100 };
+	int yBtns[NUM_OF_MAIN_BUTTONS] = { 100, 250, 400 };
+	bool visible[NUM_OF_MAIN_BUTTONS] = { true, true, true };
+	bool active[NUM_OF_MAIN_BUTTONS] = { true, true, true };
+	SPCHESS_BUTTON_TYPE types[NUM_OF_MAIN_BUTTONS] = { BUTTON_MAIN_NEW_GAME,
+			BUTTON_MAIN_LOAD, BUTTON_MAIN_EXIT };
 
+	res->btns = createButtons(res->mainRenderer, activeImages, inactiveImages,
+			xBtns, yBtns, visible, active, types, res->numOfBtns);
+
+	if (res->btns == NULL) {
+		SDL_DestroyRenderer(res->mainRenderer);
+		SDL_DestroyWindow(res->mainWindow);
+		free(res);
+	}
 	return res;
 }
 
@@ -110,14 +59,8 @@ void spMainWindowDestroy(SPCHESSMainWin* src) {
 	if (!src)
 		return;
 
-	if (src->newGameTexture != NULL)
-		SDL_DestroyTexture(src->newGameTexture);
-
-	if (src->loadTexture != NULL)
-		SDL_DestroyTexture(src->loadTexture);
-
-	if (src->exitTexture != NULL)
-		SDL_DestroyTexture(src->exitTexture);
+	if (src->btns != NULL)
+		destroyButtons(src->btns);
 
 	if (src->mainRenderer != NULL)
 		SDL_DestroyRenderer(src->mainRenderer);
@@ -132,29 +75,27 @@ void spMainWindowDraw(SPCHESSMainWin* src) {
 	if (src == NULL)
 		return;
 
-	SDL_Rect newGameR = { .x = 75, .y = 100, .h = 100, .w = 250 };
-	SDL_Rect loadR = { .x = 75, .y = 250, .h = 100, .w = 250 };
-	SDL_Rect exitR = { .x = 75, .y = 400, .h = 100, .w = 250 };
 	SDL_SetRenderDrawColor(src->mainRenderer, 255, 255, 255, 255);
 	SDL_RenderClear(src->mainRenderer);
-	SDL_RenderCopy(src->mainRenderer, src->newGameTexture, NULL, &newGameR);
-	SDL_RenderCopy(src->mainRenderer, src->loadTexture, NULL, &loadR);
-	SDL_RenderCopy(src->mainRenderer, src->exitTexture, NULL, &exitR);
+	for (int i = 0; i < src->numOfBtns; i++)
+		drawButton(src->btns[i]);
+
 	SDL_RenderPresent(src->mainRenderer);
 }
 
-SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src, SDL_Event* event) {
+SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src,
+		SDL_Event* event) {
 	if (!src || !event)
 		return SPCHESS_MAIN_INVALID_ARGUMENT;
 
-
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		if (isClickOnNewGame(event->button.x, event->button.y))
+		SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
+		if (btn == BUTTON_MAIN_NEW_GAME)
 			return SPCHESS_MAIN_NEW_GAME;
-		else if (isClickOnLoad(event->button.x, event->button.y))
+		else if (btn == BUTTON_MAIN_LOAD)
 			return SPCHESS_MAIN_LOAD;
-		else if(isClickOnExit(event->button.x, event->button.y))
+		else if (btn == BUTTON_MAIN_EXIT)
 			return SPCHESS_MAIN_EXIT;
 		break;
 

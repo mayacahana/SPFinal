@@ -7,6 +7,8 @@
 
 #ifndef GRAPHICS_SPCHESSGUIMAINWIN_H_
 #define GRAPHICS_SPCHESSGUIMAINWIN_H_
+#include "SPCHESSGUICommon.h"
+#define NUM_OF_MAIN_BUTTONS 3
 
 typedef enum {
 	SPCHESS_MAIN_EXIT,
@@ -20,9 +22,9 @@ typedef enum {
 typedef struct spchessmainwin_t {
 	SDL_Window* mainWindow;
 	SDL_Renderer* mainRenderer;
-	SDL_Texture* exitTexture;
-	SDL_Texture* newGameTexture;
-	SDL_Texture* loadTexture;
+	int numOfBtns;
+	Button** btns;
+
 } SPCHESSMainWin;
 
 
@@ -33,8 +35,5 @@ void spMainWindowHide(SPCHESSMainWin* src);
 void spMainWindowShow(SPCHESSMainWin* src);
 SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src, SDL_Event* event);
 
-int isClickOnNewGame(int x, int y);
-int isClickOnLoad(int x, int y);
-int isClickOnExit(int x, int y);
 
 #endif /* GRAPHICS_SPCHESSGUIMAINWIN_H_ */

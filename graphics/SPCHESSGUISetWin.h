@@ -1,0 +1,46 @@
+/*
+ * SPCHESSGUISetWin.h
+ *
+ *  Created on: 12 בספט׳ 2017
+ *      Author: uri
+ */
+
+#ifndef GRAPHICS_SPCHESSGUISETWIN_H_
+#define GRAPHICS_SPCHESSGUISETWIN_H_
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#define NUM_OF_SET_BUTTONS 13
+
+typedef enum {
+	SPCHESS_SET_GAME_MODE,
+	SPCHESS_SET_DIFF,
+	SPCHESS_SET_COLOR,
+	SPCHESS_SET_START,
+	SPCHESS_SET_BACK,
+	SPCHESS_SET_START,
+	SPCHESS_SET_INVALID_ARGUMENT,
+	SPCHESS_SET_NONE,
+	SPCHESS_SET_QUIT
+} SPCHESS_SET_EVENT;
+
+typedef struct spchesssetwin_t {
+	SDL_Window* setWindow;
+	SDL_Renderer* setRenderer;
+	int numOfBtns;
+	Button** btns;
+	SPCHESSGame* game;
+
+} SPCHESSSetWin;
+
+SPCHESSMainWin* spSetWindowCreate();
+void spSetWindowDraw(SPCHESSSetWin* src);
+void spSetWindowDestroy(SPCHESSSetWin* src);
+void spSetWindowHide(SPCHESSSetWin* src);
+void spSetWindowShow(SPCHESSSetWin* src);
+SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSSetWin* src,
+		SDL_Event* event);
+
+#endif /* GRAPHICS_SPCHESSGUISETWIN_H_ */
