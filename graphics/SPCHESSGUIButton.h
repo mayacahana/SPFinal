@@ -54,11 +54,6 @@ typedef enum {
 
 } SPCHESS_BUTTON_TYPE;
 
-
-
-
-
-
 typedef struct button_t {
 	SDL_Renderer* windowRenderer;
 	SDL_Texture* activeTexture;
