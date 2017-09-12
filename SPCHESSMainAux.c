@@ -209,10 +209,12 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
 		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
 			printf("Invalid position on the board\n");
+			printTurn(src);
 			return FAIL;
 		}
 		if (msg == SPCHESS_GAME_INVALID_COLOR) {
 			printf("The specified position does not contain your piece\n");
+			printTurn(src);
 			return FAIL;
 		}
 		if (msg == SPCHESS_GAME_INVALID_MOVE) {
@@ -243,10 +245,10 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 	char whoisincheck = spChessIfMate(src);
 	if (whoisincheck != '\0') {
 		if (whoisincheck == SPCHESS_GAME_PLAYER_1_SYMBOL)
-			printf("Check: white King is threatend!\n");
+			printf("Check: white King is threatened!\n");
 		else
 			// whoisincheck == SPCHESS_GAME_PLAYER_2_SYMBOL
-			printf("Check: black King is threatend!\n");
+			printf("Check: black King is threatened!\n");
 
 		return;
 	}
