@@ -260,6 +260,25 @@ void spChessGameClear(SPCHESSGame* src) {
 
 }
 
+void spChessGameRestart(SPCHESSGame* src) { //for gui mode
+	if (!src)
+		return;
+
+	initBoardGame(src->gameBoard);
+
+	//player 1 - white - always starts the game
+	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
+
+	spArrayListDestroy(src->movesPlayer1);
+	spArrayListDestroy(src->movesPlayer2);
+
+	src->movesPlayer1 = spArrayListCreate(HISTORY_SIZE / 2);
+	src->movesPlayer2 = spArrayListCreate(HISTORY_SIZE / 2);
+
+	initPiecesArray(src->piecesPlayer1, SPCHESS_GAME_PLAYER_1_SYMBOL);
+	initPiecesArray(src->piecesPlayer2, SPCHESS_GAME_PLAYER_2_SYMBOL);
+}
+
 SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src) {
 	if (!src)
 		return SPCHESS_GAME_INVALID_ARGUMENT;

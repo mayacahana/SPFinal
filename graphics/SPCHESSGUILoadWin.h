@@ -9,13 +9,7 @@
 #define GRAPHICS_SPCHESSGUILOADWIN_H_
 #include "SPCHESSGUICommon.h"
 
-#define NUM_SLOTS 5
 #define NUM_OF_LOAD_BUTTONS 7
-
-
-const char* saved_files[NUM_SLOTS] = { "./graphics/saved_games/save0.xml",
-		"./graphics/saved_games/save1.xml", "./graphics/saved_games/save2.xml",
-		"./graphics/saved_games/save3.xml", "./graphics/saved_games/save4.xml" };
 
 typedef enum {
 	SPCHESS_LOAD_SLOT,
@@ -32,7 +26,6 @@ typedef struct spchessloadwin_t {
 	int numOfBtns;
 	Button** btns;
 	int slotPicked;
-
 	SPCHESSGame* game;
 } SPCHESSLoadWin;
 
@@ -43,6 +36,5 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src, SDL_Event* event
 void spLoadWindowHide(SPCHESSLoadWin* src);
 void spLoadWindowShow(SPCHESSLoadWin* src);
 
-int countSavedFiles();
 
 #endif /* GRAPHICS_SPCHESSGUILOADWIN_H_ */

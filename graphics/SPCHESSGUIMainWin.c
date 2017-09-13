@@ -31,11 +31,11 @@ SPCHESSMainWin* spMainWindowCreate() {
 		return NULL;
 	}
 	res->numOfBtns = NUM_OF_MAIN_BUTTONS;
-	const char* activeImages[NUM_OF_MAIN_BUTTONS] = { ACT_IMG("new_game"),
-			ACT_IMG("load"), ACT_IMG("exit") };
+	const char* activeImages[NUM_OF_MAIN_BUTTONS] = { ACT_IMG(new_game),
+			ACT_IMG(load), ACT_IMG(exit) };
 
-	const char* inactiveImages[NUM_OF_MAIN_BUTTONS] = { INACT_IMG("new_game"),
-			INACT_IMG("load"), INACT_IMG("exit") };
+	const char* inactiveImages[NUM_OF_MAIN_BUTTONS] = { INACT_IMG(new_game),
+			INACT_IMG(load), INACT_IMG(exit) };
 
 	int xBtns[NUM_OF_MAIN_BUTTONS] = { 100, 100, 100 };
 	int yBtns[NUM_OF_MAIN_BUTTONS] = { 100, 250, 400 };

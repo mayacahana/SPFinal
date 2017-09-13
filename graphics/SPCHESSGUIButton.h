@@ -48,7 +48,6 @@ typedef enum {
 	BUTTON_GAME_UNDO,
 	BUTTON_GAME_MAIN_MENU,
 	BUTTON_GAME_EXIT,
-
 	//no button
 	NO_BUTTON
 

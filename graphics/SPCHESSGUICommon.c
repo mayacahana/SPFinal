@@ -8,6 +8,25 @@
 #include "SPCHESSGUICommon.h"
 #include <stdlib.h>
 
+int countSavedFiles() {
+	int cnt = 0;
+	while (cnt < NUM_SLOTS && (access(saved_files[cnt], F_OK) != -1))
+		cnt++;
+
+	return cnt;
+}
+
+void promoteSlots() {
+	int numOfSavedSlots = countSavedFiles();
+	int ind = numOfSavedSlots - 1;
+	if (numOfSavedSlots == NUM_SLOTS) {
+		remove(saved_files[NUM_SLOTS - 1]);
+		ind--;
+	}
+	for (; ind >= 0; ind--)
+		rename(saved_files[ind], saved_files[ind + 1]);
+}
+
 SDL_Rect* spCopyRect(SDL_Rect* src) {
 	if (src == NULL)
 		return NULL;

@@ -6,14 +6,6 @@
  */
 #include "SPCHESSGUILoadWin.h"
 
-int countSavedFiles() {
-	int cnt = 0;
-	while (cnt < NUM_SLOTS && (access(saved_files[cnt], F_OK) != -1))
-		cnt++;
-
-	return cnt;
-}
-
 SPCHESSLoadWin* spLoadWindowCreate() {
 	SPCHESSLoadWin* res = (SPCHESSLoadWin*) calloc(sizeof(SPCHESSLoadWin),
 			sizeof(char));
@@ -39,13 +31,13 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 	}
 
 	res->numOfBtns = NUM_OF_LOAD_BUTTONS;
-	const char* activeImages[NUM_OF_LOAD_BUTTONS] = { ACT_IMG("slot0"), ACT_IMG(
-			"slot1"), ACT_IMG("slot2"), ACT_IMG("slot3"), ACT_IMG("slot4"),
-			ACT_IMG("back"), ACT_IMG("load") };
+	const char* activeImages[NUM_OF_LOAD_BUTTONS] = { ACT_IMG(slot0), ACT_IMG(
+			slot1), ACT_IMG(slot2), ACT_IMG(slot3), ACT_IMG(slot4),
+			ACT_IMG(back), ACT_IMG(load) };
 
-	const char* inactiveImages[NUM_OF_LOAD_BUTTONS] = { INACT_IMG("slot0"),
-			INACT_IMG("slot1"), INACT_IMG("slot2"), INACT_IMG("slot3"),
-			INACT_IMG("slot4"), INACT_IMG("back"), INACT_IMG("load") };
+	const char* inactiveImages[NUM_OF_LOAD_BUTTONS] = { INACT_IMG(slot0),
+			INACT_IMG(slot1), INACT_IMG(slot2), INACT_IMG(slot3),
+			INACT_IMG(slot4), INACT_IMG(back), INACT_IMG(load) };
 
 	int xBtns[NUM_OF_LOAD_BUTTONS] = { 100, 100, 100, 100, 100, 75, 375 };
 	int yBtns[NUM_OF_LOAD_BUTTONS] = { 100, 250, 400, 550 };

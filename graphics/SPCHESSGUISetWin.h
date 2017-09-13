@@ -35,12 +35,12 @@ typedef struct spchesssetwin_t {
 
 } SPCHESSSetWin;
 
-SPCHESSMainWin* spSetWindowCreate();
+SPCHESSSetWin* spSetWindowCreate();
 void spSetWindowDraw(SPCHESSSetWin* src);
 void spSetWindowDestroy(SPCHESSSetWin* src);
 void spSetWindowHide(SPCHESSSetWin* src);
 void spSetWindowShow(SPCHESSSetWin* src);
-SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSSetWin* src,
+SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src,
 		SDL_Event* event);
 
 #endif /* GRAPHICS_SPCHESSGUISETWIN_H_ */

@@ -33,19 +33,17 @@ SPCHESSSetWin* spSetWindowCreate() {
 	}
 
 	res->numOfBtns = NUM_OF_SET_BUTTONS;
-	const char* activeImages[NUM_OF_SET_BUTTONS] = { INACT_IMG("game_mode"),
-			ACT_IMG("one_player"), ACT_IMG("two_player"), INACT_IMG(
-					"difficulty"), ACT_IMG("noob"), ACT_IMG("easy"), ACT_IMG(
-					"moderate"), ACT_IMG("hard"), INACT_IMG("select_color"),
-			ACT_IMG("black_player"), ACT_IMG("white_player"), ACT_IMG("start"),
-			ACT_IMG("back") };
+	const char* activeImages[NUM_OF_SET_BUTTONS] = { INACT_IMG(game_mode),
+			ACT_IMG(one_player), ACT_IMG(two_player), INACT_IMG(difficulty),
+			ACT_IMG(noob), ACT_IMG(easy), ACT_IMG(moderate), ACT_IMG(hard),
+			INACT_IMG(select_color), ACT_IMG(black_player), ACT_IMG(
+					white_player), ACT_IMG(start), ACT_IMG(back) };
 
-	const char* inactiveImages[NUM_OF_SET_BUTTONS] = { INACT_IMG("game_mode"),
-			INACT_IMG("one_player"), INACT_IMG("two_player"), INACT_IMG(
-					"difficulty"), INACT_IMG("noob"), INACT_IMG("easy"),
-			INACT_IMG("moderate"), INACT_IMG("hard"), INACT_IMG("select_color"),
-			INACT_IMG("black_player"), INACT_IMG("white_player"), INACT_IMG(
-					"start"), INACT_IMG("back") };
+	const char* inactiveImages[NUM_OF_SET_BUTTONS] = { INACT_IMG(game_mode),
+			INACT_IMG(one_player), INACT_IMG(two_player), INACT_IMG(difficulty),
+			INACT_IMG(noob), INACT_IMG(easy), INACT_IMG(moderate), INACT_IMG(
+					hard), INACT_IMG(select_color), INACT_IMG(black_player),
+			INACT_IMG(white_player), INACT_IMG(start), INACT_IMG(back) };
 
 	int xBtns[NUM_OF_SET_BUTTONS] = { 630, 100, 400, 630, 50, 350, 650, 950,
 			630, 100, 400, 100, 400 };
@@ -53,12 +51,12 @@ SPCHESSSetWin* spSetWindowCreate() {
 			450, 550, 550, 750, 750 };
 
 	bool visible[NUM_OF_SET_BUTTONS] = { true, true, true, true, true, true,
-			true, true,
-			true, true, true, true, true };
+	true, true,
+	true, true, true, true, true };
 
 	bool active[NUM_OF_SET_BUTTONS] = { false, true, true, false, false, false,
-			false, false,
-			false, false, false, false, true };
+	false, false,
+	false, false, false, false, true };
 
 	SPCHESS_BUTTON_TYPE types[NUM_OF_SET_BUTTONS] = { BUTTON_SET_GAME_MODE,
 			BUTTON_SET_ONE_PLAYER, BUTTON_SET_TWO_PLAYER, BUTTON_SET_DIFF,
@@ -89,6 +87,7 @@ void spSetWindowDestroy(SPCHESSSetWin* src) {
 
 	if (src->btns != NULL)
 		destroyButtons(src->btns);
+
 	if (src->setRenderer != NULL)
 		SDL_DestroyRenderer(src->setRenderer);
 
@@ -148,13 +147,14 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 			src->btns->active[9] = true;
 			src->btns->active[10] = true;
 			return SPCHESS_SET_DIFF;
-		} else if(btn == BUTTON_SET_WHITE_PLAYER || btn == BUTTON_SET_BLACK_PLAYER) {
+		} else if (btn == BUTTON_SET_WHITE_PLAYER
+				|| btn == BUTTON_SET_BLACK_PLAYER) {
 			src->game->colorUser = btn - 19; //set user color (assuming BUTTON_SET_BLACK_PLAYER = 19)
 			src->btns->active[11] = true; //activate start button
 			return SPCHESS_SET_COLOR;
-		} else if(btn == BUTTON_SET_BACK)
+		} else if (btn == BUTTON_SET_BACK)
 			return SPCHESS_SET_BACK;
-		else if(btn == BUTTON_SET_START)
+		else if (btn == BUTTON_SET_START)
 			return SPCHESS_SET_START;
 		break;
 

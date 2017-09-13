@@ -72,6 +72,7 @@ void initPiecesArray(int piecesArray[NUM_OF_PIECES][DIM], char gameColor);
 SPCHESSGame* spChessGameCopy(SPCHESSGame* src);
 
 void spChessGameClear(SPCHESSGame* src);
+void spChessGameRestart(SPCHESSGame* src); //for gui mode
 void spChessGameCopyInfo(SPCHESSGame* trg, SPCHESSGame* src);
 
 void spChessGameDestroy(SPCHESSGame* src);

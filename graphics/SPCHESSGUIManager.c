@@ -105,7 +105,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 	}
 	if (event == SPCHESS_LOAD_LOAD) {
 		spLoadWindowHide(src->loadWin);
-		src->gameWin = spGameWindowCreate();
+		src->gameWin = spGameWindowCreate(src->loadWin->game);
 		if (src->gameWin == NULL) {
 			printf("couldn't create game window\n");
 			return SPCHESS_MANAGER_QUIT;
@@ -140,7 +140,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 	}
 	if (event == SPCHESS_SET_START) {
 		spSetWindowHide(src->setWin);
-		src->gameWin = spGameWindowCreate();
+		src->gameWin = spGameWindowCreate(src->setWin->game);
 		if (src->gameWin == NULL) {
 			printf("couldn't create game window\n");
 			return SPCHESS_MANAGER_QUIT;

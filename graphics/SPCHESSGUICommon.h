@@ -11,6 +11,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 #include "../SPCHESSMainAux.h"
+#include "SPCHESSGUIButton.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -19,8 +20,17 @@
 #define ACT_IMG(g) "./graphics/images/"#g".bmp"
 #define INACT_IMG(g) "./graphics/images/inactive_"#g".bmp"
 
-#define BUTTON_W 250
-#define BUTTON_H 100
+#define NUM_SLOTS 5
+#define BUTTON_W 150
+#define BUTTON_H 50
+
+const char* saved_files[NUM_SLOTS] = { "./graphics/saved_games/save0.xml",
+		"./graphics/saved_games/save1.xml", "./graphics/saved_games/save2.xml",
+		"./graphics/saved_games/save3.xml", "./graphics/saved_games/save4.xml" };
+
+int countSavedFiles();
+
+void promoteSlots();
 
 
 SDL_Rect* spCopyRect(SDL_Rect* src);
