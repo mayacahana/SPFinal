@@ -51,7 +51,7 @@ void spManagerDraw(SPCHESSGuiManager* src, SDL_Event* event) {
 	else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
 		spLoadWindowDraw(src->loadWin);
 	else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
-		spGameWindowDraw(src->gameWin, event);
+		spGameWindowDraw(src->gameWin, event); //passing event param because of motion-event
 	else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDraw(src->setWin);
 }
@@ -102,6 +102,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 			spGameWindowShow(src->gameWin);
 			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 		}
+		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_LOAD_LOAD) {
 		spLoadWindowHide(src->loadWin);
@@ -111,6 +112,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 			return SPCHESS_MANAGER_QUIT;
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_LOAD_QUIT)
 		return SPCHESS_MANAGER_QUIT;
@@ -121,6 +123,42 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 
 //implements dueToGamefunction
 //make sure when click restart or load save the gameWin as prevWin
+
+SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHESS_GAME_EVENT event) {
+	if(!src)
+		return SPCHESS_MANAGER_NONE;
+
+	if(event == SPCHESS_GAME_LOAD) {
+		spGameWindowHide(src->gameWin);
+		spGameLoadWindowHide(src->loadWin);
+		src->activeWin = SPCHESS_LOAD_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_GAME_WINDOW_ACTIVE;
+	}
+	if(event == SPCHESS_GAME_MAIN_MENU) {
+		spGameWindowDestroy(src->gameWin);
+		spMainWindowShow(src->mainWin);
+		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_NO_WINDOW;
+	}
+	if(event == SPCHESS_GAME_MOVE)
+		continue;
+	if(event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
+		return SPCHESS_MANAGER_QUIT;
+	}
+	if(event == SPCHESS_GAME_PLAYER_1_CHECKMATE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!", "White player won the game", NULL );
+		return SPCHESS_MANAGER_QUIT;
+	}
+	if(event == SPCHESS_GAME_PLAYER_2_CHECKMATE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!", "Black player won the game", NULL );
+		return SPCHESS_MANAGER_QUIT;
+	}
+	if(event == SPCHESS_GAME_TIE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "TIE!", "The game ends with tie", NULL );
+		return SPCHESS_MANAGER_QUIT;
+	}
+	return SPCHESS_GAME_NONE;
+}
 
 SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		SPCHESS_SET_EVENT event) {

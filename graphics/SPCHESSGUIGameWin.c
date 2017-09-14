@@ -284,7 +284,7 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 					if(spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
 						return msg;
 					if (src->game->gameMode == 1) {
-						SDL_Delay(10); //wait a little while before computer's turn
+						SDL_Delay(10); //wait a little bit before computer's turn
 						move* compMove = spChessMiniMaxSuggestMove(src->game,
 								src->game->difficulty);
 						spChessGameSetMove(src, compMove->from, compMove->to);
@@ -371,7 +371,7 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 		promoteSlots();
 		if (saveGameToFile(saved_files[0], src->game) == -1) {
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
-					"The game wasn't saved, please try again",
+					"Unable to save game",
 					NULL);
 			return SPCHESS_GAME_NONE;
 		}
@@ -395,7 +395,7 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 				promoteSlots();
 				if (saveGameToFile(saved_files[0], src->game) == -1) {
 					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
-							"The game wasn't saved, please try again",
+							"Unable to save game",
 							NULL);
 					return SPCHESS_GAME_NONE;
 				}
@@ -410,7 +410,7 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 				promoteSlots();
 				if (saveGameToFile(saved_files[0], src->game) == -1) {
 					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
-							"The game wasn't saved, please try again",
+							"Unable to save game",
 							NULL);
 					return SPCHESS_GAME_NONE;
 				}
