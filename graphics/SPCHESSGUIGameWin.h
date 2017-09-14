@@ -11,6 +11,8 @@
 #include "SPCHESSGUICommon.h"
 #define NUM_OF_GAME_BUTTONS 6
 #define NUM_OF_DIFF_PIECES 6
+#define PANEL_OFFSET 150
+#define GUI_BOARD_SIZE 600
 
 typedef enum {
 	SPCHESS_GAME_RESTART,
@@ -40,15 +42,26 @@ typedef struct spchessgamewin_t {
 	SDL_Texture* chessGrid;
 	SPCHESSGame* game;
 	bool isSaved;
+	int chosenPiece[DIM];
 } SPCHESSGameWin;
 
 
 SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy);
 void drawPieceByEntry(SPCHESSGameWin* src, SDL_Rect rec, int i, int j);
-void spGameWindowDraw(SPCHESSGameWin* src);
+bool popUpSave();
+bool isClickOnBoard(int x);
+void computeLocFromGui(int from[DIM]);
+
+
+
+void spGameWindowDraw(SPCHESSGameWin* src, SDL_Event* event);
 void spGameWindowDestroy(SPCHESSGameWin* src);
 void spGameWindowHide(SPCHESSGameWin* src);
 void spGameWindowShow(SPCHESSGameWin* src);
 SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src, SDL_Event* event);
+SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src);
+SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event);
+SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg);
+
 
 #endif /* GRAPHICS_SPCHESSGUIGAMEWIN_H_ */

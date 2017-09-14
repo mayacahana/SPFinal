@@ -38,7 +38,7 @@ typedef struct spchessguimanager_t {
 
 SPCHESSGuiManager* spManagerCreate();
 void spManagerDestroy(SPCHESSGuiManager* src);
-void spManagerDraw(SPCHESSGuiManager* src);
+void spManagerDraw(SPCHESSGuiManager* src, SDL_Event* event);
 SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 		SDL_Event* event);
 

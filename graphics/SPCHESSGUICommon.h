@@ -16,6 +16,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <math.h>
 
 #define ACT_IMG(g) "./graphics/images/"#g".bmp"
 #define INACT_IMG(g) "./graphics/images/inactive_"#g".bmp"

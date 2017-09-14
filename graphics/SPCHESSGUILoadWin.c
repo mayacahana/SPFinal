@@ -46,7 +46,7 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 	true, true };
 
 	int numOfSlots = countSavedFiles();
-	for (int i = 0; i < NUM_SLOTS; i++)
+	for (int i = 0; i < numOfSlots; i++)
 		visible[i] = true;
 
 	bool active[NUM_OF_LOAD_BUTTONS] = { true, true, true, true, true, true,
@@ -73,7 +73,7 @@ void spLoadWindowDestroy(SPCHESSLoadWin* src) {
 		return;
 
 	if (src->btns != NULL)
-		destroyButtons(src->btns);
+		destroyButtons(src->btns, src->numOfBtns);
 
 	if(src->game != NULL)
 		spChessGameDestroy(src->game);
@@ -113,15 +113,15 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 		if (btn >= BUTTON_LOAD_SLOT0 && btn <= BUTTON_LOAD_SLOT4) {
 
 			//de-activate all slots
-			src->btns->active[0] = false;
-			src->btns->active[1] = false;
-			src->btns->active[2] = false;
-			src->btns->active[3] = false;
-			src->btns->active[4] = false;
+			src->btns[0]->active = false;
+			src->btns[1]->active = false;
+			src->btns[2]->active = false;
+			src->btns[3] ->active= false;
+			src->btns[4]->active = false;
 
-			src->btns->active[btn - 3] = true; //chosen slot is activated (assuming BUTTOM_LOAD_SLOT0 = 3)
+			src->btns[btn - 3]->active = true; //chosen slot is activated (assuming BUTTOM_LOAD_SLOT0 = 3)
 			src->slotPicked = btn - 3;
-			src->btns->active[6] = true; //change active of load btn
+			src->btns[6]->active = true; //change active of load btn
 			return SPCHESS_LOAD_SLOT;
 		}
 		if (btn == SPCHESS_LOAD_LOAD && src->slotPicked != -1) {
@@ -130,16 +130,16 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 			spChessGameCopyInfo(src->game, loaded);
 			spChessGameDestroy(loaded);
 		}
-		break;
+	break;
 
 	case SDL_WINDOWEVENT:
 		if (event->window.event == SDL_WINDOWEVENT_CLOSE)
-			return SPCHESS_MAIN_QUIT;
+			return SPCHESS_LOAD_QUIT;
 		break;
 	default:
-		return SPCHESS_MAIN_NONE;
+		return SPCHESS_LOAD_NONE;
 	}
-	return SPCHESS_MAIN_NONE;
+	return SPCHESS_LOAD_NONE;
 
 }
 
@@ -151,27 +151,4 @@ void spLoadWindowShow(SPCHESSLoadWin* src) {
 	SDL_ShowWindow(src->loadWindow);
 }
 
-int isClickOnBack(int x, int y) {
-	if ((x >= 75 && x <= 75 + 250) && (y >= 500 && y <= 500 + 100)) {
-		return 1;
-	}
-	return 0;
-}
-
-int isClickOnSlot(int x, int y) {
-	int numOfSlotsToDraw = countSavedFiles();
-	for (int i = 0; i < numOfSlotsToDraw; i++) {
-		if ((x >= 240 && x <= 250)
-				&& (y >= (100 + 150 * i) && y <= (100 + 150 * i) + 100))
-			return i + 1;
-	}
-	return 0;
-}
-
-int isClickOnLoad(int x, int y) {
-	if ((x >= 400 && x <= 400 + 250) && (y >= 500 && y <= 500 + 100))
-		return 1;
-
-	return 0;
-}
 

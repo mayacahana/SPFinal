@@ -42,7 +42,7 @@ void spManagerDestroy(SPCHESSGuiManager* src) {
 	free(src);
 }
 
-void spManagerDraw(SPCHESSGuiManager* src) {
+void spManagerDraw(SPCHESSGuiManager* src, SDL_Event* event) {
 	if (!src)
 		return;
 
@@ -51,7 +51,7 @@ void spManagerDraw(SPCHESSGuiManager* src) {
 	else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
 		spLoadWindowDraw(src->loadWin);
 	else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
-		spGameWindowDraw(src->gameWin);
+		spGameWindowDraw(src->gameWin, event);
 	else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDraw(src->setWin);
 }
@@ -161,21 +161,21 @@ SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 	if (src->activeWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
 		SPCHESS_MAIN_EVENT mainEvent = spMainWindowHandleEvent(src->mainWin,
 				event);
-		spManagerDraw(src);
+		spManagerDraw(src, event);
 		return handleManagerDueToMainEvent(src, mainEvent);
 	} else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE) {
 		SPCHESS_GAME_EVENT gameEvent = spGameWindowHandleEvent(src->gameWin,
 				event);
-		spManagerDraw(src);
+		spManagerDraw(src, event);
 		return handleManagerDueToGameEvent(src, gameEvent);
 	} else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE) {
 		SPCHESS_LOAD_EVENT loadEvent = spLoadWindowHandleEvent(src->loadWin,
 				event);
-		spManagerDraw(src);
+		spManagerDraw(src, event);
 		return handleManagerDueToLoadEvent(src, loadEvent);
 	} else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE) {
 		SPCHESS_SET_EVENT setEvent = spSetWindowHandleEvent(src->setWin, event);
-		spManagerDraw(src);
+		spManagerDraw(src, event);
 		return handleManagerDueToSetEvent(src, setEvent);
 	}
 	return SPCHESS_MANAGER_NONE;

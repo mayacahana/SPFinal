@@ -120,37 +120,37 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 
 		if (btn == BUTTON_SET_TWO_PLAYER) {
 			src->game->gameMode = 2; //change the game mode to 2
-			src->btns->active[11] = true; //activate start button
+			src->btns[11]->active = true; //activate start button
 			//de-activate other options
-			src->btns->active[4] = false;
-			src->btns->active[5] = false;
-			src->btns->active[6] = false;
-			src->btns->active[7] = false;
-			src->btns->active[9] = false;
-			src->btns->active[10] = false;
+			src->btns[4]->active = false;
+			src->btns[5]->active = false;
+			src->btns[6]->active = false;
+			src->btns[7]->active = false;
+			src->btns[9] ->active= false;
+			src->btns[10]->active = false;
 
 			return SPCHESS_SET_GAME_MODE;
 		} else if (btn == BUTTON_SET_ONE_PLAYER) {
 
 			src->game->gameMode = 1; //change the game mode to 1
 			//activate possible difficulty levels
-			src->btns->active[4] = true;
-			src->btns->active[5] = true;
-			src->btns->active[6] = true;
-			src->btns->active[7] = true;
-			src->btns->active[11] = false; //de-activate start btn
+			src->btns[4]->active = true;
+			src->btns[5]->active = true;
+			src->btns[6]->active = true;
+			src->btns[7]->active = true;
+			src->btns[11]->active = false; //de-activate start btn
 			return SPCHESS_SET_GAME_MODE;
 		} else if (btn >= BUTTON_SET_NOOB_DIFF && btn <= BUTTON_SET_HARD_DIFF) {
 
 			src->game->difficulty = btn - 13; //set difficulty (assuming BUTTON_SET_NOOB_DIFF = 14)
 			//activate color player stage
-			src->btns->active[9] = true;
-			src->btns->active[10] = true;
+			src->btns[9]->active = true;
+			src->btns[10]->active= true;
 			return SPCHESS_SET_DIFF;
 		} else if (btn == BUTTON_SET_WHITE_PLAYER
 				|| btn == BUTTON_SET_BLACK_PLAYER) {
 			src->game->colorUser = btn - 19; //set user color (assuming BUTTON_SET_BLACK_PLAYER = 19)
-			src->btns->active[11] = true; //activate start button
+			src->btns[11]->active = true; //activate start button
 			return SPCHESS_SET_COLOR;
 		} else if (btn == BUTTON_SET_BACK)
 			return SPCHESS_SET_BACK;
