@@ -164,8 +164,10 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 			free(act.strTwo);
 			return SPCHESS_MOVE;
 		} else { //setUserMove(src, act) == FAIL
-			free(act.strOne);
-			free(act.strTwo);
+			if (act.validTwoStr) {
+				free(act.strOne);
+				free(act.strTwo);
+			}
 			return userTurn(src);
 		}
 	}
@@ -223,6 +225,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			return FAIL;
 		}
 		return SUCCESS;
+
 	} else {
 		printf("Error: invalid command\n");
 		return FAIL;
