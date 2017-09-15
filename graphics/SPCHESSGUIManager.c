@@ -33,7 +33,7 @@ void spManagerDestroy(SPCHESSGuiManager* src) {
 		spGameWindowDestroy(src->gameWin);
 
 	if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
-		spGameWindowDestroy(src->loadWin);
+		spLoadWindowDestroy(src->loadWin);
 
 	if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDestroy(src->setWin);
@@ -121,16 +121,13 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 
 }
 
-//implements dueToGamefunction
-//make sure when click restart or load save the gameWin as prevWin
-
 SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHESS_GAME_EVENT event) {
 	if(!src)
 		return SPCHESS_MANAGER_NONE;
 
 	if(event == SPCHESS_GAME_LOAD) {
 		spGameWindowHide(src->gameWin);
-		spGameLoadWindowHide(src->loadWin);
+		spLoadWindowHide(src->loadWin);
 		src->activeWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_GAME_WINDOW_ACTIVE;
 	}
@@ -140,8 +137,6 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHES
 		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_NO_WINDOW;
 	}
-	if(event == SPCHESS_GAME_MOVE)
-		continue;
 	if(event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
 		return SPCHESS_MANAGER_QUIT;
 	}
@@ -157,7 +152,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHES
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "TIE!", "The game ends with tie", NULL );
 		return SPCHESS_MANAGER_QUIT;
 	}
-	return SPCHESS_GAME_NONE;
+	return SPCHESS_MANAGER_NONE;
 }
 
 SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
@@ -166,8 +161,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		return SPCHESS_MANAGER_NONE;
 
 	if (event == SPCHESS_SET_BACK) {
-
-		spSetWindowHide(src->loadWin);
+		spSetWindowHide(src->setWin);
 		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
 			spMainWindowShow(src->mainWin);
 			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
@@ -175,6 +169,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 			spGameWindowShow(src->gameWin);
 			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 		}
+		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_START) {
 		spSetWindowHide(src->setWin);
@@ -184,6 +179,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 			return SPCHESS_MANAGER_QUIT;
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_QUIT)
 		return SPCHESS_MANAGER_QUIT;

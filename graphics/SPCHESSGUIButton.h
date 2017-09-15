@@ -7,10 +7,7 @@
 #ifndef GRAPHICS_SPCHESSGUIBUTTON_H_
 #define GRAPHICS_SPCHESSGUIBUTTON_H_
 
-#include <SDL2/SDL.h>
 #include <stdbool.h>
-
-
 typedef enum {
 	//main window
 	BUTTON_MAIN_NEW_GAME,
@@ -48,6 +45,7 @@ typedef enum {
 	BUTTON_GAME_UNDO,
 	BUTTON_GAME_MAIN_MENU,
 	BUTTON_GAME_EXIT,
+
 	//no button
 	NO_BUTTON
 
@@ -57,21 +55,22 @@ typedef struct button_t {
 	SDL_Renderer* windowRenderer;
 	SDL_Texture* activeTexture;
 	SDL_Texture* inactiveTexture;
-	SDL_Rect* location;bool visible;bool active;
+	SDL_Rect* location;
+	bool visible;
+	bool active;
 	SPCHESS_BUTTON_TYPE type;
 } Button;
 
 Button* createButton(SDL_Renderer* windowRender, const char* activeImage,
 		const char* inactiveImage, SDL_Rect* location, bool visible,
 		bool active, SPCHESS_BUTTON_TYPE type);
-
 Button** createButtons(SDL_Renderer* windowRender, const char* activeImages[],
 		const char* inactiveImages[], int xBtns[], int yBtns[], bool visible[],
 		bool active[], SPCHESS_BUTTON_TYPE types[], int numOfBtns);
 
 void destroyButton(Button* src);
-
 void destroyButtons(Button** btns, int numOfBtns);
+
 void drawButton(Button* src);
 
 #endif /* GRAPHICS_SPCHESSGUIBUTTON_H_ */

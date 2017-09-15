@@ -20,17 +20,11 @@
 
 #define ACT_IMG(g) "./graphics/images/"#g".bmp"
 #define INACT_IMG(g) "./graphics/images/inactive_"#g".bmp"
-
 #define NUM_SLOTS 5
 #define BUTTON_W 150
 #define BUTTON_H 50
 
-const char* saved_files[NUM_SLOTS] = { "./graphics/saved_games/save0.xml",
-		"./graphics/saved_games/save1.xml", "./graphics/saved_games/save2.xml",
-		"./graphics/saved_games/save3.xml", "./graphics/saved_games/save4.xml" };
-
 int countSavedFiles();
-
 void promoteSlots();
 
 

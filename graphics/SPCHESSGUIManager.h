@@ -12,6 +12,8 @@
 #include <SDL2/SDL_video.h>
 #include "SPCHESSGUILoadWin.h"
 #include "SPCHESSGUIMainWin.h"
+#include "SPCHESSGUIGameWin.h"
+#include "SPCHESSGUISetWin.h"
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -17,7 +17,7 @@ void settingState(SPCHESSGame* src) {
 
 	char input[SPCHESS_MAX_LINE_LENGTH];
 	if (!fgets(input, SPCHESS_MAX_LINE_LENGTH, stdin)) {
-		printf("Error: settingState has failed\n");
+		printf("Error: settingState has NOSUCCESSed\n");
 		exit(1);
 	}
 	SPCHESS_GAME_SETTINGS_Command act;
@@ -114,7 +114,7 @@ int setLoad(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 		if (!in) {
 			printf("Error: File doesn’t exist or cannot be opened\n");
 			free(in);
-			return FAIL;
+			return NOSUCCESS;
 		}
 		fclose(in);
 		SPCHESSGame* loaded = getStateFromFile(act.str);
@@ -124,7 +124,7 @@ int setLoad(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 		return SUCCESS;
 	} else {
 		printf("Error: invalid command\n");
-		return FAIL;
+		return NOSUCCESS;
 	}
 }
 void printCurrentSetting(SPCHESSGame* src) {
@@ -163,7 +163,7 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 			free(act.strOne);
 			free(act.strTwo);
 			return SPCHESS_MOVE;
-		} else { //setUserMove(src, act) == FAIL
+		} else { //setUserMove(src, act) == NOSUCCESS
 			free(act.strOne);
 			free(act.strTwo);
 			return userTurn(src);
@@ -204,28 +204,28 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		if (spChessGameIsKingRisker(src, from, to)) {
 			printf("Illegal move\n");
 			//printTurn(src);
-			return FAIL;
+			return NOSUCCESS;
 		}
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
 		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
 			printf("Invalid position on the board\n");
 			printTurn(src);
-			return FAIL;
+			return NOSUCCESS;
 		}
 		if (msg == SPCHESS_GAME_INVALID_COLOR) {
 			printf("The specified position does not contain your piece\n");
 			printTurn(src);
-			return FAIL;
+			return NOSUCCESS;
 		}
 		if (msg == SPCHESS_GAME_INVALID_MOVE) {
 			printf("Illegal move\n");
 			//printTurn(src);
-			return FAIL;
+			return NOSUCCESS;
 		}
 		return SUCCESS;
 	} else {
 		printf("Error: invalid command\n");
-		return FAIL;
+		return NOSUCCESS;
 	}
 }
 
@@ -267,28 +267,28 @@ int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		//try to open the path, if yes - save the game, according o/w do nothing
 		if (saveGameToFile(act.strOne, src) == -1) {
 			printf("File cannot be created or modified\n");
-			return FAIL;
+			return NOSUCCESS;
 		}
 		//not sure:
 		//printf("Game was successfully saved\n");
 		return SUCCESS;
 	} else {
 		printf("Error: invalid command\n");
-		return FAIL;
+		return NOSUCCESS;
 	}
 }
 
 int undoMove(SPCHESSGame* src) {
 	if (src->gameMode != 1) {
 		printf("Undo command not available in 2 players mode\n");
-		return FAIL;
+		return NOSUCCESS;
 	}
 
 	SPCHESS_GAME_MESSAGE msg = spChessGameUndoPrevMoveWithPrint(src);
 	if (msg == SPCHESS_GAME_INVALID_ARGUMENT
 			|| msg == SPCHESS_GAME_NO_HISTORY) {
 		printf("Empty history, move cannot be undone\n");
-		return FAIL;
+		return NOSUCCESS;
 	}
 	spChessGameUndoPrevMoveWithPrint(src);
 	return SUCCESS;

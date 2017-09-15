@@ -60,7 +60,7 @@ void spMainWindowDestroy(SPCHESSMainWin* src) {
 		return;
 
 	if (src->btns != NULL)
-		destroyButtons(src->btns);
+		destroyButtons(src->btns, src->numOfBtns);
 
 	if (src->mainRenderer != NULL)
 		SDL_DestroyRenderer(src->mainRenderer);
@@ -88,9 +88,11 @@ SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src,
 	if (!src || !event)
 		return SPCHESS_MAIN_INVALID_ARGUMENT;
 
+	SPCHESS_BUTTON_TYPE btn = NO_BUTTON;
+
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
+		btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
 		if (btn == BUTTON_MAIN_NEW_GAME)
 			return SPCHESS_MAIN_NEW_GAME;
 		else if (btn == BUTTON_MAIN_LOAD)
