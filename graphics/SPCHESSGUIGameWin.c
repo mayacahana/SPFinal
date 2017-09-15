@@ -11,7 +11,7 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 			sizeof(char));
 	SDL_Surface* loadingSurfaceWhite = NULL; //Used as temp surface
 	SDL_Surface* loadingSurfaceBlack = NULL; //Used as temp surface
-	SDL_Surface* loadingSurfaceGrid = NULL; //loading surface grid
+	SDL_Surface* loadingSurfaceGrid = NULL; //loading surface grid, Used as temp surface
 	if (res == NULL) {
 		printf("Couldn't create spChessGameWin struct\n");
 		return NULL;

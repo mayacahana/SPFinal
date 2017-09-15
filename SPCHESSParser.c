@@ -5,6 +5,7 @@
  *      Author: uri
  */
 #include "SPCHESSParser.h"
+#include <stdbool.h>
 
 bool spParserIsInt(const char* str) {
 
@@ -182,13 +183,14 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				res.validOneStr = false;
 				res.validTwoStr = false;
 			} else if (seen_cmd_with_two_str && checkPosPat(word))  { //move commmand
-
+				printf("salami\n");
 				pat = strtok(NULL, " \t\r\n");
 				if(!pat || strcmp(pat, "to") != 0)
 					break;
 				pat = strtok(NULL, " \t\r\n");
 				if(!pat)
 					break;
+				printf("now this:%s\n", pat);
 				if (checkPosPat(pat)) { // check if <i,j>
 					res.validTwoStr = true;
 					res.strOne = (char *) malloc(
@@ -197,6 +199,9 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 					res.strTwo = (char *) malloc(
 							(strlen(pat) + 1) * sizeof(char));
 					strcpy(res.strTwo, pat);
+					printf("happen to: %s :\n",pat);
+				} else {
+					res.validTwoStr = false;
 				}
 				seen_cmd_with_two_str = false;
 			} else if (seen_cmd_with_one_str_get_moves && checkPosPat(word)) { //get moves command
@@ -210,6 +215,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				res.validOneStr = true;
 				seen_cmd_with_one_str_save = false;
 			} else { //the user add other words beside command, thus invalid command
+				printf("enter mode");
 				res.cmd = SPCHESS_INVALID_LINE; //maybe remove
 				res.validOneStr = false;
 				res.validTwoStr = false;
@@ -264,10 +270,11 @@ int spParserGameModeCommand(char* str) {
 }
 
 bool checkPosPat(char *str) {
-
-	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ','
-			&& isupper(str[3]) && str[4] == '>')
+	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ',' && isupper(str[3]) && str[4] == '>'){
+		printf("%s, check this\n",str);
 		return true;
+	}
+	printf("%s, check!!!! \n",str);
 
 	return false;
 

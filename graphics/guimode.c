@@ -4,11 +4,6 @@
  *  Created on: 7 בספט׳ 2017
  *      Author: uri
  */
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include "SPCHESSGUIManager.h"
 
 int activeGui() {

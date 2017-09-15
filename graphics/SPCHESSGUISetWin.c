@@ -6,7 +6,6 @@
  */
 
 #include "SPCHESSGUISetWin.h"
-#include "SPCHESSGUICommon.h"
 
 SPCHESSSetWin* spSetWindowCreate() {
 	SPCHESSSetWin* res = (SPCHESSSetWin*) calloc(sizeof(SPCHESSSetWin),

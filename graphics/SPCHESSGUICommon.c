@@ -8,10 +8,6 @@
 #include "SPCHESSGUICommon.h"
 #include <stdlib.h>
 
-const char* saved_files[NUM_SLOTS] = { "./graphics/saved_games/save0.xml",
-		"./graphics/saved_games/save1.xml", "./graphics/saved_games/save2.xml",
-		"./graphics/saved_games/save3.xml", "./graphics/saved_games/save4.xml" };
-
 int countSavedFiles() {
 	int cnt = 0;
 	while (cnt < NUM_SLOTS && (access(saved_files[cnt], F_OK) != -1))

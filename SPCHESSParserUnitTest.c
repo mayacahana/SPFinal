@@ -71,7 +71,7 @@ static bool spParserCheckParseLine() {
 
 	return true;
 }
-int main() {
+int parsertester() {
 	RUN_TEST(spParserCheckIsInt);
 	RUN_TEST(spParserCheckParseLine);
 	return 0;

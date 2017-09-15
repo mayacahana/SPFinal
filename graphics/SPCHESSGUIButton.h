@@ -7,6 +7,8 @@
 #ifndef GRAPHICS_SPCHESSGUIBUTTON_H_
 #define GRAPHICS_SPCHESSGUIBUTTON_H_
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 #include <stdbool.h>
 typedef enum {
 	//main window

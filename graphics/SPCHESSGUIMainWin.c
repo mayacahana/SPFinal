@@ -6,8 +6,6 @@
  */
 
 #include "SPCHESSGUIMainWin.h"
-#include <SDL2/SDL_video.h>
-#include <stdio.h>
 
 SPCHESSMainWin* spMainWindowCreate() {
 	SPCHESSMainWin* res = NULL;

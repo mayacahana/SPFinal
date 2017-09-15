@@ -7,11 +7,7 @@
 
 #ifndef GRAPHICS_SPCHESSGUISETWIN_H_
 #define GRAPHICS_SPCHESSGUISETWIN_H_
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
+
 #include "SPCHESSGUICommon.h"
 #define NUM_OF_SET_BUTTONS 13
 

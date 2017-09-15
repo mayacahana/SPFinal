@@ -48,7 +48,7 @@
 //	return true;
 //}
 
-int main() {
+int maintester() {
 	//RUN_TEST(spTestFiles);
 	return 0;
 
