@@ -37,7 +37,7 @@ static bool spChessMiniMaxNodeBasicTest() {
 	return true;
 }
 
-int main() {
+int minimaxunittester() {
 	RUN_TEST(spChessMiniMaxNodeBasicTest);
 	return 0;
 }

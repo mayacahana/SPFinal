@@ -12,7 +12,7 @@
 #include "SPCHESSMiniMax.h"
 
 #define SUCCESS 1
-#define FAIL 0
+#define NOSUCCESS 0
 
 void setDefaultSetting(SPCHESSGame* src);
 void settingState(SPCHESSGame* src);
