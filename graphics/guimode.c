@@ -4,7 +4,12 @@
  *  Created on: 7 בספט׳ 2017
  *      Author: uri
  */
-#include "SPCHESSGUIManager.h"
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "graphics/SPCHESSGUIManager.h"
 
 int activeGui() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT

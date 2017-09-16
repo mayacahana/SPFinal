@@ -11,7 +11,7 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 			sizeof(char));
 	SDL_Surface* loadingSurfaceWhite = NULL; //Used as temp surface
 	SDL_Surface* loadingSurfaceBlack = NULL; //Used as temp surface
-	SDL_Surface* loadingSurfaceGrid = NULL; //loading surface grid, Used as temp surface
+	SDL_Surface* loadingSurfaceGrid = NULL; //loading surface grid
 	if (res == NULL) {
 		printf("Couldn't create spChessGameWin struct\n");
 		return NULL;
@@ -185,7 +185,8 @@ void spGameWindowDraw(SPCHESSGameWin* src, SDL_Event* event) {
 				rec.y = (GUI_BOARD_SIZE / BOARD_SIZE) * (BOARD_SIZE - 1 - i);
 				rec.h = (GUI_BOARD_SIZE / BOARD_SIZE);
 				rec.w = (GUI_BOARD_SIZE / BOARD_SIZE);
-				if (src->game->gameBoard[i][j] != EMPTY)
+				if (src->game->gameBoard[i][j] != EMPTY
+						&& src->chosenPiece == false)
 					drawPieceByEntry(src, rec, i, j);
 			}
 		}
@@ -286,7 +287,7 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 						SDL_Delay(10); //wait a little bit before computer's turn
 						move* compMove = spChessMiniMaxSuggestMove(src->game,
 								src->game->difficulty);
-						spChessGameSetMove(src->game, compMove->from, compMove->to);
+						spChessGameSetMove(src, compMove->from, compMove->to);
 						spDestroyMove(compMove);
 						SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
 						if(spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
@@ -322,7 +323,7 @@ SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src) {
 		}
 	}
 
-	char whoisincheck = spChessIfMate(src->game);
+	char whoisincheck = spChessIfMate(src);
 	if (whoisincheck != '\0') {
 		if (whoisincheck == SPCHESS_GAME_PLAYER_1_SYMBOL)
 			return SPCHESS_GAME_PLAYER_1_CHECK;
@@ -330,7 +331,7 @@ SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src) {
 			// whoisincheck == SPCHESS_GAME_PLAYER_2_SYMBOL
 			return SPCHESS_GAME_PLAYER_1_CHECK;
 	}
-	char istie = spChessGameCheckTie(src->game);
+	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL)
 		return SPCHESS_GAME_TIE;
 
@@ -357,9 +358,7 @@ SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg) {
 }
 
 SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
-	SPCHESS_BUTTON_TYPE btn = NO_BUTTON;
-
-	btn = getButtonClicked(src->panel, src->numOfPanel,
+	SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->panel, src->numOfPanel,
 			event,
 			true);
 
@@ -370,7 +369,7 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 		return SPCHESS_GAME_RESTART;
 	} else if (btn == BUTTON_GAME_SAVE) {
 		promoteSlots();
-		if (saveGameToFile((char*) saved_files[0], src->game) == -1) {
+		if (saveGameToFile(saved_files[0], src->game) == -1) {
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
 					"Unable to save game",
 					NULL);
@@ -394,7 +393,7 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 			//show SDL_ShowMessageBox asking the user if he wants to save
 			if (popUpSave()) {
 				promoteSlots();
-				if (saveGameToFile((char*) saved_files[0], src->game) == -1) {
+				if (saveGameToFile(saved_files[0], src->game) == -1) {
 					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
 							"Unable to save game",
 							NULL);
@@ -409,7 +408,7 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 			//show SDL_ShowMessageBox asking the user if he wants to save
 			if (popUpSave()) {
 				promoteSlots();
-				if (saveGameToFile((char*) saved_files[0], src->game) == -1) {
+				if (saveGameToFile(saved_files[0], src->game) == -1) {
 					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
 							"Unable to save game",
 							NULL);

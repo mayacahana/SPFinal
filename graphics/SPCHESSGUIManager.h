@@ -8,10 +8,12 @@
 #ifndef GRAPHICS_SPCHESSGUIMANAGER_H_
 #define GRAPHICS_SPCHESSGUIMANAGER_H_
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 #include "SPCHESSGUILoadWin.h"
 #include "SPCHESSGUIMainWin.h"
-#include "SPCHESSGUIGameWin.h"
-#include "SPCHESSGUISetWin.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef enum {
 	SPCHESS_MAIN_WINDOW_ACTIVE,

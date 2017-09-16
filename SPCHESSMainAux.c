@@ -163,11 +163,13 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 			free(act.strOne);
 			free(act.strTwo);
 			return SPCHESS_MOVE;
+
 		} else { //setUserMove(src, act) == NOSUCCESS
 			if (act.validTwoStr) {
 				free(act.strOne);
 				free(act.strTwo);
 			}
+
 			return userTurn(src);
 		}
 	}

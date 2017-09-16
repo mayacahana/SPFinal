@@ -9,6 +9,7 @@
 SPCHESSLoadWin* spLoadWindowCreate() {
 	SPCHESSLoadWin* res = (SPCHESSLoadWin*) calloc(sizeof(SPCHESSLoadWin),
 			sizeof(char));
+	SDL_Surface* loadingSurface = NULL; //Used as temp surface
 	if (res == NULL) {
 		printf("Couldn't create spChessLoadWin struct\n");
 		return NULL;
@@ -103,20 +104,19 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 	if (!src || !event)
 		return SPCHESS_LOAD_INVALID_ARGUMENT;
 
-	SPCHESS_BUTTON_TYPE btn = NO_BUTTON;
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
+		SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->btns, src->numOfBtns,
+				event, false);
 		if (btn == BUTTON_LOAD_BACK)
 			return SPCHESS_LOAD_BACK;
-
 		if (btn >= BUTTON_LOAD_SLOT0 && btn <= BUTTON_LOAD_SLOT4) {
 
 			//de-activate all slots
 			src->btns[0]->active = false;
 			src->btns[1]->active = false;
 			src->btns[2]->active = false;
-			src->btns[3]->active = false;
+			src->btns[3] ->active= false;
 			src->btns[4]->active = false;
 
 			src->btns[btn - 3]->active = true; //chosen slot is activated (assuming BUTTOM_LOAD_SLOT0 = 3)
@@ -125,13 +125,13 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 			return SPCHESS_LOAD_SLOT;
 		}
 		if (btn == SPCHESS_LOAD_LOAD && src->slotPicked != -1) {
-			SPCHESSGame* loaded = getStateFromFile((char*) saved_files[src->slotPicked]);
+			SPCHESSGame* loaded = getStateFromFile(saved_files[src->slotPicked]);
 			spChessGameClear(src->game);
 			spChessGameCopyInfo(src->game, loaded);
 			spChessGameDestroy(loaded);
 		}
+	break;
 
-		break;
 	case SDL_WINDOWEVENT:
 		if (event->window.event == SDL_WINDOWEVENT_CLOSE)
 			return SPCHESS_LOAD_QUIT;

@@ -33,7 +33,7 @@ void spManagerDestroy(SPCHESSGuiManager* src) {
 		spGameWindowDestroy(src->gameWin);
 
 	if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
-		spLoadWindowDestroy(src->loadWin);
+		spGameWindowDestroy(src->loadWin);
 
 	if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDestroy(src->setWin);
@@ -113,7 +113,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 		}
 		//in case computer is white, needs to make the first move
 		if (src->gameWin->game->gameMode
-				== 1 && src->gameWin->game->colorUser == 0
+				== 1&& src->gameWin->game->colorUser == 0
 				&& src->gameWin->game->currentPlayer
 				== SPCHESS_GAME_PLAYER_1_SYMBOL) {
 			SDL_Delay(10); //wait a little bit before computer's turn
@@ -142,7 +142,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 
 	if (event == SPCHESS_GAME_LOAD) {
 		spGameWindowHide(src->gameWin);
-		spLoadWindowHide(src->loadWin);
+		spGameLoadWindowHide(src->loadWin);
 		src->activeWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_GAME_WINDOW_ACTIVE;
 	}
@@ -152,9 +152,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_NO_WINDOW;
 	}
-	if (event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
-		return SPCHESS_MANAGER_QUIT;
-	}
+
 	if (event == SPCHESS_GAME_PLAYER_1_CHECKMATE) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!",
 				"White player won the game", NULL);
@@ -170,7 +168,10 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 				"The game ends with tie", NULL);
 		return SPCHESS_MANAGER_QUIT;
 	}
-	return SPCHESS_MANAGER_NONE;
+	if (event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
+		return SPCHESS_MANAGER_QUIT;
+	}
+	return SPCHESS_GAME_NONE;
 }
 
 SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
@@ -179,7 +180,8 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		return SPCHESS_MANAGER_NONE;
 
 	if (event == SPCHESS_SET_BACK) {
-		spSetWindowHide(src->setWin);
+
+		spSetWindowHide(src->loadWin);
 		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
 			spMainWindowShow(src->mainWin);
 			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
@@ -187,7 +189,6 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 			spGameWindowShow(src->gameWin);
 			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 		}
-		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_START) {
 		spSetWindowHide(src->setWin);
@@ -198,7 +199,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		}
 		//in case computer is white, needs to make the first move
 		if (src->gameWin->game->gameMode
-				== 1 && src->gameWin->game->colorUser == 0
+				== 1&& src->gameWin->game->colorUser == 0
 				&& src->gameWin->game->currentPlayer
 				== SPCHESS_GAME_PLAYER_1_SYMBOL) {
 			SDL_Delay(10); //wait a little bit before computer's turn
@@ -211,7 +212,6 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 			spStatusAfterMove(msg);
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
-		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_QUIT)
 		return SPCHESS_MANAGER_QUIT;

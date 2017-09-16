@@ -7,8 +7,11 @@
 
 #ifndef GRAPHICS_SPCHESSGUISETWIN_H_
 #define GRAPHICS_SPCHESSGUISETWIN_H_
-
-#include "SPCHESSGUICommon.h"
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 #define NUM_OF_SET_BUTTONS 13
 
 typedef enum {
@@ -17,6 +20,7 @@ typedef enum {
 	SPCHESS_SET_COLOR,
 	SPCHESS_SET_START,
 	SPCHESS_SET_BACK,
+	SPCHESS_SET_START,
 	SPCHESS_SET_INVALID_ARGUMENT,
 	SPCHESS_SET_NONE,
 	SPCHESS_SET_QUIT

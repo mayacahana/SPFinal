@@ -7,8 +7,8 @@
 
 #ifndef GRAPHICS_SPCHESSGUILOADWIN_H_
 #define GRAPHICS_SPCHESSGUILOADWIN_H_
-
 #include "SPCHESSGUICommon.h"
+
 #define NUM_OF_LOAD_BUTTONS 7
 
 typedef enum {
@@ -35,5 +35,6 @@ void spLoadWindowDraw(SPCHESSLoadWin* src);
 SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src, SDL_Event* event);
 void spLoadWindowHide(SPCHESSLoadWin* src);
 void spLoadWindowShow(SPCHESSLoadWin* src);
+
 
 #endif /* GRAPHICS_SPCHESSGUILOADWIN_H_ */

@@ -6,10 +6,12 @@
  */
 
 #include "SPCHESSGUISetWin.h"
+#include "SPCHESSGUICommon.h"
 
 SPCHESSSetWin* spSetWindowCreate() {
 	SPCHESSSetWin* res = (SPCHESSSetWin*) calloc(sizeof(SPCHESSSetWin),
 			sizeof(char));
+	SDL_Surface* loadingSurface = NULL; //Used as temp surface
 	if (res == NULL) {
 		printf("Couldn't create spChessSetWin struct\n");
 		return NULL;
@@ -25,7 +27,7 @@ SPCHESSSetWin* spSetWindowCreate() {
 	res->setRenderer = SDL_CreateRenderer(res->setWindow, -1,
 			SDL_RENDERER_ACCELERATED);
 	if (res->setRenderer == NULL) {
-		spSetWindowDestroy(res);
+		spLoadWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
 		return NULL;
 	}
@@ -84,7 +86,7 @@ void spSetWindowDestroy(SPCHESSSetWin* src) {
 		spChessGameDestroy(src->game);
 
 	if (src->btns != NULL)
-		destroyButtons(src->btns, src->numOfBtns);
+		destroyButtons(src->btns);
 
 	if (src->setRenderer != NULL)
 		SDL_DestroyRenderer(src->setRenderer);
@@ -115,7 +117,9 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		btn = getButtonClicked(src->btns, src->numOfBtns, event, true);
+
+		btn = getButtonClicked(src->btns, src->numOfBtns,
+				event, true);
 
 		if (btn == BUTTON_SET_TWO_PLAYER) {
 			src->game->gameMode = 2; //change the game mode to 2

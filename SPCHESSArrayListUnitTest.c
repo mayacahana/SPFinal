@@ -157,7 +157,7 @@ static bool spArrayListCreateTest() {
 	return true;
 }
 
-int arraylisttester() {
+int main() {
 	RUN_TEST(spArrayListCreateTest);
 	RUN_TEST(spArrayListBasicAddTest);
 	RUN_TEST(spArrayListBasicRemoveTest);

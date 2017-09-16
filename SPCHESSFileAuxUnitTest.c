@@ -21,7 +21,7 @@ static bool spFileAuxTest() {
 	return true;
 }
 
-int fileauxtester(){
+int main(){
 	RUN_TEST(spFileAuxTest);
 	return 0;
 }
