@@ -111,6 +111,20 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 			printf("couldn't create game window\n");
 			return SPCHESS_MANAGER_QUIT;
 		}
+		//in case computer is white, needs to make the first move
+		if (src->gameWin->game->gameMode
+				== 1 && src->gameWin->game->colorUser == 0
+				&& src->gameWin->game->currentPlayer
+				== SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			SDL_Delay(10); //wait a little bit before computer's turn
+			move* compMove = spChessMiniMaxSuggestMove(src->gameWin->game,
+					src->gameWin->game->difficulty);
+			spChessGameSetMove(src->gameWin->game, compMove->from,
+					compMove->to);
+			spDestroyMove(compMove);
+			SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src->gameWin);
+			spStatusAfterMove(msg);
+		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 	}
@@ -121,35 +135,39 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 
 }
 
-SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHESS_GAME_EVENT event) {
-	if(!src)
+SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
+		SPCHESS_GAME_EVENT event) {
+	if (!src)
 		return SPCHESS_MANAGER_NONE;
 
-	if(event == SPCHESS_GAME_LOAD) {
+	if (event == SPCHESS_GAME_LOAD) {
 		spGameWindowHide(src->gameWin);
 		spLoadWindowHide(src->loadWin);
 		src->activeWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_GAME_WINDOW_ACTIVE;
 	}
-	if(event == SPCHESS_GAME_MAIN_MENU) {
+	if (event == SPCHESS_GAME_MAIN_MENU) {
 		spGameWindowDestroy(src->gameWin);
 		spMainWindowShow(src->mainWin);
 		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_NO_WINDOW;
 	}
-	if(event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
+	if (event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
 		return SPCHESS_MANAGER_QUIT;
 	}
-	if(event == SPCHESS_GAME_PLAYER_1_CHECKMATE) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!", "White player won the game", NULL );
+	if (event == SPCHESS_GAME_PLAYER_1_CHECKMATE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!",
+				"White player won the game", NULL);
 		return SPCHESS_MANAGER_QUIT;
 	}
-	if(event == SPCHESS_GAME_PLAYER_2_CHECKMATE) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!", "Black player won the game", NULL );
+	if (event == SPCHESS_GAME_PLAYER_2_CHECKMATE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!",
+				"Black player won the game", NULL);
 		return SPCHESS_MANAGER_QUIT;
 	}
-	if(event == SPCHESS_GAME_TIE) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "TIE!", "The game ends with tie", NULL );
+	if (event == SPCHESS_GAME_TIE) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "TIE!",
+				"The game ends with tie", NULL);
 		return SPCHESS_MANAGER_QUIT;
 	}
 	return SPCHESS_MANAGER_NONE;
@@ -177,6 +195,20 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		if (src->gameWin == NULL) {
 			printf("couldn't create game window\n");
 			return SPCHESS_MANAGER_QUIT;
+		}
+		//in case computer is white, needs to make the first move
+		if (src->gameWin->game->gameMode
+				== 1 && src->gameWin->game->colorUser == 0
+				&& src->gameWin->game->currentPlayer
+				== SPCHESS_GAME_PLAYER_1_SYMBOL) {
+			SDL_Delay(10); //wait a little bit before computer's turn
+			move* compMove = spChessMiniMaxSuggestMove(src->gameWin->game,
+					src->gameWin->game->difficulty);
+			spChessGameSetMove(src->gameWin->game, compMove->from,
+					compMove->to);
+			spDestroyMove(compMove);
+			SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src->gameWin);
+			spStatusAfterMove(msg);
 		}
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;

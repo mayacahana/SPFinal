@@ -17,7 +17,7 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 		return NULL;
 	}
 	res->gameWindow = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 750, 600, SDL_WINDOW_OPENGL);
+			SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
 	if (res->gameWindow == NULL) {
 		spGameWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
@@ -36,14 +36,14 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 	res->numOfPanel = NUM_OF_GAME_BUTTONS;
 	const char* activeImages[NUM_OF_GAME_BUTTONS] = { ACT_IMG(restart), ACT_IMG(
 			save), ACT_IMG(load), ACT_IMG(undo), ACT_IMG(main_menu), ACT_IMG(
-			exit) };
+					exit) };
 
 	const char* inactiveImages[NUM_OF_GAME_BUTTONS] = { INACT_IMG(restart),
 			INACT_IMG(save), INACT_IMG(load), INACT_IMG(undo), INACT_IMG(
 					main_menu), INACT_IMG(exit) };
 
 	int xBtns[NUM_OF_GAME_BUTTONS] = { 50, 50, 50, 50, 50, 50 };
-	int yBtns[NUM_OF_GAME_BUTTONS] = { 100, 250, 400, 550, 700, 850 };
+	int yBtns[NUM_OF_GAME_BUTTONS] = { 40, 110, 170, 230, 290, 350 };
 
 	bool visible[NUM_OF_GAME_BUTTONS] = { true, true, true, true, true, true };
 
@@ -174,7 +174,7 @@ void spGameWindowDraw(SPCHESSGameWin* src, SDL_Event* event) {
 		drawButton(src->panel[i]);
 
 	SDL_Rect rec = { .x = PANEL_OFFSET, .y = 0, .w = GUI_BOARD_SIZE, .h =
-	GUI_BOARD_SIZE }; //rect of chess_grid
+			GUI_BOARD_SIZE }; //rect of chess_grid
 	SDL_RenderCopy(src->gameRenderer, src->chessGrid, NULL, &rec);
 
 	//fill the board acoording to pieces
@@ -282,7 +282,7 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 					SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
 					if(spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
 						return msg;
-					if (src->game->gameMode == 1) {
+					if (src->game->gameMode == 1 && src->game->colorUser == 1) {
 						SDL_Delay(10); //wait a little bit before computer's turn
 						move* compMove = spChessMiniMaxSuggestMove(src->game,
 								src->game->difficulty);
@@ -426,11 +426,11 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 bool popUpSave() {
 	const SDL_MessageBoxButtonData buttons[] = { { 0, 0, "no" }, {
 			SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" }, {
-			SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" }, };
+					SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" }, };
 	const SDL_MessageBoxColorScheme colorScheme = { { { 255, 0, 0 },
 			{ 0, 255, 0 }, { 255, 255, 0 }, { 0, 0, 255 }, { 255, 0, 255 } } };
 	const SDL_MessageBoxData messageboxdata = { SDL_MESSAGEBOX_INFORMATION,
-	NULL, "The game isn't saved",
+			NULL, "The game isn't saved",
 			"do you wish to save the game before leaving?", SDL_arraysize(
 					buttons), buttons, &colorScheme };
 	int buttonid;
@@ -453,7 +453,7 @@ bool isClickOnBoard(int x) {
 void computeLocFromGui(int from[DIM]) {
 	int tmp = from[0];
 	from[0] = (BOARD_SIZE - 1)
-			- (int) (from[1] / (GUI_BOARD_SIZE / BOARD_SIZE));
+					- (int) (from[1] / (GUI_BOARD_SIZE / BOARD_SIZE));
 	from[1] = (int) (tmp - PANEL_OFFSET / (GUI_BOARD_SIZE / BOARD_SIZE));
 }
 

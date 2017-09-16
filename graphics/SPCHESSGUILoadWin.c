@@ -14,7 +14,7 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 		return NULL;
 	}
 	res->loadWindow = SDL_CreateWindow("Load", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 1000, 1000, SDL_WINDOW_OPENGL);
+	SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL);
 	if (res->loadWindow == NULL) {
 		spLoadWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
@@ -38,8 +38,8 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 			INACT_IMG(slot1), INACT_IMG(slot2), INACT_IMG(slot3),
 			INACT_IMG(slot4), INACT_IMG(back), INACT_IMG(load) };
 
-	int xBtns[NUM_OF_LOAD_BUTTONS] = { 100, 100, 100, 100, 100, 75, 375 };
-	int yBtns[NUM_OF_LOAD_BUTTONS] = { 100, 250, 400, 550 };
+	int xBtns[NUM_OF_LOAD_BUTTONS] = { 220, 220, 220, 220, 220, 100, 400 };
+	int yBtns[NUM_OF_LOAD_BUTTONS] = { 50, 130, 210, 290, 370, 450, 500, 500};
 
 	bool visible[NUM_OF_LOAD_BUTTONS] = { false, false, false, false, false,
 	true, true };

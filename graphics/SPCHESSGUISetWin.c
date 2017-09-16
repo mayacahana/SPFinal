@@ -15,7 +15,7 @@ SPCHESSSetWin* spSetWindowCreate() {
 		return NULL;
 	}
 	res->setWindow = SDL_CreateWindow("Setting State", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 1400, 1400, SDL_WINDOW_OPENGL);
+			SDL_WINDOWPOS_CENTERED, 900, 900, SDL_WINDOW_OPENGL);
 	if (res->setWindow == NULL) {
 		spSetWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
@@ -41,20 +41,20 @@ SPCHESSSetWin* spSetWindowCreate() {
 			INACT_IMG(one_player), INACT_IMG(two_player), INACT_IMG(difficulty),
 			INACT_IMG(noob), INACT_IMG(easy), INACT_IMG(moderate), INACT_IMG(
 					hard), INACT_IMG(select_color), INACT_IMG(black_player),
-			INACT_IMG(white_player), INACT_IMG(start), INACT_IMG(back) };
+					INACT_IMG(white_player), INACT_IMG(start), INACT_IMG(back) };
 
-	int xBtns[NUM_OF_SET_BUTTONS] = { 630, 100, 400, 630, 50, 350, 650, 950,
-			630, 100, 400, 100, 400 };
-	int yBtns[NUM_OF_SET_BUTTONS] = { 50, 150, 150, 250, 350, 350, 350, 350,
-			450, 550, 550, 750, 750 };
+	int xBtns[NUM_OF_SET_BUTTONS] = { 300, 150, 400, 300, 50, 250, 450, 650,
+			300, 150, 400, 150, 400 };
+	int yBtns[NUM_OF_SET_BUTTONS] = { 50, 100, 100, 200, 330, 330, 330, 330,
+			500, 600, 600, 700, 700 };
 
 	bool visible[NUM_OF_SET_BUTTONS] = { true, true, true, true, true, true,
-	true, true,
-	true, true, true, true, true };
+			true, true,
+			true, true, true, true, true };
 
 	bool active[NUM_OF_SET_BUTTONS] = { false, true, true, false, false, false,
-	false, false,
-	false, false, false, false, true };
+			false, false,
+			false, false, false, false, true };
 
 	SPCHESS_BUTTON_TYPE types[NUM_OF_SET_BUTTONS] = { BUTTON_SET_GAME_MODE,
 			BUTTON_SET_ONE_PLAYER, BUTTON_SET_TWO_PLAYER, BUTTON_SET_DIFF,
@@ -115,8 +115,7 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		btn = getButtonClicked(src->btns, src->numOfBtns,
-				event, true);
+		btn = getButtonClicked(src->btns, src->numOfBtns, event, true);
 
 		if (btn == BUTTON_SET_TWO_PLAYER) {
 			src->game->gameMode = 2; //change the game mode to 2
@@ -126,7 +125,7 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 			src->btns[5]->active = false;
 			src->btns[6]->active = false;
 			src->btns[7]->active = false;
-			src->btns[9] ->active= false;
+			src->btns[9]->active = false;
 			src->btns[10]->active = false;
 
 			return SPCHESS_SET_GAME_MODE;
@@ -145,7 +144,7 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 			src->game->difficulty = btn - 13; //set difficulty (assuming BUTTON_SET_NOOB_DIFF = 14)
 			//activate color player stage
 			src->btns[9]->active = true;
-			src->btns[10]->active= true;
+			src->btns[10]->active = true;
 			return SPCHESS_SET_DIFF;
 		} else if (btn == BUTTON_SET_WHITE_PLAYER
 				|| btn == BUTTON_SET_BLACK_PLAYER) {

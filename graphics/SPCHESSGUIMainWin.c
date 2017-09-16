@@ -14,7 +14,7 @@ SPCHESSMainWin* spMainWindowCreate() {
 		return NULL;
 
 	res->mainWindow = SDL_CreateWindow("Main Window", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_OPENGL);
+	SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL);
 
 	if (res->mainWindow == NULL) {
 		spMainWindowDestroy(res);
@@ -35,7 +35,7 @@ SPCHESSMainWin* spMainWindowCreate() {
 	const char* inactiveImages[NUM_OF_MAIN_BUTTONS] = { INACT_IMG(new_game),
 			INACT_IMG(load), INACT_IMG(exit) };
 
-	int xBtns[NUM_OF_MAIN_BUTTONS] = { 100, 100, 100 };
+	int xBtns[NUM_OF_MAIN_BUTTONS] = { 220, 220, 220 };
 	int yBtns[NUM_OF_MAIN_BUTTONS] = { 100, 250, 400 };
 	bool visible[NUM_OF_MAIN_BUTTONS] = { true, true, true };
 	bool active[NUM_OF_MAIN_BUTTONS] = { true, true, true };
