@@ -164,10 +164,11 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 			free(act.strTwo);
 			return SPCHESS_MOVE;
 		} else { //setUserMove(src, act) == FAIL
-			if (act.validTwoStr) {
+			if (act.validTwoStr){
 				free(act.strOne);
 				free(act.strTwo);
 			}
+
 			return userTurn(src);
 		}
 	}
