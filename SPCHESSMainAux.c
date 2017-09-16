@@ -244,8 +244,10 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 }
 
 void checkGameStatusForUser(SPCHESSGame* src) {
+
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {
+
 		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 			printf("Checkmate! white player wins the game\n");
 		} else {
