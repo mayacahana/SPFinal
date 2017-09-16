@@ -163,13 +163,9 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 			free(act.strOne);
 			free(act.strTwo);
 			return SPCHESS_MOVE;
-<<<<<<< HEAD
-		} else { //setUserMove(src, act) == FAIL
-			if (act.validTwoStr){
-=======
+
 		} else { //setUserMove(src, act) == NOSUCCESS
 			if (act.validTwoStr) {
->>>>>>> branch 'master' of https://github.com/mayacahana/SPFinal.git
 				free(act.strOne);
 				free(act.strTwo);
 			}
