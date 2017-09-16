@@ -155,7 +155,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 	res.validTwoStr = false;
 	bool seen_cmd = false, seen_cmd_with_one_str_save = false,
 			seen_cmd_with_one_str_get_moves = false, seen_cmd_with_two_str =
-					false;
+			false;
 	int arg = 0;
 	char *word = strtok(strcopy, " \t\r\n"), *pat;
 	if (!word) {
@@ -182,15 +182,18 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				res.cmd = arg;
 				res.validOneStr = false;
 				res.validTwoStr = false;
-			} else if (seen_cmd_with_two_str && checkPosPat(word))  { //move commmand
-				printf("salami\n");
+			} else if (seen_cmd_with_two_str) { //move commmand
+				if (!checkPosPat(word)) {
+					res.validTwoStr = false;
+					res.cmd = SPCHESS_MOVE;
+					break;
+				}
 				pat = strtok(NULL, " \t\r\n");
-				if(!pat || strcmp(pat, "to") != 0)
+				if (!pat || strcmp(pat, "to") != 0)
 					break;
 				pat = strtok(NULL, " \t\r\n");
-				if(!pat)
+				if (!pat)
 					break;
-				printf("now this:%s\n", pat);
 				if (checkPosPat(pat)) { // check if <i,j>
 					res.validTwoStr = true;
 					res.strOne = (char *) malloc(
@@ -199,9 +202,10 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 					res.strTwo = (char *) malloc(
 							(strlen(pat) + 1) * sizeof(char));
 					strcpy(res.strTwo, pat);
-					printf("happen to: %s :\n",pat);
 				} else {
 					res.validTwoStr = false;
+					res.cmd = SPCHESS_MOVE;
+					break;
 				}
 				seen_cmd_with_two_str = false;
 			} else if (seen_cmd_with_one_str_get_moves && checkPosPat(word)) { //get moves command
@@ -215,7 +219,6 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				res.validOneStr = true;
 				seen_cmd_with_one_str_save = false;
 			} else { //the user add other words beside command, thus invalid command
-				printf("enter mode");
 				res.cmd = SPCHESS_INVALID_LINE; //maybe remove
 				res.validOneStr = false;
 				res.validTwoStr = false;
@@ -270,12 +273,10 @@ int spParserGameModeCommand(char* str) {
 }
 
 bool checkPosPat(char *str) {
-	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ',' && isupper(str[3]) && str[4] == '>'){
-		printf("%s, check this\n",str);
+	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ','
+			&& isupper(str[3]) && str[4] == '>') {
 		return true;
 	}
-	printf("%s, check!!!! \n",str);
-
 	return false;
 
 }

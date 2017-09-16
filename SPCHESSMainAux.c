@@ -132,9 +132,16 @@ void printCurrentSetting(SPCHESSGame* src) {
 		return;
 
 	printf("SETTINGS:\nGAME_MODE: %d\n", src->gameMode);
-	if (src->gameMode == 1)
-		printf("DIFFICULTY_LVL: %d\nUSER_CLR: %d\n", src->difficulty,
-				src->colorUser);
+	if (src->gameMode == 1){
+		char* tmpColorUser;
+		if(src->colorUser == 0)
+			tmpColorUser = "BLACK";
+		else
+			tmpColorUser = "WHITE";
+		printf("DIFFICULTY_LVL: %d\nUSER_CLR: %s\n", src->difficulty,
+				tmpColorUser);
+	}
+
 }
 
 void quitGame(SPCHESSGame* src) {
@@ -155,6 +162,7 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 
 	if (act.cmd == SPCHESS_INVALID_LINE) {
 		printf("Error: invalid command\n");
+
 		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_MOVE) {
@@ -169,7 +177,6 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 				free(act.strOne);
 				free(act.strTwo);
 			}
-
 			return userTurn(src);
 		}
 	}
@@ -207,7 +214,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 
 		if (spChessGameIsKingRisker(src, from, to)) {
 			printf("Illegal move\n");
-			//printTurn(src);
+			printTurn(src);
 			return NOSUCCESS;
 		}
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
@@ -223,13 +230,15 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		}
 		if (msg == SPCHESS_GAME_INVALID_MOVE) {
 			printf("Illegal move\n");
-			//printTurn(src);
+			printTurn(src);
 			return NOSUCCESS;
 		}
 		return SUCCESS;
 
 	} else {
-		printf("Error: invalid command\n");
+		//before: invalid command.
+		printf("Invalid position on the board\n");
+		printTurn(src);
 		return NOSUCCESS;
 	}
 }
