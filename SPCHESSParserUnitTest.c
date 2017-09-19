@@ -35,13 +35,6 @@ static bool spParserCheckParseLine() {
 
 	free(cmd.strOne);
 	free(cmd.strTwo);
-	cmd = spParserPraseGameModeLine("get_moves <2,B>");
-	ASSERT_TRUE(
-			cmd.cmd == SPCHESS_GET_MOVES && cmd.validOneStr && !cmd.validTwoStr
-					&& strcmp(cmd.strOne, "<2,B>") == 0);
-
-	free(cmd.strOne);
-
 	cmd = spParserPraseGameModeLine("save path");
 	ASSERT_TRUE(
 			cmd.cmd == SPCHESS_SAVE && cmd.strOne

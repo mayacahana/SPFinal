@@ -154,7 +154,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 	res.validOneStr = false;
 	res.validTwoStr = false;
 	bool seen_cmd = false, seen_cmd_with_one_str_save = false,
-			seen_cmd_with_one_str_get_moves = false, seen_cmd_with_two_str =
+			seen_cmd_with_two_str =
 			false;
 	int arg = 0;
 	char *word = strtok(strcopy, " \t\r\n"), *pat;
@@ -172,9 +172,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				arg = spParserGameModeCommand(word);
 				if (arg == SPCHESS_INVALID_LINE) { // invalid line
 					break;
-				} else if (arg == SPCHESS_GET_MOVES)
-					seen_cmd_with_one_str_get_moves = true;
-				else if (arg == SPCHESS_SAVE)
+				} else if (arg == SPCHESS_SAVE)
 					seen_cmd_with_one_str_save = true;
 				else if (arg == SPCHESS_MOVE)
 					seen_cmd_with_two_str = true;
@@ -208,11 +206,6 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 					break;
 				}
 				seen_cmd_with_two_str = false;
-			} else if (seen_cmd_with_one_str_get_moves && checkPosPat(word)) { //get moves command
-				res.strOne = (char *) malloc((strlen(word) + 1) * sizeof(char));
-				strcpy(res.strOne, word);
-				res.validOneStr = true;
-				seen_cmd_with_one_str_get_moves = false;
 			} else if (seen_cmd_with_one_str_save) { // save command
 				res.strOne = (char *) malloc((strlen(word) + 1) * sizeof(char));
 				strcpy(res.strOne, word);
@@ -246,10 +239,6 @@ int spParserGameModeCommand(char* str) {
 	if (strcmp(strcopy, "move") == 0) {
 		free(strcopy);
 		return SPCHESS_MOVE;
-	}
-	if (strcmp(strcopy, "get_moves") == 0) {
-		free(strcopy);
-		return SPCHESS_GET_MOVES;
 	}
 	if (strcmp(strcopy, "save") == 0) {
 		free(strcopy);
