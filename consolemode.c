@@ -5,7 +5,7 @@
  *      Author: uri
  */
 
-#include "SPCHESSMainAux.h"
+#include "consolemode.h"
 
 int activeconsole() {
 	setvbuf(stdout, NULL, _IONBF, 0);

@@ -4,7 +4,7 @@
  *  Created on: 7 בספט׳ 2017
  *      Author: uri
  */
-#include "SPCHESSGUIManager.h"
+#include "guimode.h"
 
 int activegui() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT

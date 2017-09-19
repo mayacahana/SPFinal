@@ -10,8 +10,13 @@ EXEC = chessprog
 
 #objects for exec
 CONSOLE_OBJS = SPCHESSMiniMaxNode.o SPCHESSMiniMax.o SPCHESSGame.o SPCHESSArrayList.o SPCHESSParser.o SPCHESSFileAux.o SPCHESSMainAux.o consolemode.o
-GUI_OBJS = SPCHESSGUIButton.o SPCHESSGUICommon.o SPCHESSGUIMainWin.o SPCHESSGUILoadWin.o SPCHESSGUISetWin.o SPCHESSGameWin.o SPCHESSGUIManager.o guimode.o
-ALL_OBJS = $(CONSOLE_OBJS) $(GUI_OBJS) main.o
+GUI_OBJS = SPCHESSGUIButton.o SPCHESSGUICommon.o SPCHESSGUIMainWin.o SPCHESSGUILoadWin.o SPCHESSGUISetWin.o SPCHESSGUIGameWin.o SPCHESSGUIManager.o guimode.o
+ALL_OBJS = $(CONSOLE_OBJS) main.o
+#should be:
+#ALL_OBJS = $(CONSOLE_OBJS) $(GUI_OBJS) main.o
+
+
+
 
 #objects for tests
 GAME_TEST_OBJS = SPCHESSArrayList.o SPCHESSGame.o SPCHESSGameUnitTest.o
@@ -26,7 +31,10 @@ SPMiniMaxNodeUnitTest SPCHESSFileAuxUnitTest SPMainAuxUnitTest
 
 #The exec file
 $(EXEC): $(ALL_OBJS)
-	$(CC) $(ALL_OBJS) $(SDL_LIB) -o $@
+	$(CC) $(ALL_OBJS) -o $@
+	
+#should be:	
+#$(CC) $(ALL_OBJS) $(SDL_LIB) -o $@
 
 #testers rules	
 SPCHESSGameUnitTest: $(GAME_TEST_OBJS)
@@ -71,7 +79,7 @@ SPCHESSMiniMax.o: SPCHESSMiniMax.c SPCHESSMiniMax.h SPCHESSMiniMaxNode.h SPCHESS
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSMainAux.o: SPCHESSMainAux.c SPCHESSMainAux.h SPCHESSGame.h SPCHESSMiniMax.h
 	$(CC) $(COMP_FLAG) -c $*.c
-consolemode.o: consolemode.c SPCHESSMainAux.h SPCHESSGame.h SPCHESSMiniMax.h
+consolemode.o: consolemode.c consolemode.h SPCHESSMainAux.h SPCHESSGame.h SPCHESSMiniMax.h
 	$(CC) $(COMP_FLAG) -c $*.c
 	
 #gui rules
@@ -89,12 +97,17 @@ graphics/SPCHESSGUIGameWin.o: SPCHESSGUIGameWin.c SPCHESSGUIGameWin.h SPCHESSGUI
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 graphics/SPCHESSGUIManager.o: SPCHESSGUIManager.c SPCHESSGUIManager.h SPCHESSGUILoadWin.h SPCHESSGUILoadWin.h SPCHESSGUISetWin.h SPCHESSGUIGameWin.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
-graphics/guimode.o: guimode.c SPCHESSGUIManager.h
+graphics/guimode.o: guimode.c guimode.h SPCHESSGUIManager.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 	
 #main rule
-main.o: main.c SPCHESSGUIManager.h
+main.o: main.c consolemode.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
+
+#should be:	
+#main.o: main.c consolemode.h guimode.h
+#$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
+	
 	
 #clean rule	
 clean:
