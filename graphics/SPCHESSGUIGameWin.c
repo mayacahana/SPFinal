@@ -266,13 +266,13 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 	//computer turn (if computer is white)
 	if (src->game->gameMode
 			== 1&& src->game->colorUser == 0 && src->game->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
-		SDL_Delay(10); //wait a little bit before computer's turn
+		spGameWindowDraw(src, event);
 		move* compMove = spChessMiniMaxSuggestMove(src->game,
 				src->game->difficulty);
 		spChessGameSetMove(src->game, compMove->from, compMove->to);
 		spDestroyMove(compMove);
 		SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
-		if (spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
+		if (spStatusAfterMove(msg, src, event) != SPCHESS_GAME_NONE)
 			return msg;
 	}
 
@@ -298,19 +298,20 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 					src->chosenPiece[0] = -1;
 					src->chosenPiece[1] = -1;
 					SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
-					if (spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
+					if (spStatusAfterMove(msg, src, event) != SPCHESS_GAME_NONE) {
 						return msg;
+					}
 					//computer turn (if computer is black)
 					if (src->game->gameMode
 							== 1&& src->game->colorUser == 1 && src->game->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL) {
-						SDL_Delay(10); //wait a little bit before computer's turn
+						spGameWindowDraw(src, event);
 						move* compMove = spChessMiniMaxSuggestMove(src->game,
 								src->game->difficulty);
 						spChessGameSetMove(src->game, compMove->from,
 								compMove->to);
 						spDestroyMove(compMove);
 						SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
-						if (spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
+						if (spStatusAfterMove(msg, src, event) != SPCHESS_GAME_NONE)
 							return msg;
 					}
 					return SPCHESS_GAME_MOVE;
@@ -360,13 +361,15 @@ SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src) {
 
 }
 
-SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg) {
+SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg, SPCHESSGameWin* src, SDL_Event* event) {
 	if (msg == SPCHESS_GAME_PLAYER_1_CHECKMATE
 			|| msg == SPCHESS_GAME_PLAYER_2_CHECKMATE
 			|| msg == SPCHESS_GAME_TIE) { //terminal state
 		return msg;
 	} else if (msg == SPCHESS_GAME_PLAYER_1_CHECK
 			|| msg == SPCHESS_GAME_PLAYER_2_CHECK) {
+		//draw the board before show "check" msg
+		spGameWindowDraw(src, event);
 		if (msg == SPCHESS_GAME_PLAYER_1_CHECK)
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECK!",
 					"White king is threatend!", NULL);

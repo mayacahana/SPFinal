@@ -109,7 +109,8 @@ bool flag, char colorForFunc) {
 
 	//init value
 	int value = (flag) ? INT_MIN : INT_MAX;
-	int from[DIM];
+	int from[DIM], legalMoves[MAX_STEPS_PIECE][DIM];
+
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		//who's pieces to check
 		if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
@@ -129,26 +130,54 @@ bool flag, char colorForFunc) {
 				continue;
 		}
 
-		//location where to go
-		for (int k = 0; k < BOARD_SIZE; k++) {
-			for (int p = 0; p < BOARD_SIZE; p++) {
-				int to[DIM] = { k, p };
-				if (spChessGameSetMove(src, from, to) == SPCHESS_GAME_SUCCESS) {
-					value = decider(value,
-							computeValueRec(src, maxRecLvl - 1, alpha, beta,
-									!flag, colorForFunc), flag);
-					spChessGameUndoPrevMove(src);
+		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]], WHITE_P);
+		getLegalMovesForPiece(src, step, legalMoves);
+		spDestroyMove(step);
 
-					if (flag)
-						alpha = decider(alpha, value, flag);
-					else
-						beta = decider(beta, value, flag);
+		for (int k = 0; k < MAX_STEPS_PIECE && legalMoves[k][0] != -1; k++) {
+			int to[DIM] = { legalMoves[k][0], legalMoves[k][1] };
+			if (!spChessGameIsKingRisker(src, from, to)
+					&& spChessGameSetMove(src, from, to)
+							== SPCHESS_GAME_SUCCESS) {
+				value = decider(value,
+						computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag,
+								colorForFunc), flag);
+				spChessGameUndoPrevMove(src);
 
-					if (beta <= alpha)
-						break;
-				}
+				if (flag)
+					alpha = decider(alpha, value, flag);
+				else
+					beta = decider(beta, value, flag);
+
+				if (beta <= alpha)
+					break;
+
 			}
 		}
+		//location where to go
+//		for (int k = 0; k < BOARD_SIZE; k++) {
+//			for (int p = 0; p < BOARD_SIZE; p++) {
+//				int to[DIM] = { k, p };
+//				if (!spChessGameIsKingRisker(src, from, to)
+//						&& spChessGameSetMove(src, from, to)
+//								== SPCHESS_GAME_SUCCESS) {
+//					value = decider(value,
+//							computeValueRec(src, maxRecLvl - 1, alpha, beta,
+//									!flag, colorForFunc), flag);
+//					spChessGameUndoPrevMove(src);
+//
+//					if (flag)
+//						alpha = decider(alpha, value, flag);
+//					else
+//						beta = decider(beta, value, flag);
+//
+//					if (beta <= alpha) {
+//						printf("gizom!\n");
+//						break;
+//					}
+//				}
+//			}
+//		}
 	}
 	return value;
 }

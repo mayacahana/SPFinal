@@ -59,7 +59,7 @@ void spGameWindowShow(SPCHESSGameWin* src);
 SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src, SDL_Event* event);
 SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src);
 SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event);
-SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg);
+SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg, SPCHESSGameWin* src, SDL_Event* event);
 
 
 #endif /* GRAPHICS_SPCHESSGUIGAMEWIN_H_ */
