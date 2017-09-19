@@ -26,7 +26,7 @@ SPMiniMaxNodeUnitTest SPCHESSFileAuxUnitTest SPMainAuxUnitTest
 
 #The exec file
 $(EXEC): $(ALL_OBJS)
-	$(CC) $(ALL_OBJS) -o $@
+	$(CC) $(ALL_OBJS) $(SDL_LIB) -o $@
 
 #testers rules	
 SPCHESSGameUnitTest: $(GAME_TEST_OBJS)
