@@ -7,7 +7,7 @@
 
 #include "SPCHESSMainAux.h"
 
-int main() {
+int activeconsole() {
 	setvbuf(stdout, NULL, _IONBF, 0);
 	SPCHESSGame* game = spChessGameCreate(HISTORY_SIZE);
 	bool userIsWhite;
