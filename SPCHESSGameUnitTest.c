@@ -132,7 +132,7 @@ static bool spChessGameBasicTest() {
 	return true;
 }
 
-int main() {
+int gametest() {
 	RUN_TEST(spChessGameBasicTest);
 	//RUN_TEST(spFiarGameSetMoveTest);
 	RUN_TEST(spChessGameUndoMoveTest);

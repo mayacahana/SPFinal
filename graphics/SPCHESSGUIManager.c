@@ -17,9 +17,9 @@ SPCHESSGuiManager* spManagerCreate() {
 		free(res);
 		return NULL;
 	}
+	res->setWin = NULL;
 	res->gameWin = NULL;
 	res->loadWin = NULL;
-	res->setWin = NULL;
 	res->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 	res->prevWin = SPCHESS_NO_WINDOW;
 	return res;
@@ -31,12 +31,10 @@ void spManagerDestroy(SPCHESSGuiManager* src) {
 
 	if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
 		spGameWindowDestroy(src->gameWin);
-
-	if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
-		spGameWindowDestroy(src->loadWin);
-
-	if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
+	else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDestroy(src->setWin);
+	else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
+		spLoadWindowDestroy(src->loadWin);
 
 	spMainWindowDestroy(src->mainWin);
 	free(src);
@@ -48,12 +46,12 @@ void spManagerDraw(SPCHESSGuiManager* src, SDL_Event* event) {
 
 	if (src->activeWin == SPCHESS_MAIN_WINDOW_ACTIVE)
 		spMainWindowDraw(src->mainWin);
-	else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
-		spLoadWindowDraw(src->loadWin);
 	else if (src->activeWin == SPCHESS_GAME_WINDOW_ACTIVE)
 		spGameWindowDraw(src->gameWin, event); //passing event param because of motion-event
 	else if (src->activeWin == SPCHESS_SET_WINDOW_ACTIVE)
 		spSetWindowDraw(src->setWin);
+	else if (src->activeWin == SPCHESS_LOAD_WINDOW_ACTIVE)
+		spLoadWindowDraw(src->loadWin);
 }
 
 SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
@@ -68,7 +66,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
 			printf("couldn't create set window\n");
 			return SPCHESS_MANAGER_QUIT;
 		}
-		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		src->activeWin = SPCHESS_SET_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_MAIN_LOAD) {
@@ -87,54 +85,6 @@ SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src,
 	return SPCHESS_MANAGER_NONE;
 }
 
-SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
-		SPCHESS_LOAD_EVENT event) {
-
-	if (!src)
-		return SPCHESS_MANAGER_NONE;
-
-	if (event == SPCHESS_LOAD_BACK) {
-		spLoadWindowHide(src->loadWin);
-		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
-			spMainWindowShow(src->mainWin);
-			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
-		} else if (src->prevWin == SPCHESS_GAME_WINDOW_ACTIVE) {
-			spGameWindowShow(src->gameWin);
-			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
-		}
-		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
-	}
-	if (event == SPCHESS_LOAD_LOAD) {
-		spLoadWindowHide(src->loadWin);
-		src->gameWin = spGameWindowCreate(src->loadWin->game);
-		if (src->gameWin == NULL) {
-			printf("couldn't create game window\n");
-			return SPCHESS_MANAGER_QUIT;
-		}
-		//in case computer is white, needs to make the first move
-		if (src->gameWin->game->gameMode
-				== 1&& src->gameWin->game->colorUser == 0
-				&& src->gameWin->game->currentPlayer
-				== SPCHESS_GAME_PLAYER_1_SYMBOL) {
-			SDL_Delay(10); //wait a little bit before computer's turn
-			move* compMove = spChessMiniMaxSuggestMove(src->gameWin->game,
-					src->gameWin->game->difficulty);
-			spChessGameSetMove(src->gameWin->game, compMove->from,
-					compMove->to);
-			spDestroyMove(compMove);
-			SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src->gameWin);
-			spStatusAfterMove(msg);
-		}
-		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
-		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
-	}
-	if (event == SPCHESS_LOAD_QUIT)
-		return SPCHESS_MANAGER_QUIT;
-
-	return SPCHESS_MANAGER_NONE;
-
-}
-
 SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 		SPCHESS_GAME_EVENT event) {
 	if (!src)
@@ -142,7 +92,15 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 
 	if (event == SPCHESS_GAME_LOAD) {
 		spGameWindowHide(src->gameWin);
-		spGameLoadWindowHide(src->loadWin);
+		if (src->loadWin != NULL)
+			spLoadWindowShow(src->loadWin);
+		else {
+			src->loadWin = spLoadWindowCreate();
+			if (src->loadWin == NULL) {
+				printf("couldn't create load window\n");
+				return SPCHESS_MANAGER_QUIT;
+			}
+		}
 		src->activeWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_GAME_WINDOW_ACTIVE;
 	}
@@ -152,7 +110,6 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_NO_WINDOW;
 	}
-
 	if (event == SPCHESS_GAME_PLAYER_1_CHECKMATE) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECKMATE!",
 				"White player won the game", NULL);
@@ -171,7 +128,42 @@ SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src,
 	if (event == SPCHESS_GAME_EXIT || event == SPCHESS_GAME_QUIT) {
 		return SPCHESS_MANAGER_QUIT;
 	}
-	return SPCHESS_GAME_NONE;
+	return SPCHESS_MANAGER_NONE;
+}
+
+SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
+		SPCHESS_LOAD_EVENT event) {
+
+	if (!src)
+		return SPCHESS_MANAGER_NONE;
+
+	if (event == SPCHESS_LOAD_BACK) {
+		spLoadWindowHide(src->loadWin);
+		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
+			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+			spMainWindowShow(src->mainWin);
+		} else if (src->prevWin == SPCHESS_GAME_WINDOW_ACTIVE) {
+			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+			spGameWindowShow(src->gameWin);
+		}
+		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
+	}
+	if (event == SPCHESS_LOAD_LOAD) {
+		spLoadWindowHide(src->loadWin);
+		src->gameWin = spGameWindowCreate(src->loadWin->game);
+		if (src->gameWin == NULL) {
+			printf("couldn't create game window\n");
+			return SPCHESS_MANAGER_QUIT;
+		}
+		src->gameWin->isSaved = true; //(?)
+		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
+	}
+	if (event == SPCHESS_LOAD_QUIT)
+		return SPCHESS_MANAGER_QUIT;
+
+	return SPCHESS_MANAGER_NONE;
+
 }
 
 SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
@@ -180,38 +172,20 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		return SPCHESS_MANAGER_NONE;
 
 	if (event == SPCHESS_SET_BACK) {
-
-		spSetWindowHide(src->loadWin);
-		if (src->prevWin == SPCHESS_MAIN_WINDOW_ACTIVE) {
-			spMainWindowShow(src->mainWin);
-			src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
-		} else if (src->prevWin == SPCHESS_GAME_WINDOW_ACTIVE) {
-			spGameWindowShow(src->gameWin);
-			src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
-		}
+		spSetWindowHide(src->setWin);
+		spMainWindowShow(src->mainWin);
+		src->activeWin = SPCHESS_MAIN_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_START) {
-		spSetWindowHide(src->setWin);
 		src->gameWin = spGameWindowCreate(src->setWin->game);
 		if (src->gameWin == NULL) {
 			printf("couldn't create game window\n");
 			return SPCHESS_MANAGER_QUIT;
 		}
-		//in case computer is white, needs to make the first move
-		if (src->gameWin->game->gameMode
-				== 1&& src->gameWin->game->colorUser == 0
-				&& src->gameWin->game->currentPlayer
-				== SPCHESS_GAME_PLAYER_1_SYMBOL) {
-			SDL_Delay(10); //wait a little bit before computer's turn
-			move* compMove = spChessMiniMaxSuggestMove(src->gameWin->game,
-					src->gameWin->game->difficulty);
-			spChessGameSetMove(src->gameWin->game, compMove->from,
-					compMove->to);
-			spDestroyMove(compMove);
-			SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src->gameWin);
-			spStatusAfterMove(msg);
-		}
+		spSetWindowDestroy(src->setWin);
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
+		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_QUIT)
 		return SPCHESS_MANAGER_QUIT;

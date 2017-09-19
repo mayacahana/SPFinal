@@ -8,12 +8,10 @@
 #ifndef GRAPHICS_SPCHESSGUIMANAGER_H_
 #define GRAPHICS_SPCHESSGUIMANAGER_H_
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
-#include "SPCHESSGUILoadWin.h"
 #include "SPCHESSGUIMainWin.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "SPCHESSGUISetWin.h"
+#include "SPCHESSGUIGameWin.h"
+#include "SPCHESSGUILoadWin.h"
 
 typedef enum {
 	SPCHESS_MAIN_WINDOW_ACTIVE,
@@ -28,10 +26,10 @@ typedef enum {
 } SPCHESS_MANAGER_EVENT;
 
 typedef struct spchessguimanager_t {
-	SPCHESSGameWin* gameWin;
 	SPCHESSMainWin* mainWin;
-	SPCHESSLoadWin* loadWin;
 	SPCHESSSetWin* setWin;
+	SPCHESSGameWin* gameWin;
+	SPCHESSLoadWin* loadWin;
 	SPCHESS_ACTIVE_WINDOW activeWin;
 	SPCHESS_ACTIVE_WINDOW prevWin;
 } SPCHESSGuiManager;
@@ -43,9 +41,9 @@ SPCHESS_MANAGER_EVENT spManagerHandleEvent(SPCHESSGuiManager* src,
 		SDL_Event* event);
 
 SPCHESS_MANAGER_EVENT handleManagerDueToMainEvent(SPCHESSGuiManager* src, SPCHESS_MAIN_EVENT event);
+SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src, SPCHESS_SET_EVENT event);
 SPCHESS_MANAGER_EVENT handleManagerDueToGameEvent(SPCHESSGuiManager* src, SPCHESS_GAME_EVENT event);
 SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src, SPCHESS_LOAD_EVENT event);
-SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src, SPCHESS_SET_EVENT event);
 
 
 #endif /* GRAPHICS_SPCHESSGUIMANAGER_H_ */

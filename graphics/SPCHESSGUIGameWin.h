@@ -12,7 +12,7 @@
 #define NUM_OF_GAME_BUTTONS 6
 #define NUM_OF_DIFF_PIECES 6
 #define PANEL_OFFSET 200
-#define GUI_BOARD_SIZE 600
+#define GUI_BOARD_SIZE 650
 
 typedef enum {
 	SPCHESS_GAME_RESTART,
@@ -48,11 +48,9 @@ typedef struct spchessgamewin_t {
 
 SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy);
 void drawPieceByEntry(SPCHESSGameWin* src, SDL_Rect rec, int i, int j);
-bool popUpSave();
+int popUpSave();
 bool isClickOnBoard(int x);
-void computeLocFromGui(int from[DIM]);
-
-
+void computeLocFromGui(int loc[DIM]);
 
 void spGameWindowDraw(SPCHESSGameWin* src, SDL_Event* event);
 void spGameWindowDestroy(SPCHESSGameWin* src);

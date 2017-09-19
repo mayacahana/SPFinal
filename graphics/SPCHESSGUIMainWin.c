@@ -6,8 +6,6 @@
  */
 
 #include "SPCHESSGUIMainWin.h"
-#include <SDL2/SDL_video.h>
-#include <stdio.h>
 
 SPCHESSMainWin* spMainWindowCreate() {
 	SPCHESSMainWin* res = NULL;
@@ -15,8 +13,9 @@ SPCHESSMainWin* spMainWindowCreate() {
 	if (res == NULL)
 		return NULL;
 
-	res->mainWindow = SDL_CreateWindow("Main Window", SDL_WINDOWPOS_CENTERED,
-	SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL);
+	res->mainWindow = SDL_CreateWindow("CHESS GAME: Main Window", SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED, 400, 400, SDL_WINDOW_OPENGL);
+	//SDL_WINDOW_INPUT_FOCUS
 
 	if (res->mainWindow == NULL) {
 		spMainWindowDestroy(res);
@@ -25,20 +24,22 @@ SPCHESSMainWin* spMainWindowCreate() {
 	}
 	res->mainRenderer = SDL_CreateRenderer(res->mainWindow, -1,
 			SDL_RENDERER_ACCELERATED);
+	//SDL_RENDERER_SOFTWARE
 	if (res->mainRenderer == NULL) {
 		spMainWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
 		return NULL;
 	}
 	res->numOfBtns = NUM_OF_MAIN_BUTTONS;
-	const char* activeImages[NUM_OF_MAIN_BUTTONS] = { ACT_IMG(new_game),
-			ACT_IMG(load), ACT_IMG(exit) };
+	const char* activeImages[NUM_OF_MAIN_BUTTONS] = { ACT_IMG(new_game), ACT_IMG(
+			load), ACT_IMG(exit) };
 
-	const char* inactiveImages[NUM_OF_MAIN_BUTTONS] = { INACT_IMG(new_game),
-			INACT_IMG(load), INACT_IMG(exit) };
+	const char* inactiveImages[NUM_OF_MAIN_BUTTONS] = {
+			INACT_IMG(new_game), INACT_IMG(load),
+			INACT_IMG(exit) };
 
-	int xBtns[NUM_OF_MAIN_BUTTONS] = { 220, 220, 220 };
-	int yBtns[NUM_OF_MAIN_BUTTONS] = { 100, 250, 400 };
+	int xBtns[NUM_OF_MAIN_BUTTONS] = { 125, 125, 125 };
+	int yBtns[NUM_OF_MAIN_BUTTONS] = { 63, 176, 289 };
 	bool visible[NUM_OF_MAIN_BUTTONS] = { true, true, true };
 	bool active[NUM_OF_MAIN_BUTTONS] = { true, true, true };
 	SPCHESS_BUTTON_TYPE types[NUM_OF_MAIN_BUTTONS] = { BUTTON_MAIN_NEW_GAME,
@@ -60,7 +61,7 @@ void spMainWindowDestroy(SPCHESSMainWin* src) {
 		return;
 
 	if (src->btns != NULL)
-		destroyButtons(src->btns);
+		destroyButtons(src->btns, src->numOfBtns);
 
 	if (src->mainRenderer != NULL)
 		SDL_DestroyRenderer(src->mainRenderer);
@@ -72,10 +73,10 @@ void spMainWindowDestroy(SPCHESSMainWin* src) {
 }
 
 void spMainWindowDraw(SPCHESSMainWin* src) {
-	if (src == NULL)
+	if (!src)
 		return;
 
-	SDL_SetRenderDrawColor(src->mainRenderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(src->mainRenderer, 40, 40, 40, 0);
 	SDL_RenderClear(src->mainRenderer);
 	for (int i = 0; i < src->numOfBtns; i++)
 		drawButton(src->btns[i]);
@@ -88,9 +89,11 @@ SPCHESS_MAIN_EVENT spMainWindowHandleEvent(SPCHESSMainWin* src,
 	if (!src || !event)
 		return SPCHESS_MAIN_INVALID_ARGUMENT;
 
+	SPCHESS_BUTTON_TYPE btn = NO_BUTTON;
+
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
+		btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
 		if (btn == BUTTON_MAIN_NEW_GAME)
 			return SPCHESS_MAIN_NEW_GAME;
 		else if (btn == BUTTON_MAIN_LOAD)
