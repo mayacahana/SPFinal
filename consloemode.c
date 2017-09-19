@@ -20,6 +20,7 @@ int activeconsole() {
 	settingState(game);
 	//continue in the game, until the game has reached terminal state or 'quit' command has entered
 	while (true) {
+
 		if (game->gameMode == 2) { //two players mode
 			spChessGamePrintBoard(game);
 			printTurn(game);
