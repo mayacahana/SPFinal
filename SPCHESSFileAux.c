@@ -5,127 +5,60 @@
  *      Author: mayacahana
  */
 #include "SPCHESSFileAux.h"
+#include "SPCHESSParser.h"
 
 SPCHESSGame* getStateFromFile(char* path) {
-	int i = 0, j = 0;
-	char nextChar;
-	char nextTag[13];
-	char nextValue[100], nextTurn;
-	int gameMode, difficulty = 2, userColor = 1;
-	char board[BOARD_SIZE][BOARD_SIZE];
-	int piecesArrayPlayerW[NUM_OF_PIECES][DIM],
-			piecesArrayPlayerB[NUM_OF_PIECES][DIM];
-	FILE* in = fopen(path, "r");
+	if (!path)
+		return NULL;
 
+	char tmpLine[SPCHESS_MAX_LINE_LENGTH];
+	const char delim[8] = " \t\r\n";
+	char* cleanLine = NULL;
+	SPCHESSGame* loaded = spChessGameCreate(HISTORY_SIZE);
+	//check if the file can be opened
+	FILE* in = fopen(path, "r");
 	if (!in) {
 		printf("Error: File doesn’t exist or cannot be opened\n");
 		return NULL;
 	}
 
-	while (i < 47) {
-		nextChar = fgetc(in);
-		i++;
-	}
-	getNextTag(in, nextTag);
-	getNextValue(in, nextValue);
-	if (strcmp(nextTag, "current_turn") == 0) {
-		if (strcmp(nextValue, "0") == 0)
-			nextTurn = SPCHESS_GAME_PLAYER_2_SYMBOL;
-		else
-			nextTurn = SPCHESS_GAME_PLAYER_1_SYMBOL;
-	}
-	getNextTag(in, nextTag);
-	nextChar = fgetc(in);
-	nextChar = fgetc(in);
-
-	//next tag - game_mode
-	getNextTag(in, nextTag);
-	getNextValue(in, nextValue);
-	if (strcmp(nextTag, "game_mode") == 0) {
-		if (strcmp(nextValue, "1") == 0)
-			gameMode = 1;
-		else
-			gameMode = 2;
-	}
-	getNextTag(in, nextTag);
-	nextChar = fgetc(in);
-	nextChar = fgetc(in);
-
-	//next tag - difficulty
-	getNextTag(in, nextTag);
-	getNextValue(in, nextValue);
-
-	if (strcmp(nextTag, "difficulty") == 0) {
-		if (strcmp(nextValue, "5") == 0) {
-			printf("Expert level not supported\n");
-			return NULL;
-		}
-		difficulty = (int) (nextValue[0] - '0');
-		getNextTag(in, nextTag);
-		nextChar = fgetc(in);
-		nextChar = fgetc(in);
-		//next tag - user_color
-		getNextTag(in, nextTag);
-		getNextValue(in, nextValue);
-
-		if (strcmp(nextTag, "user_color") == 0) {
-
-			if (strcmp(nextValue, "0") == 0) {
-				userColor = 0;
-			} else {
-				userColor = 1;
-			}
-		}
-		getNextTag(in, nextTag);
-		nextChar = fgetc(in);
-		nextChar = fgetc(in);
-		//next tag - board
-		getNextTag(in, nextTag);
-		getNextValue(in, nextValue);
-	}
-	if (strcmp(nextTag, "board") == 0) {
-		for (int i = BOARD_SIZE - 1; i >= 0; i--) {
-			nextChar = fgetc(in);
-			while (nextChar != '>') //moving on <row_i>
-				nextChar = fgetc(in);
-			for (j = 0; j < BOARD_SIZE; j++) {
-				nextChar = fgetc(in);
-				board[i][j] = nextChar;
-			}
-			nextChar = fgetc(in);
-			while (nextChar != '>') //moving on </row_i>
-				nextChar = fgetc(in);
-		}
+	while (fgets(tmpLine, SPCHESS_MAX_LINE_LENGTH, in)) {
+		cleanLine = strtok(tmpLine, delim);
+		if (cleanLine != NULL)
+			fillGameDataDueToLine(cleanLine, loaded);
 	}
 	fclose(in);
+	//fill pieces array acoording to game board
 
-	//fill the pieces array accordingly
-	//initialize arrays to -17
-	for (i = 0; i < NUM_OF_PIECES; i++) {
-		for (j = 0; j < DIM; j++) {
-			piecesArrayPlayerW[i][j] = EATEN;
-			piecesArrayPlayerB[i][j] = EATEN;
+	//initialize arrays to EATEN
+	for (int i = 0; i < NUM_OF_PIECES; i++) {
+		for (int j = 0; j < DIM; j++) {
+			loaded->piecesPlayer1[i][j] = EATEN;
+			loaded->piecesPlayer2[i][j] = EATEN;
 		}
 	}
-	for (i = 0; i < BOARD_SIZE; i++) {
-		for (j = 0; j < BOARD_SIZE; j++) {
-			if (board[i][j] != EMPTY) {
-				int subArray[DIM] = {-1, -1};
-				getSubArrayFromPiece(board[i][j], subArray);
-				//BLACK
-				if (isupper(board[i][j])) {
+
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			if (loaded->gameBoard[i][j] != EMPTY) {
+				int subArray[DIM] = { -1, -1 };
+				getSubArrayFromPiece(loaded->gameBoard[i][j], subArray);
+				//BLACK PIECE
+				if (isupper(loaded->gameBoard[i][j])) {
 					for (int k = subArray[0]; k <= subArray[1]; k++) {
-						if (piecesArrayPlayerB[k][0] == EATEN && piecesArrayPlayerB[k][1] == EATEN) {
-							piecesArrayPlayerB[k][0] = i;
-							piecesArrayPlayerB[k][1] = j;
+						if (loaded->piecesPlayer2[k][0] == EATEN
+								&& loaded->piecesPlayer2[k][1] == EATEN) {
+							loaded->piecesPlayer2[k][0] = i;
+							loaded->piecesPlayer2[k][1] = j;
 							break;
 						}
 					}
-				} else { //WHITE
+				} else { //WHITE PIECE
 					for (int k = subArray[0]; k <= subArray[1]; k++) {
-						if (piecesArrayPlayerW[k][0] == EATEN && piecesArrayPlayerB[k][1] == EATEN) {
-							piecesArrayPlayerW[k][0] = i;
-							piecesArrayPlayerW[k][1] = j;
+						if (loaded->piecesPlayer1[k][0] == EATEN
+								&& loaded->piecesPlayer1[k][1] == EATEN) {
+							loaded->piecesPlayer1[k][0] = i;
+							loaded->piecesPlayer1[k][1] = j;
 							break;
 						}
 					}
@@ -133,26 +66,74 @@ SPCHESSGame* getStateFromFile(char* path) {
 			}
 		}
 	}
-	//create new game
-	SPCHESSGame* newGame = spChessGameCreate(HISTORY_SIZE);
 
-	newGame->gameMode = gameMode;
-	newGame->colorUser = userColor;
-	newGame->difficulty = difficulty;
-	newGame->currentPlayer = nextTurn;
-	//copy game board
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++)
-			newGame->gameBoard[i][j] = board[i][j];
+	return loaded;
+}
+
+void fillGameDataDueToLine(char* cleanLine, SPCHESSGame* src) {
+	const char delimTag[3] = "<>";
+	char* tmpLine = NULL;
+	char* dataLine = NULL;
+	int tmp = 0;
+
+	tmpLine = strtok(cleanLine, delimTag);
+	//switch case according to the tag content:
+
+	//current turn
+	if (strstr(tmpLine, "current_turn") != NULL) {
+		dataLine = strtok(NULL, delimTag);
+		tmp = dataLine[0] - 48;
+		if (tmp == 0)
+			src->currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL;
+		else
+			src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
 	}
-	//copy pieces array
-	for (int i = 0; i < NUM_OF_PIECES; i++) {
-		for (int j = 0; j < DIM; j++) {
-			newGame->piecesPlayer1[i][j] = piecesArrayPlayerW[i][j];
-			newGame->piecesPlayer2[i][j] = piecesArrayPlayerB[i][j];
+
+	//game mode
+	if (strstr(tmpLine, "game_mode") != NULL) {
+		dataLine = strtok(NULL, delimTag);
+		tmp = dataLine[0] - 48;
+		if (tmp == 1)
+			src->gameMode = 1;
+		else
+			src->gameMode = 2;
+	}
+
+	//difficulty
+	if (strstr(tmpLine, "difficulty") != NULL) {
+		dataLine = strtok(NULL, delimTag);
+		//no difficulty in case of game mode 2
+		if (dataLine[0] == '/')
+			src->difficulty = DEFAULT_DIFFICULTY;
+		else {
+			tmp = dataLine[0] - 48;
+			src->difficulty = tmp;
 		}
 	}
-	return newGame;
+
+	//user_color
+	if (strstr(tmpLine, "user_color") != NULL) {
+		dataLine = strtok(NULL, delimTag);
+		//no difficulty in case of game mode 2
+		if (dataLine[0] == '/')
+			src->colorUser = DEFAULT_USER_COLOR;
+		else {
+			tmp = dataLine[0] - 48;
+			if (tmp == 0)
+				src->colorUser = 0;
+			else
+				src->colorUser = 1;
+		}
+	}
+
+	//row of board
+	if (strstr(tmpLine, "row") != NULL) {
+		tmp = tmpLine[strlen(tmpLine) - 1] - 48 - 1; //row number (0-base)
+		dataLine = strtok(NULL, delimTag);
+		for (int i = 0; i < BOARD_SIZE; i++)
+			src->gameBoard[tmp][i] = dataLine[i];
+		return;
+	}
 }
 
 int saveGameToFile(char* path, SPCHESSGame* game) {
@@ -162,7 +143,7 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		return -1;
 	fprintf(out,
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
-	if (game->currentPlayer == 'W')
+	if (game->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
 		fputs("1</current_turn>\n\t<game_mode>", out);
 	else {
 		fputs("0</current_turn>\n\t<game_mode>", out);
@@ -193,26 +174,3 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	fclose(out);
 	return 0;
 }
-
-void getNextTag(FILE* in, char nextTag[13]) {
-	int i = 0;
-	char nextChar = fgetc(in);
-	nextChar = fgetc(in);
-	while (nextChar != '>') {
-		nextTag[i] = nextChar;
-		i++;
-		nextChar = fgetc(in);
-	}
-	nextTag[i] = '\0';
-}
-void getNextValue(FILE* in, char nextValue[6]) {
-	int i = 0;
-	char nextChar = fgetc(in);
-	while (nextChar != '<') {
-		nextValue[i] = nextChar;
-		i++;
-		nextChar = fgetc(in);
-	}
-	nextValue[i] = '\0';
-}
-

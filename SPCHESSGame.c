@@ -1008,12 +1008,12 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
 	//print the undo move
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 		printf("Undo move for player white: <%d,%c> -> <%d,%c>\n",
-				elem->from[0] + 1, (char) (elem->from[1] + 'A'),
-				elem->to[0] + 1, (char) (elem->to[1] + 'A'));
+				elem->to[0] + 1, (char) (elem->to[1] + 'A'),
+				elem->from[0] + 1, (char) (elem->from[1] + 'A'));
 	} else { //src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
 		printf("Undo move for player black: <%d,%c> -> <%d,%c>\n",
-				elem->from[0] + 1, (char) (elem->from[1] + 'A'),
-				elem->to[0] + 1, (char) (elem->to[1] + 'A'));
+				elem->to[0] + 1, (char) (elem->to[1] + 'A'),
+				elem->from[0] + 1, (char) (elem->from[1] + 'A'));
 	}
 	return SPCHESS_GAME_SUCCESS;
 }
@@ -1130,7 +1130,7 @@ bool existsPlayer2KingSaver(SPCHESSGame* src) {
 
 	src->currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL; // (?)
 	bool exist = false;
-//check if there is a move that after it the king is not threated
+	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 			int from[DIM] =
@@ -1160,7 +1160,7 @@ bool existsPlayer1KingSaver(SPCHESSGame* src) {
 
 	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL; // (?)
 	bool exist = false;
-//check if there is a move that after it the king is not threated
+	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
 			int from[DIM] =

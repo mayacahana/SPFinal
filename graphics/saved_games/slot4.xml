@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <game>
-	<current_turn>0</current_turn>
+	<current_turn>1</current_turn>
 	<game_mode>2</game_mode>
 	<board>
-		<row_8>RNBQKBNR</row_8>
+		<row_8>R_BQKBNR</row_8>
 		<row_7>MM_MMMMM</row_7>
-		<row_6>________</row_6>
+		<row_6>N_______</row_6>
 		<row_5>__M_____</row_5>
 		<row_4>___m____</row_4>
 		<row_3>_____n__</row_3>

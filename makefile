@@ -69,7 +69,7 @@ SPCHESSArrayList.o: SPCHESSArrayList.h SPCHESSArrayList.c
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSGame.o: SPCHESSGame.c SPCHESSGame.h SPCHESSArrayList.h
 	$(CC) $(COMP_FLAG) -c $*.c
-SPCHESSFileAux.o: SPCHESSFileAux.c SPCHESSGame.h SPCHESSArrayList.h
+SPCHESSFileAux.o: SPCHESSFileAux.c SPCHESSGame.h SPCHESSArrayList.h SPCHESSParser.h
 	$(CC) $(COMP_FLAG) -c $*.c
 SPCHESSParser.o: SPCHESSParser.c SPCHESSParser.h
 	$(CC) $(COMP_FLAG) -c $*.c
