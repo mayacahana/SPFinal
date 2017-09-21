@@ -1,9 +1,3 @@
-/*
- * SPCHESSArrayList.c
- *
- *  Created on: Aug 22, 2017
- *      Author: mayacahana
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -100,7 +94,7 @@ void spArrayListDestroy(SPCHESSArrayList* src) {
 move* spArrayListGetAt(SPCHESSArrayList* src, int index) {
 	if (!src || index < 0 || index >= src->actualSize)
 		return NULL;
-	return (src->elements[index]);
+	return spCopyMove(src->elements[index]);
 }
 
 move* spArrayListGetFirst(SPCHESSArrayList* src) {

@@ -1,9 +1,3 @@
-/*
- * SPCHESSParser.c
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
 #include "SPCHESSParser.h"
 #include <stdbool.h>
 
@@ -183,15 +177,21 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 			} else if (seen_cmd_with_two_str) { //move commmand
 				if (!checkPosPat(word)) {
 					res.validTwoStr = false;
-					res.cmd = SPCHESS_MOVE;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
 				}
 				pat = strtok(NULL, " \t\r\n");
-				if (!pat || strcmp(pat, "to") != 0)
+				if (!pat || strcmp(pat, "to") != 0) {
+					res.validTwoStr = false;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
+				}
 				pat = strtok(NULL, " \t\r\n");
-				if (!pat)
+				if (!pat) {
+					res.validTwoStr = false;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
+				}
 				if (checkPosPat(pat)) { // check if <i,j>
 					res.validTwoStr = true;
 					res.strOne = (char *) malloc(
@@ -202,7 +202,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 					strcpy(res.strTwo, pat);
 				} else {
 					res.validTwoStr = false;
-					res.cmd = SPCHESS_MOVE;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
 				}
 				seen_cmd_with_two_str = false;
@@ -262,8 +262,9 @@ int spParserGameModeCommand(char* str) {
 }
 
 bool checkPosPat(char *str) {
-	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ','
-			&& isupper(str[3]) && str[4] == '>') {
+	if (strlen(str) >= 5 && str[0] == '<'
+			&& (isdigit(str[1]) || isupper(str[1])) && str[2] == ','
+			&& (isdigit(str[3]) || isupper(str[3])) && str[4] == '>') {
 		return true;
 	}
 	return false;

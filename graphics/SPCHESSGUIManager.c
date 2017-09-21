@@ -155,7 +155,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToLoadEvent(SPCHESSGuiManager* src,
 			printf("couldn't create game window\n");
 			return SPCHESS_MANAGER_QUIT;
 		}
-		src->gameWin->isSaved = true; //(?)
+		src->gameWin->isSaved = true;
 		src->activeWin = SPCHESS_GAME_WINDOW_ACTIVE;
 		src->prevWin = SPCHESS_LOAD_WINDOW_ACTIVE;
 	}
@@ -178,6 +178,7 @@ SPCHESS_MANAGER_EVENT handleManagerDueToSetEvent(SPCHESSGuiManager* src,
 		src->prevWin = SPCHESS_SET_WINDOW_ACTIVE;
 	}
 	if (event == SPCHESS_SET_START) {
+		spSetWindowHide(src->setWin);
 		src->gameWin = spGameWindowCreate(src->setWin->game);
 		if (src->gameWin == NULL) {
 			printf("couldn't create game window\n");

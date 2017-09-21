@@ -49,7 +49,7 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 		}
 
 		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]],
-		WHITE_P);
+		EMPTY);
 		getLegalMovesForPiece(src, step, legalMoves);
 		spDestroyMove(step);
 		for (int k = 0; k < MAX_STEPS_PIECE && legalMoves[k][0] != -1; k++) {

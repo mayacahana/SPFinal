@@ -1,14 +1,7 @@
-/*
- * main.c
- *
- *  Created on: 31 באוג׳ 2017
- *      Author: uri
- */
-
 #include "consolemode.h"
 
 int activeconsole() {
-	setvbuf(stdout, NULL, _IONBF, 0);
+	SP_BUFF_SET();
 	SPCHESSGame* game = spChessGameCreate(HISTORY_SIZE);
 	bool userIsWhite;
 	if (!game) {

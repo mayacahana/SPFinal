@@ -130,7 +130,7 @@ bool flag, char colorForFunc) {
 				continue;
 		}
 
-		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]], WHITE_P);
+		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]], EMPTY);
 		getLegalMovesForPiece(src, step, legalMoves);
 		spDestroyMove(step);
 

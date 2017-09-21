@@ -1,9 +1,3 @@
-/*
- * SPCHESSParser.h
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
 #ifndef SPCHESSPARSER_H_
 #define SPCHESSPARSER_H_
 
@@ -15,8 +9,15 @@
 #define SPCHESS_MAX_LINE_LENGTH 1024
 #define perror_message_malloc (perror("Error: standard function malloc has failed"))
 
+/*
+ * helper fuction: returns ture iff the
+ * str param is a valid integer.
+ */
 bool spParserIsInt(const char* str);
 
+/*
+ * enum to represents user's command type.
+ */
 typedef enum {
 	SPCHESS_GAME_MODE,
 	SPCHESS_DIFFICULTY,
@@ -34,6 +35,12 @@ typedef enum {
 	SPCHESS_SUCCESS,
 } SPCHESS_COMMAND;
 
+/*
+ * structure represents a user command in the setting state:
+ * contains it's type,
+ * a bool represents the validity of the
+ * relavent param and the relavent param.
+ */
 typedef struct game_setting_command_t {
 	SPCHESS_COMMAND cmd;
 	bool validIntArg;
@@ -42,10 +49,23 @@ typedef struct game_setting_command_t {
 	char *str;
 } SPCHESS_GAME_SETTINGS_Command;
 
+/*
+ * function parses a command line in the setting mode
+ * and returns a structure of a setting command with the above params.
+ */
 SPCHESS_GAME_SETTINGS_Command spParserPraseSettingLine(const char* str);
 
+/*
+ * helper functons which returns the enum represents the string command recieved - setting state..
+ */
 int spParserSettingCommand(char* str);
 
+/*
+ * structure represents a user command in the game setting:
+ * contains it's type,
+ * a bool represents the validity of the
+ * relavent parama and the relavent params.
+ */
 typedef struct game_mode_command_t {
 	SPCHESS_COMMAND cmd;
 	bool validOneStr;
@@ -53,10 +73,23 @@ typedef struct game_mode_command_t {
 	char *strOne, *strTwo;
 } SPCHESS_GAME_MODE_Command;
 
+
+/*
+ * function parses a command line in the game mode
+ * and returns a structure of a game command with the above params.
+ */
 SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str);
+
+/*
+ * helper functons which returns the enum represents
+ * the string command recieved - game mode.
+ */
 int spParserGameModeCommand(char* str);
 
-//return true iff str is the pattern '<x,y>' where x is int and y is an upper char
+/*
+ * return true iff str is the pattern '<x,y>'
+ * where x is int and y is an upper char
+ */
 bool checkPosPat(char *str);
 
 #endif /* SPCHESSPARSER_H_ */
