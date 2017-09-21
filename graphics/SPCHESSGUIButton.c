@@ -6,7 +6,22 @@
  */
 
 #include "SPCHESSGUIButton.h"
-#include "SPCHESSGUICommon.h"
+
+SDL_Rect* spCopyRect(SDL_Rect* src) {
+	if (src == NULL)
+		return NULL;
+
+	SDL_Rect* res = malloc(sizeof(SDL_Rect));
+	if (res == NULL)
+		return NULL;
+
+	res->h = src->h;
+	res->w = src->w;
+	res->x = src->x;
+	res->y = src->y;
+	return res;
+}
+
 Button* createButton(SDL_Renderer* windowRender, const char* activeImage,
 		const char* inactiveImage, SDL_Rect* location, bool visible,
 		bool active, SPCHESS_BUTTON_TYPE type) {
@@ -23,6 +38,7 @@ Button* createButton(SDL_Renderer* windowRender, const char* activeImage,
 
 	//loading active image
 	if (res == NULL || loadingSurface == NULL || activeTexture == NULL) {
+		printf("Could not create a surface: %s\n", activeImage);
 		SDL_FreeSurface(loadingSurface);
 		SDL_DestroyTexture(activeTexture);
 		free(res);
@@ -36,6 +52,7 @@ Button* createButton(SDL_Renderer* windowRender, const char* activeImage,
 			loadingSurface2);
 
 	if (res == NULL || loadingSurface2 == NULL || inactiveTexture == NULL) {
+		printf("Could not create a surface: %s\n", inactiveImage);
 		SDL_FreeSurface(loadingSurface2);
 		SDL_DestroyTexture(inactiveTexture);
 		SDL_DestroyTexture(activeTexture);
@@ -68,12 +85,11 @@ void destroyButton(Button* src) {
 void drawButton(Button* src) {
 	if (!src)
 		return;
-
 	if (src->visible) {
-		if (src->active)
+		if (src->active) {
 			SDL_RenderCopy(src->windowRenderer, src->activeTexture, NULL,
 					src->location);
-		else
+		} else
 			SDL_RenderCopy(src->windowRenderer, src->inactiveTexture, NULL,
 					src->location);
 	}

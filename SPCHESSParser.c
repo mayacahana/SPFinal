@@ -1,9 +1,3 @@
-/*
- * SPCHESSParser.c
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
 #include "SPCHESSParser.h"
 #include <stdbool.h>
 
@@ -154,7 +148,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 	res.validOneStr = false;
 	res.validTwoStr = false;
 	bool seen_cmd = false, seen_cmd_with_one_str_save = false,
-			seen_cmd_with_one_str_get_moves = false, seen_cmd_with_two_str =
+			seen_cmd_with_two_str =
 			false;
 	int arg = 0;
 	char *word = strtok(strcopy, " \t\r\n"), *pat;
@@ -172,9 +166,7 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 				arg = spParserGameModeCommand(word);
 				if (arg == SPCHESS_INVALID_LINE) { // invalid line
 					break;
-				} else if (arg == SPCHESS_GET_MOVES)
-					seen_cmd_with_one_str_get_moves = true;
-				else if (arg == SPCHESS_SAVE)
+				} else if (arg == SPCHESS_SAVE)
 					seen_cmd_with_one_str_save = true;
 				else if (arg == SPCHESS_MOVE)
 					seen_cmd_with_two_str = true;
@@ -185,15 +177,21 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 			} else if (seen_cmd_with_two_str) { //move commmand
 				if (!checkPosPat(word)) {
 					res.validTwoStr = false;
-					res.cmd = SPCHESS_MOVE;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
 				}
 				pat = strtok(NULL, " \t\r\n");
-				if (!pat || strcmp(pat, "to") != 0)
+				if (!pat || strcmp(pat, "to") != 0) {
+					res.validTwoStr = false;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
+				}
 				pat = strtok(NULL, " \t\r\n");
-				if (!pat)
+				if (!pat) {
+					res.validTwoStr = false;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
+				}
 				if (checkPosPat(pat)) { // check if <i,j>
 					res.validTwoStr = true;
 					res.strOne = (char *) malloc(
@@ -204,15 +202,10 @@ SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str) {
 					strcpy(res.strTwo, pat);
 				} else {
 					res.validTwoStr = false;
-					res.cmd = SPCHESS_MOVE;
+					res.cmd = SPCHESS_INVALID_LINE;
 					break;
 				}
 				seen_cmd_with_two_str = false;
-			} else if (seen_cmd_with_one_str_get_moves && checkPosPat(word)) { //get moves command
-				res.strOne = (char *) malloc((strlen(word) + 1) * sizeof(char));
-				strcpy(res.strOne, word);
-				res.validOneStr = true;
-				seen_cmd_with_one_str_get_moves = false;
 			} else if (seen_cmd_with_one_str_save) { // save command
 				res.strOne = (char *) malloc((strlen(word) + 1) * sizeof(char));
 				strcpy(res.strOne, word);
@@ -247,10 +240,6 @@ int spParserGameModeCommand(char* str) {
 		free(strcopy);
 		return SPCHESS_MOVE;
 	}
-	if (strcmp(strcopy, "get_moves") == 0) {
-		free(strcopy);
-		return SPCHESS_GET_MOVES;
-	}
 	if (strcmp(strcopy, "save") == 0) {
 		free(strcopy);
 		return SPCHESS_SAVE;
@@ -273,8 +262,9 @@ int spParserGameModeCommand(char* str) {
 }
 
 bool checkPosPat(char *str) {
-	if (strlen(str) >= 5 && str[0] == '<' && isdigit(str[1]) && str[2] == ','
-			&& isupper(str[3]) && str[4] == '>') {
+	if (strlen(str) >= 5 && str[0] == '<'
+			&& (isdigit(str[1]) || isupper(str[1])) && str[2] == ','
+			&& (isdigit(str[3]) || isupper(str[3])) && str[4] == '>') {
 		return true;
 	}
 	return false;

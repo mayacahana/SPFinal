@@ -4,14 +4,9 @@
  *  Created on: 7 בספט׳ 2017
  *      Author: uri
  */
+#include "guimode.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include "graphics/SPCHESSGUIManager.h"
-
-int activeGui() {
+int activegui() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) { //SDL2 INIT
 		printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
 		return 1;
@@ -27,10 +22,9 @@ int activeGui() {
 		if (spManagerHandleEvent(manager, &event) == SPCHESS_MANAGER_QUIT)
 			break;
 
-		spManagerDraw(manager, &event);
+		//spManagerDraw(manager, &event);
 	}
 	spManagerDestroy(manager);
 	SDL_Quit();
 	return 0;
 }
-

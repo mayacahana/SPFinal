@@ -346,11 +346,11 @@ bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem) {
 
 	int legalMoves[MAX_STEPS_PIECE][DIM]; //pre-allocated array of legal moves
 	//init values with -1's
-	for (int i = 0; i < MAX_STEPS_PIECE; i++) {
-		for (int j = 0; j < DIM; j++) {
-			legalMoves[i][j] = -1;
-		}
-	}
+//	for (int i = 0; i < MAX_STEPS_PIECE; i++) {
+//		for (int j = 0; j < DIM; j++) {
+//			legalMoves[i][j] = -1;
+//		}
+//	}
 	getLegalMovesForPiece(src, elem, legalMoves);
 	//check if target location is one of the legal moves above
 	for (int i = 0; i < MAX_STEPS_PIECE && legalMoves[i][0] != -1; i++) {
@@ -366,6 +366,11 @@ bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem) {
 void getLegalMovesForPiece(SPCHESSGame* src, move* elem,
 		int legalMoves[MAX_STEPS_PIECE][DIM]) {
 
+	for (int i = 0; i < MAX_STEPS_PIECE; i++) {
+		for (int j = 0; j < DIM; j++) {
+			legalMoves[i][j] = -1;
+		}
+	}
 	char piece = elem->piece;
 
 	//decide moves acording to piece's type:

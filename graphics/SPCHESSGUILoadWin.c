@@ -9,12 +9,11 @@
 SPCHESSLoadWin* spLoadWindowCreate() {
 	SPCHESSLoadWin* res = (SPCHESSLoadWin*) calloc(sizeof(SPCHESSLoadWin),
 			sizeof(char));
-	SDL_Surface* loadingSurface = NULL; //Used as temp surface
 	if (res == NULL) {
 		printf("Couldn't create spChessLoadWin struct\n");
 		return NULL;
 	}
-	res->loadWindow = SDL_CreateWindow("Load", SDL_WINDOWPOS_CENTERED,
+	res->loadWindow = SDL_CreateWindow("CHESS GAME: Load Window", SDL_WINDOWPOS_CENTERED,
 	SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL);
 	if (res->loadWindow == NULL) {
 		spLoadWindowDestroy(res);
@@ -32,15 +31,15 @@ SPCHESSLoadWin* spLoadWindowCreate() {
 
 	res->numOfBtns = NUM_OF_LOAD_BUTTONS;
 	const char* activeImages[NUM_OF_LOAD_BUTTONS] = { ACT_IMG(slot0), ACT_IMG(
-			slot1), ACT_IMG(slot2), ACT_IMG(slot3), ACT_IMG(slot4),
-			ACT_IMG(back), ACT_IMG(load) };
+			slot1), ACT_IMG(slot2), ACT_IMG(slot3), ACT_IMG(slot4), ACT_IMG(
+			back), ACT_IMG(load) };
 
 	const char* inactiveImages[NUM_OF_LOAD_BUTTONS] = { INACT_IMG(slot0),
-			INACT_IMG(slot1), INACT_IMG(slot2), INACT_IMG(slot3),
-			INACT_IMG(slot4), INACT_IMG(back), INACT_IMG(load) };
+			INACT_IMG(slot1), INACT_IMG(slot2), INACT_IMG(slot3), INACT_IMG(
+					slot4), INACT_IMG(back), INACT_IMG(load) };
 
-	int xBtns[NUM_OF_LOAD_BUTTONS] = { 220, 220, 220, 220, 220, 100, 400 };
-	int yBtns[NUM_OF_LOAD_BUTTONS] = { 50, 130, 210, 290, 370, 450, 500, 500};
+	int xBtns[NUM_OF_LOAD_BUTTONS] = { 230, 230, 230, 230, 230, 50, 400 };
+	int yBtns[NUM_OF_LOAD_BUTTONS] = { 50, 130, 210, 290, 370, 490, 490 };
 
 	bool visible[NUM_OF_LOAD_BUTTONS] = { false, false, false, false, false,
 	true, true };
@@ -75,7 +74,7 @@ void spLoadWindowDestroy(SPCHESSLoadWin* src) {
 	if (src->btns != NULL)
 		destroyButtons(src->btns, src->numOfBtns);
 
-	if(src->game != NULL)
+	if (src->game != NULL)
 		spChessGameDestroy(src->game);
 
 	if (src->loadRenderer != NULL)
@@ -104,19 +103,24 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 	if (!src || !event)
 		return SPCHESS_LOAD_INVALID_ARGUMENT;
 
+	int numOfSlots = countSavedFiles();
+	for (int i = 0; i < numOfSlots; i++)
+		src->btns[i]->visible = true;
+
+	SPCHESS_BUTTON_TYPE btn = NO_BUTTON;
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-		SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->btns, src->numOfBtns,
-				event, false);
+		btn = getButtonClicked(src->btns, src->numOfBtns, event, false);
 		if (btn == BUTTON_LOAD_BACK)
 			return SPCHESS_LOAD_BACK;
+
 		if (btn >= BUTTON_LOAD_SLOT0 && btn <= BUTTON_LOAD_SLOT4) {
 
 			//de-activate all slots
 			src->btns[0]->active = false;
 			src->btns[1]->active = false;
 			src->btns[2]->active = false;
-			src->btns[3] ->active= false;
+			src->btns[3]->active = false;
 			src->btns[4]->active = false;
 
 			src->btns[btn - 3]->active = true; //chosen slot is activated (assuming BUTTOM_LOAD_SLOT0 = 3)
@@ -124,14 +128,33 @@ SPCHESS_LOAD_EVENT spLoadWindowHandleEvent(SPCHESSLoadWin* src,
 			src->btns[6]->active = true; //change active of load btn
 			return SPCHESS_LOAD_SLOT;
 		}
-		if (btn == SPCHESS_LOAD_LOAD && src->slotPicked != -1) {
-			SPCHESSGame* loaded = getStateFromFile(saved_files[src->slotPicked]);
-			spChessGameClear(src->game);
+		if (btn == BUTTON_LOAD_LOAD && src->slotPicked != -1) {
+			SPCHESSGame* loaded;
+			switch (src->slotPicked) {
+			case 4:
+				loaded = getStateFromFile(SLOT4);
+				break;
+			case 3:
+				loaded = getStateFromFile(SLOT3);
+				break;
+			case 2:
+				loaded = getStateFromFile(SLOT2);
+				break;
+			case 1:
+				loaded = getStateFromFile(SLOT1);
+				break;
+			//SLOT0
+			default:
+				loaded = getStateFromFile(SLOT0);
+				break;
+			}
+			spChessGameDestroy(src->game);
+			src->game = spChessGameCreate(HISTORY_SIZE);
 			spChessGameCopyInfo(src->game, loaded);
 			spChessGameDestroy(loaded);
+			return SPCHESS_LOAD_LOAD;
 		}
-	break;
-
+		break;
 	case SDL_WINDOWEVENT:
 		if (event->window.event == SDL_WINDOWEVENT_CLOSE)
 			return SPCHESS_LOAD_QUIT;
@@ -150,5 +173,4 @@ void spLoadWindowHide(SPCHESSLoadWin* src) {
 void spLoadWindowShow(SPCHESSLoadWin* src) {
 	SDL_ShowWindow(src->loadWindow);
 }
-
 

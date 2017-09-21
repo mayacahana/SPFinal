@@ -11,13 +11,14 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 			sizeof(char));
 	SDL_Surface* loadingSurfaceWhite = NULL; //Used as temp surface
 	SDL_Surface* loadingSurfaceBlack = NULL; //Used as temp surface
-	SDL_Surface* loadingSurfaceGrid = NULL; //loading surface grid
+	SDL_Surface* loadingSurfaceGrid = NULL; //loading surface grid, Used as temp surface
 	if (res == NULL) {
 		printf("Couldn't create spChessGameWin struct\n");
 		return NULL;
 	}
-	res->gameWindow = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
+	res->gameWindow = SDL_CreateWindow("CHESS GAME: Game Window",
+	SDL_WINDOWPOS_CENTERED,
+	SDL_WINDOWPOS_CENTERED, 850, 650, SDL_WINDOW_OPENGL);
 	if (res->gameWindow == NULL) {
 		spGameWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
@@ -36,14 +37,14 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 	res->numOfPanel = NUM_OF_GAME_BUTTONS;
 	const char* activeImages[NUM_OF_GAME_BUTTONS] = { ACT_IMG(restart), ACT_IMG(
 			save), ACT_IMG(load), ACT_IMG(undo), ACT_IMG(main_menu), ACT_IMG(
-					exit) };
+			exit) };
 
-	const char* inactiveImages[NUM_OF_GAME_BUTTONS] = { INACT_IMG(restart),
+	const char* inactiveImages[NUM_OF_GAME_BUTTONS] = { ACT_IMG(restart),
 			INACT_IMG(save), INACT_IMG(load), INACT_IMG(undo), INACT_IMG(
 					main_menu), INACT_IMG(exit) };
 
-	int xBtns[NUM_OF_GAME_BUTTONS] = { 50, 50, 50, 50, 50, 50 };
-	int yBtns[NUM_OF_GAME_BUTTONS] = { 40, 110, 170, 230, 290, 350 };
+	int xBtns[NUM_OF_GAME_BUTTONS] = { 25, 25, 25, 25, 25, 25 };
+	int yBtns[NUM_OF_GAME_BUTTONS] = { 40, 120, 200, 280, 490, 570 };
 
 	bool visible[NUM_OF_GAME_BUTTONS] = { true, true, true, true, true, true };
 
@@ -62,7 +63,7 @@ SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {
 		free(res);
 	}
 	//Create a chess_board texture:
-	loadingSurfaceGrid = SDL_LoadBMP(ACT_IMG("chess_grid"));
+	loadingSurfaceGrid = SDL_LoadBMP(ACT_IMG(chess_grid));
 	if (loadingSurfaceGrid == NULL) {
 		printf("Could not create a surface: %s\n", SDL_GetError());
 		return NULL;
@@ -153,7 +154,6 @@ void spGameWindowDestroy(SPCHESSGameWin* src) {
 			SDL_DestroyTexture(src->blackPieces[i]);
 		}
 	}
-
 	if (src->gameRenderer != NULL)
 		SDL_DestroyRenderer(src->gameRenderer);
 
@@ -167,38 +167,40 @@ void spGameWindowDraw(SPCHESSGameWin* src, SDL_Event* event) {
 	if (src == NULL)
 		return;
 
-	SDL_SetRenderDrawColor(src->gameRenderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(src->gameRenderer, 169, 169, 169, 255);
 	SDL_RenderClear(src->gameRenderer);
 
 	for (int i = 0; i < src->numOfPanel; i++)
 		drawButton(src->panel[i]);
 
 	SDL_Rect rec = { .x = PANEL_OFFSET, .y = 0, .w = GUI_BOARD_SIZE, .h =
-			GUI_BOARD_SIZE }; //rect of chess_grid
+	GUI_BOARD_SIZE }; //rect of chess_grid
 	SDL_RenderCopy(src->gameRenderer, src->chessGrid, NULL, &rec);
 
 	//fill the board acoording to pieces
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
-			if (i != src->chosenPiece[0] && j != src->chosenPiece[1]) { //drae pieces at their places, beside the chosen piece
-				rec.x = PANEL_OFFSET + j * (GUI_BOARD_SIZE / BOARD_SIZE);
-				rec.y = (GUI_BOARD_SIZE / BOARD_SIZE) * (BOARD_SIZE - 1 - i);
-				rec.h = (GUI_BOARD_SIZE / BOARD_SIZE);
-				rec.w = (GUI_BOARD_SIZE / BOARD_SIZE);
-				if (src->game->gameBoard[i][j] != EMPTY
-						&& src->chosenPiece == false)
+			if (i == src->chosenPiece[0] && j == src->chosenPiece[1]) //the chosen piece needs not to be drawn at his location
+				continue;
+			else {
+				rec.x = (PANEL_OFFSET + j * (GUI_BOARD_SIZE / BOARD_SIZE)) + 5;
+				rec.y = ((GUI_BOARD_SIZE / BOARD_SIZE) * (BOARD_SIZE - 1 - i))
+						+ 5;
+				rec.h = ((GUI_BOARD_SIZE / BOARD_SIZE) - 10);
+				rec.w = ((GUI_BOARD_SIZE / BOARD_SIZE) - 10);
+				if (src->game->gameBoard[i][j] != EMPTY)
 					drawPieceByEntry(src, rec, i, j);
 			}
+
 		}
 	}
-	if (event->type == SDL_MOUSEMOTION && src->chosenPiece[0] != -1) { //piece was selected, move it with mouse
+	if (event != NULL && src->chosenPiece[0] != -1) { //piece was selected, move it with mouse
 		int mouseX = event->motion.x;
 		int mouseY = event->motion.y;
-
-		rec.x = mouseX - (int) (GUI_BOARD_SIZE / (BOARD_SIZE / 2)); //piece is centered according to mouse
-		rec.y = mouseY - (int) (GUI_BOARD_SIZE / (BOARD_SIZE / 2));
-		rec.h = (GUI_BOARD_SIZE / BOARD_SIZE);
-		rec.w = (GUI_BOARD_SIZE / BOARD_SIZE);
+		rec.x = mouseX - (int) ((GUI_BOARD_SIZE / BOARD_SIZE) / 2); //piece is centered according to mouse
+		rec.y = mouseY - (int) ((GUI_BOARD_SIZE / BOARD_SIZE) / 2);
+		rec.h = (GUI_BOARD_SIZE / BOARD_SIZE) - 15;
+		rec.w = (GUI_BOARD_SIZE / BOARD_SIZE) - 15;
 		drawPieceByEntry(src, rec, src->chosenPiece[0], src->chosenPiece[1]);
 	}
 	SDL_RenderPresent(src->gameRenderer);
@@ -257,17 +259,31 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 	//check game state for undo btn
 	if (src->game->gameMode == 2)
 		src->panel[3]->active = false; //game mode is 2, de-activate undo btn
-	else if (!spArrayListIsEmpty(src->game->movesPlayer1))
+	else if (!spArrayListIsEmpty(src->game->movesPlayer1)
+			&& !spArrayListIsEmpty(src->game->movesPlayer2))
 		src->panel[3]->active = true; //there is history, activate undo btn
+
+	//computer turn (if computer is white)
+	if (src->game->gameMode
+			== 1&& src->game->colorUser == 0 && src->game->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
+		spGameWindowDraw(src, event);
+		move* compMove = spChessMiniMaxSuggestMove(src->game,
+				src->game->difficulty);
+		spChessGameSetMove(src->game, compMove->from, compMove->to);
+		spDestroyMove(compMove);
+		SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
+		if (spStatusAfterMove(msg, src, event) != SPCHESS_GAME_NONE)
+			return msg;
+	}
 
 	if (event->type == SDL_MOUSEBUTTONDOWN
 			|| event->type == SDL_MOUSEBUTTONUP) {
 		if (isClickOnBoard(event->button.x)) { //drag n drop
 			int from[DIM] = { event->button.x, event->button.y };
 			computeLocFromGui(from); //change from - gui location to console location
-			if (isSameColorAsGiven(src->game, from[0], from[1],
-					src->game->currentPlayer)
-					&& event->type == SDL_MOUSEBUTTONDOWN) {
+			if (event->type == SDL_MOUSEBUTTONDOWN
+					&& isSameColorAsGiven(src->game, from[0], from[1],
+							src->game->currentPlayer)) {
 				src->chosenPiece[0] = from[0];
 				src->chosenPiece[1] = from[1];
 			} else if (event->type == SDL_MOUSEBUTTONUP
@@ -275,22 +291,27 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 				//check if legal move, change chosePiece check undo checkcheck, not saved = true
 				int to[DIM] = { event->button.x, event->button.y };
 				computeLocFromGui(to);
-				if (spChessGameSetMove(src->game, from, to)
-						== SPCHESS_GAME_SUCCESS) {
+				if (!spChessGameIsKingRisker(src->game, src->chosenPiece, to)
+						&& spChessGameSetMove(src->game, src->chosenPiece, to)
+								== SPCHESS_GAME_SUCCESS) {
 					src->isSaved = false;
 					src->chosenPiece[0] = -1;
 					src->chosenPiece[1] = -1;
 					SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
-					if(spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
+					if (spStatusAfterMove(msg, src, event) != SPCHESS_GAME_NONE) {
 						return msg;
-					if (src->game->gameMode == 1 && src->game->colorUser == 1) {
-						SDL_Delay(10); //wait a little bit before computer's turn
+					}
+					//computer turn (if computer is black)
+					if (src->game->gameMode
+							== 1&& src->game->colorUser == 1 && src->game->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL) {
+						spGameWindowDraw(src, event);
 						move* compMove = spChessMiniMaxSuggestMove(src->game,
 								src->game->difficulty);
-						spChessGameSetMove(src, compMove->from, compMove->to);
+						spChessGameSetMove(src->game, compMove->from,
+								compMove->to);
 						spDestroyMove(compMove);
 						SPCHESS_GAME_EVENT msg = checkStatusForUserGui(src);
-						if(spStatusAfterMove(msg) != SPCHESS_GAME_NONE)
+						if (spStatusAfterMove(msg, src, event) != SPCHESS_GAME_NONE)
 							return msg;
 					}
 					return SPCHESS_GAME_MOVE;
@@ -304,6 +325,7 @@ SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 		}
 	} else if (event->type == SDL_MOUSEMOTION
 			&& (src->chosenPiece[0] == -1 || !isClickOnBoard(event->button.x))) {
+
 		src->chosenPiece[0] = -1;
 		src->chosenPiece[1] = -1;
 	} else if (event->type == SDL_WINDOWEVENT) {
@@ -323,15 +345,15 @@ SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src) {
 		}
 	}
 
-	char whoisincheck = spChessIfMate(src);
+	char whoisincheck = spChessIfMate(src->game);
 	if (whoisincheck != '\0') {
 		if (whoisincheck == SPCHESS_GAME_PLAYER_1_SYMBOL)
 			return SPCHESS_GAME_PLAYER_1_CHECK;
 		else
 			// whoisincheck == SPCHESS_GAME_PLAYER_2_SYMBOL
-			return SPCHESS_GAME_PLAYER_1_CHECK;
+			return SPCHESS_GAME_PLAYER_2_CHECK;
 	}
-	char istie = spChessGameCheckTie(src);
+	char istie = spChessGameCheckTie(src->game);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL)
 		return SPCHESS_GAME_TIE;
 
@@ -339,13 +361,15 @@ SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src) {
 
 }
 
-SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg) {
+SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg, SPCHESSGameWin* src, SDL_Event* event) {
 	if (msg == SPCHESS_GAME_PLAYER_1_CHECKMATE
 			|| msg == SPCHESS_GAME_PLAYER_2_CHECKMATE
 			|| msg == SPCHESS_GAME_TIE) { //terminal state
 		return msg;
 	} else if (msg == SPCHESS_GAME_PLAYER_1_CHECK
 			|| msg == SPCHESS_GAME_PLAYER_2_CHECK) {
+		//draw the board before show "check" msg
+		spGameWindowDraw(src, event);
 		if (msg == SPCHESS_GAME_PLAYER_1_CHECK)
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CHECK!",
 					"White king is threatend!", NULL);
@@ -358,9 +382,10 @@ SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg) {
 }
 
 SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
-	SPCHESS_BUTTON_TYPE btn = getButtonClicked(src->panel, src->numOfPanel,
-			event,
-			true);
+	SPCHESS_BUTTON_TYPE btn = NO_BUTTON;
+
+	btn = getButtonClicked(src->panel, src->numOfPanel, event,
+	true);
 
 	if (btn == BUTTON_GAME_RESTART) {
 		spChessGameRestart(src->game); //restart the game with current settings
@@ -369,12 +394,15 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 		return SPCHESS_GAME_RESTART;
 	} else if (btn == BUTTON_GAME_SAVE) {
 		promoteSlots();
-		if (saveGameToFile(saved_files[0], src->game) == -1) {
+		if (saveGameToFile(SLOT0, src->game) == -1) {
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
 					"Unable to save game",
 					NULL);
 			return SPCHESS_GAME_NONE;
-		}
+		} else
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SUCCESS",
+					"game was successfully saved!", NULL);
+
 		src->isSaved = true;
 		return SPCHESS_GAME_SAVE;
 	} else if (btn == BUTTON_GAME_LOAD) {
@@ -391,69 +419,87 @@ SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event) {
 	} else if (btn == BUTTON_GAME_MAIN_MENU) {
 		if (src->isSaved == false) {
 			//show SDL_ShowMessageBox asking the user if he wants to save
-			if (popUpSave()) {
-				promoteSlots();
-				if (saveGameToFile(saved_files[0], src->game) == -1) {
-					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
-							"Unable to save game",
-							NULL);
-					return SPCHESS_GAME_NONE;
+			int choice = popUpSave();
+			if (choice != 2) {
+				if (choice == 1) { //want to save
+					promoteSlots();
+					if (saveGameToFile(SLOT0, src->game) == -1) {
+						SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
+								"Unable to save game",
+								NULL);
+						return SPCHESS_GAME_NONE;
+					} else
+						SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+								"SUCCESS", "game was successfully saved!",
+								NULL);
+					src->isSaved = true;
 				}
-				src->isSaved = true;
-			}
+				return SPCHESS_GAME_MAIN_MENU;
+			} else
+				//popUpSave() == 2
+				return SPCHESS_GAME_NONE;
 		}
 		return SPCHESS_GAME_MAIN_MENU;
 	} else if (btn == BUTTON_GAME_EXIT) {
 		if (src->isSaved == false) {
 			//show SDL_ShowMessageBox asking the user if he wants to save
-			if (popUpSave()) {
-				promoteSlots();
-				if (saveGameToFile(saved_files[0], src->game) == -1) {
-					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
-							"Unable to save game",
-							NULL);
-					return SPCHESS_GAME_NONE;
+			int choice = popUpSave();
+			if (choice != 2) {
+				if (choice == 1) { //want to save
+					promoteSlots();
+					if (saveGameToFile(SLOT0, src->game) == -1) {
+						SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "ERROR",
+								"Unable to save game",
+								NULL);
+						return SPCHESS_GAME_NONE;
+					} else
+						SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+								"SUCCESS", "game was successfully saved!",
+								NULL);
+
+					src->isSaved = true;
 				}
-				src->isSaved = true;
-			}
+				return SPCHESS_GAME_EXIT;
+			} else
+				//popUpSave() == 2
+				return SPCHESS_GAME_NONE;
 		}
 		return SPCHESS_GAME_EXIT;
 	}
 	return SPCHESS_GAME_NONE;
 }
 
-bool popUpSave() {
-	const SDL_MessageBoxButtonData buttons[] = { { 0, 0, "no" }, {
-			SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" }, {
-					SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" }, };
+int popUpSave() {
+	const SDL_MessageBoxButtonData buttons[] = { {
+			SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" }, { 0, 0, "no" },
+			{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" }, };
 	const SDL_MessageBoxColorScheme colorScheme = { { { 255, 0, 0 },
 			{ 0, 255, 0 }, { 255, 255, 0 }, { 0, 0, 255 }, { 255, 0, 255 } } };
 	const SDL_MessageBoxData messageboxdata = { SDL_MESSAGEBOX_INFORMATION,
-			NULL, "The game isn't saved",
-			"do you wish to save the game before leaving?", SDL_arraysize(
+	NULL, "The game isn't saved!",
+			"Do you wish to save the game before leaving?", SDL_arraysize(
 					buttons), buttons, &colorScheme };
 	int buttonid;
 	if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) {
 		SDL_Log("error displaying message box");
-		return false; /* error */
+		return 0; /* error */
 	}
 	if (buttonid == -1 || buttonid == 2) {
-		return false;
+		return 2;
 	} else if (buttonid == 1)
-		return true;
+		return 1;
 
-	return false;
+	return 0;
 }
 
 bool isClickOnBoard(int x) {
 	return (x > PANEL_OFFSET);
 }
 
-void computeLocFromGui(int from[DIM]) {
-	int tmp = from[0];
-	from[0] = (BOARD_SIZE - 1)
-					- (int) (from[1] / (GUI_BOARD_SIZE / BOARD_SIZE));
-	from[1] = (int) (tmp - PANEL_OFFSET / (GUI_BOARD_SIZE / BOARD_SIZE));
+void computeLocFromGui(int loc[DIM]) {
+	int tmp = loc[0];
+	loc[0] = (BOARD_SIZE - 1) - (int) (loc[1] / (GUI_BOARD_SIZE / BOARD_SIZE));
+	loc[1] = (int) ((tmp - PANEL_OFFSET) / (GUI_BOARD_SIZE / BOARD_SIZE));
 }
 
 void spGameWindowHide(SPCHESSGameWin* src) {

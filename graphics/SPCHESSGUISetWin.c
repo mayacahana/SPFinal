@@ -6,18 +6,16 @@
  */
 
 #include "SPCHESSGUISetWin.h"
-#include "SPCHESSGUICommon.h"
 
 SPCHESSSetWin* spSetWindowCreate() {
 	SPCHESSSetWin* res = (SPCHESSSetWin*) calloc(sizeof(SPCHESSSetWin),
 			sizeof(char));
-	SDL_Surface* loadingSurface = NULL; //Used as temp surface
 	if (res == NULL) {
 		printf("Couldn't create spChessSetWin struct\n");
 		return NULL;
 	}
-	res->setWindow = SDL_CreateWindow("Setting State", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, 900, 900, SDL_WINDOW_OPENGL);
+	res->setWindow = SDL_CreateWindow("CHESS GAME: Setting Window", SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED, 730, 650, SDL_WINDOW_OPENGL);
 	if (res->setWindow == NULL) {
 		spSetWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
@@ -27,28 +25,28 @@ SPCHESSSetWin* spSetWindowCreate() {
 	res->setRenderer = SDL_CreateRenderer(res->setWindow, -1,
 			SDL_RENDERER_ACCELERATED);
 	if (res->setRenderer == NULL) {
-		spLoadWindowDestroy(res);
+		spSetWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());
 		return NULL;
 	}
 
 	res->numOfBtns = NUM_OF_SET_BUTTONS;
-	const char* activeImages[NUM_OF_SET_BUTTONS] = { INACT_IMG(game_mode),
-			ACT_IMG(one_player), ACT_IMG(two_player), INACT_IMG(difficulty),
+	const char* activeImages[NUM_OF_SET_BUTTONS] = { ACT_IMG(game_mode),
+			ACT_IMG(one_player), ACT_IMG(two_players), ACT_IMG(difficulty),
 			ACT_IMG(noob), ACT_IMG(easy), ACT_IMG(moderate), ACT_IMG(hard),
-			INACT_IMG(select_color), ACT_IMG(black_player), ACT_IMG(
+			ACT_IMG(select_color), ACT_IMG(black_player), ACT_IMG(
 					white_player), ACT_IMG(start), ACT_IMG(back) };
 
-	const char* inactiveImages[NUM_OF_SET_BUTTONS] = { INACT_IMG(game_mode),
-			INACT_IMG(one_player), INACT_IMG(two_player), INACT_IMG(difficulty),
+	const char* inactiveImages[NUM_OF_SET_BUTTONS] = { ACT_IMG(game_mode),
+			INACT_IMG(one_player), INACT_IMG(two_players), ACT_IMG(difficulty),
 			INACT_IMG(noob), INACT_IMG(easy), INACT_IMG(moderate), INACT_IMG(
-					hard), INACT_IMG(select_color), INACT_IMG(black_player),
+					hard), ACT_IMG(select_color), INACT_IMG(black_player),
 					INACT_IMG(white_player), INACT_IMG(start), INACT_IMG(back) };
 
-	int xBtns[NUM_OF_SET_BUTTONS] = { 300, 150, 400, 300, 50, 250, 450, 650,
-			300, 150, 400, 150, 400 };
-	int yBtns[NUM_OF_SET_BUTTONS] = { 50, 100, 100, 200, 330, 330, 330, 330,
-			500, 600, 600, 700, 700 };
+	int xBtns[NUM_OF_SET_BUTTONS] = { 270, 170, 360, 270, 35, 205, 375, 545,
+			270, 170, 360, 460, 80 };
+	int yBtns[NUM_OF_SET_BUTTONS] = { 20, 80, 80, 153, 230, 230, 230, 230,
+			312, 380, 380, 500, 500 };
 
 	bool visible[NUM_OF_SET_BUTTONS] = { true, true, true, true, true, true,
 			true, true,
@@ -86,7 +84,7 @@ void spSetWindowDestroy(SPCHESSSetWin* src) {
 		spChessGameDestroy(src->game);
 
 	if (src->btns != NULL)
-		destroyButtons(src->btns);
+		destroyButtons(src->btns, src->numOfBtns);
 
 	if (src->setRenderer != NULL)
 		SDL_DestroyRenderer(src->setRenderer);
@@ -117,14 +115,13 @@ SPCHESS_SET_EVENT spSetWindowHandleEvent(SPCHESSSetWin* src, SDL_Event* event) {
 
 	switch (event->type) {
 	case SDL_MOUSEBUTTONUP:
-
-		btn = getButtonClicked(src->btns, src->numOfBtns,
-				event, true);
+		btn = getButtonClicked(src->btns, src->numOfBtns, event, true);
 
 		if (btn == BUTTON_SET_TWO_PLAYER) {
 			src->game->gameMode = 2; //change the game mode to 2
 			src->btns[11]->active = true; //activate start button
 			//de-activate other options
+
 			src->btns[4]->active = false;
 			src->btns[5]->active = false;
 			src->btns[6]->active = false;

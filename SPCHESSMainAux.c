@@ -132,9 +132,9 @@ void printCurrentSetting(SPCHESSGame* src) {
 		return;
 
 	printf("SETTINGS:\nGAME_MODE: %d\n", src->gameMode);
-	if (src->gameMode == 1){
+	if (src->gameMode == 1) {
 		char* tmpColorUser;
-		if(src->colorUser == 0)
+		if (src->colorUser == 0)
 			tmpColorUser = "BLACK";
 		else
 			tmpColorUser = "WHITE";
@@ -212,17 +212,17 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		int from[DIM] = { row_from, col_from };
 		int to[DIM] = { row_to, col_to };
 
+		if (!spChessGameIsValidMove(src, from, to)) {
+			printf("Invalid position on the board\n");
+			printTurn(src);
+			return NOSUCCESS;
+		}
 		if (spChessGameIsKingRisker(src, from, to)) {
 			printf("Illegal move\n");
 			printTurn(src);
 			return NOSUCCESS;
 		}
 		SPCHESS_GAME_MESSAGE msg = spChessGameSetMove(src, from, to);
-		if (msg == SPCHESS_GAME_INVALID_ARGUMENT) {
-			printf("Invalid position on the board\n");
-			printTurn(src);
-			return NOSUCCESS;
-		}
 		if (msg == SPCHESS_GAME_INVALID_COLOR) {
 			printf("The specified position does not contain your piece\n");
 			printTurn(src);
@@ -236,8 +236,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 		return SUCCESS;
 
 	} else {
-		//before: invalid command.
-		printf("Invalid position on the board\n");
+		printf("Error: invalid command\n");
 		printTurn(src);
 		return NOSUCCESS;
 	}
