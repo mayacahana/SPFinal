@@ -9,6 +9,10 @@
 	setvbuf(stdin, NULL, _IONBF, 0); \
 }
 
+/*
+ * main console mode - run console mode by first
+ * showing setting state and then moving to game state.
+ */
 int activeconsole();
 
 #endif /* CONSOLEMODE_H_ */

@@ -87,7 +87,6 @@ int getPieceValue(char piece, char currentPlayer) {
 int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
 		bool flag, char colorForFunc) {
 
-
 	//halts conditions
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {

@@ -1,9 +1,3 @@
-/*
- * SPCHESSGUIGameWin.c
- *
- *  Created on: 13 בספט׳ 2017
- *      Author: uri
- */
 #include "SPCHESSGUIGameWin.h"
 
 SPCHESSGameWin* spGameWindowCreate(SPCHESSGame* gameCopy) {

@@ -99,7 +99,11 @@ void fillGameDataDueToLine(char* cleanLine, SPCHESSGame* src) {
 			src->difficulty = DEFAULT_DIFFICULTY;
 		else {
 			dataInt = data[0] - '0';
-			src->difficulty = dataInt;
+			if(dataInt == 5) {
+				printf("Expert level not supported\n");
+				return;
+			} else
+				src->difficulty = dataInt;
 		}
 	}
 
