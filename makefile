@@ -11,12 +11,7 @@ EXEC = chessprog
 #objects for exec
 CONSOLE_OBJS = SPCHESSMiniMaxNode.o SPCHESSMiniMax.o SPCHESSGame.o SPCHESSArrayList.o SPCHESSParser.o SPCHESSFileAux.o SPCHESSMainAux.o consolemode.o
 GUI_OBJS = SPCHESSGUIButton.o SPCHESSGUICommon.o SPCHESSGUIMainWin.o SPCHESSGUILoadWin.o SPCHESSGUISetWin.o SPCHESSGUIGameWin.o SPCHESSGUIManager.o guimode.o
-ALL_OBJS = $(CONSOLE_OBJS) main.o
-#should be:
-#ALL_OBJS = $(CONSOLE_OBJS) $(GUI_OBJS) main.o
-
-
-
+ALL_OBJS = $(CONSOLE_OBJS) $(GUI_OBJS) main.o
 
 #objects for tests
 GAME_TEST_OBJS = SPCHESSArrayList.o SPCHESSGame.o SPCHESSGameUnitTest.o
@@ -31,12 +26,9 @@ SPMiniMaxNodeUnitTest SPCHESSFileAuxUnitTest SPMainAuxUnitTest
 
 #The exec file
 $(EXEC): $(ALL_OBJS)
-	$(CC) $(ALL_OBJS) -o $@
-	
-#should be:	
-#$(CC) $(ALL_OBJS) $(SDL_LIB) -o $@
+	$(CC) $(ALL_OBJS) $(SDL_LIB) -o $@
 
-#testers rules	
+#testers rules and exec	
 SPCHESSGameUnitTest: $(GAME_TEST_OBJS)
 	$(CC) $(GAME_TEST_OBJS) -o $@
 SPCHESSArrayListUnitTest: $(ARRAY_LIST_TEST_OBJS)
@@ -101,13 +93,8 @@ graphics/guimode.o: guimode.c guimode.h SPCHESSGUIManager.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
 	
 #main rule
-main.o: main.c consolemode.h
+main.o: main.c consolemode.h guimode.h
 	$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
-
-#should be:	
-#main.o: main.c consolemode.h guimode.h
-#$(CC) $(COMP_FLAG) $(SDL_COMP_FLAG) -c $*.c
-	
 	
 #clean rule	
 clean:

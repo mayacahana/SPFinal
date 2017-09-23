@@ -1,11 +1,3 @@
-/*
- * SPCHESSFileAux.h
- *
- *  Created on: Aug 22, 2017
- *      Author: mayacahana
- */
-
-
 #ifndef SPCHESSFILEAUX_H_
 #define SPCHESSFILEAUX_H_
 

@@ -11,33 +11,18 @@ int scoringFunc(SPCHESSGame* src, char currentPlayer) {
 		return 0;
 
 	int score = 0;
-	char opponentPlayer;
-
-	if (currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
-		opponentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL;
-	else
-		opponentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
-
-	//check if the state is mate (spChessIfMate return the char rep' the threatened side)
-	if (spChessIfMate(src) == opponentPlayer)
-		return 4000; // "plus inf"
-
-	if (spChessIfMate(src) == currentPlayer)
-		return -4000; //"minus inf"
-
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++)
 			score += getPieceValue(src->gameBoard[i][j], currentPlayer);
 	}
-
 	return score;
 }
 
 int getPieceValue(char piece, char currentPlayer) {
 	int white_pawn, white_knight, white_bishop, white_rook, white_queen,
-			white_king;
+	white_king;
 	int black_pawn, black_knight, black_bishop, black_rook, black_queen,
-			black_king;
+	black_king;
 	if (currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 		white_pawn = 1;
 		white_knight = 3;
@@ -100,11 +85,17 @@ int getPieceValue(char piece, char currentPlayer) {
 }
 
 int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
-bool flag, char colorForFunc) {
+		bool flag, char colorForFunc) {
 
-	//recursion halt
-	if (maxRecLvl == 0 || spChessGameCheckWinner(src) != '\0'
-			|| spChessGameCheckTie(src) != '\0')
+
+	//halts conditions
+	char winner = spChessGameCheckWinner(src);
+	if (winner != '\0') {
+		if (winner == colorForFunc)
+			return (4000); //plus "inf"
+		else
+			return (-4000); //minus "inf"
+	} else if (maxRecLvl == 0)
 		return scoringFunc(src, colorForFunc);
 
 	//init value
@@ -120,7 +111,6 @@ bool flag, char colorForFunc) {
 				from[1] = src->piecesPlayer1[i][1];
 			} else
 				continue;
-
 		} else {
 			if (src->piecesPlayer2[i][0] >= 0
 					&& src->piecesPlayer2[i][1] >= 0) {
@@ -130,7 +120,8 @@ bool flag, char colorForFunc) {
 				continue;
 		}
 
-		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]], EMPTY);
+		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]],
+				EMPTY);
 		getLegalMovesForPiece(src, step, legalMoves);
 		spDestroyMove(step);
 
@@ -138,7 +129,7 @@ bool flag, char colorForFunc) {
 			int to[DIM] = { legalMoves[k][0], legalMoves[k][1] };
 			if (!spChessGameIsKingRisker(src, from, to)
 					&& spChessGameSetMove(src, from, to)
-							== SPCHESS_GAME_SUCCESS) {
+					== SPCHESS_GAME_SUCCESS) {
 				value = decider(value,
 						computeValueRec(src, maxRecLvl - 1, alpha, beta, !flag,
 								colorForFunc), flag);
@@ -155,29 +146,29 @@ bool flag, char colorForFunc) {
 			}
 		}
 		//location where to go
-//		for (int k = 0; k < BOARD_SIZE; k++) {
-//			for (int p = 0; p < BOARD_SIZE; p++) {
-//				int to[DIM] = { k, p };
-//				if (!spChessGameIsKingRisker(src, from, to)
-//						&& spChessGameSetMove(src, from, to)
-//								== SPCHESS_GAME_SUCCESS) {
-//					value = decider(value,
-//							computeValueRec(src, maxRecLvl - 1, alpha, beta,
-//									!flag, colorForFunc), flag);
-//					spChessGameUndoPrevMove(src);
-//
-//					if (flag)
-//						alpha = decider(alpha, value, flag);
-//					else
-//						beta = decider(beta, value, flag);
-//
-//					if (beta <= alpha) {
-//						printf("gizom!\n");
-//						break;
-//					}
-//				}
-//			}
-//		}
+		//		for (int k = 0; k < BOARD_SIZE; k++) {
+		//			for (int p = 0; p < BOARD_SIZE; p++) {
+		//				int to[DIM] = { k, p };
+		//				if (!spChessGameIsKingRisker(src, from, to)
+		//						&& spChessGameSetMove(src, from, to)
+		//								== SPCHESS_GAME_SUCCESS) {
+		//					value = decider(value,
+		//							computeValueRec(src, maxRecLvl - 1, alpha, beta,
+		//									!flag, colorForFunc), flag);
+		//					spChessGameUndoPrevMove(src);
+		//
+		//					if (flag)
+		//						alpha = decider(alpha, value, flag);
+		//					else
+		//						beta = decider(beta, value, flag);
+		//
+		//					if (beta <= alpha) {
+		//						printf("gizom!\n");
+		//						break;
+		//					}
+		//				}
+		//			}
+		//		}
 	}
 	return value;
 }

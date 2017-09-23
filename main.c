@@ -1,9 +1,3 @@
-/*
- * main.c
- *
- *  Created on: 19 בספט׳ 2017
- *      Author: uri
- */
 #include "consolemode.h"
 #include "./graphics/guimode.h"
 

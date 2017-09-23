@@ -284,7 +284,6 @@ SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src) {
 		return SPCHESS_GAME_INVALID_ARGUMENT;
 
 	for (int i = BOARD_SIZE - 1; i >= 0; i--) {
-		//printf("%d", i);
 		printf("%d", i + 1);
 		printf("| ");
 		for (int j = 0; j < BOARD_SIZE; j++)
@@ -293,7 +292,6 @@ SPCHESS_GAME_MESSAGE spChessGamePrintBoard(SPCHESSGame* src) {
 	}
 	printf("  -----------------\n");
 	printf("   A B C D E F G H\n");
-	//printf("   0 1 2 3 4 5 6 7\n");
 	return SPCHESS_GAME_SUCCESS;
 }
 
@@ -367,9 +365,9 @@ void getLegalMovesForPiece(SPCHESSGame* src, move* elem,
 		int legalMoves[MAX_STEPS_PIECE][DIM]) {
 
 	for (int i = 0; i < MAX_STEPS_PIECE; i++) {
-		for (int j = 0; j < DIM; j++) {
+		for (int j = 0; j < DIM; j++)
 			legalMoves[i][j] = -1;
-		}
+
 	}
 	char piece = elem->piece;
 
@@ -908,7 +906,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 		if (isEaten) {
 			int subArr[DIM] = { -1, -1 };
 			getSubArrayFromPiece(elem->eaten, subArr);
-			for (int i = subArr[0]; i <= subArr[1]; i++) {
+			for (int i = subArr[1]; i >= subArr[0]; i--) {
 				if (src->piecesPlayer1[i][0] == EATEN
 						&& src->piecesPlayer1[i][1] == EATEN) {
 					src->piecesPlayer1[i][0] = elem->to[0];
@@ -927,7 +925,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 		if (isEaten) {
 			int subArr[DIM] = { -1, -1 };
 			getSubArrayFromPiece(elem->eaten, subArr);
-			for (int i = subArr[0]; i <= subArr[1]; i++) {
+			for (int i = subArr[1]; i >= subArr[0]; i--) {
 				if (src->piecesPlayer2[i][0] == EATEN
 						&& src->piecesPlayer2[i][1] == EATEN) {
 					src->piecesPlayer2[i][0] = elem->to[0];
@@ -936,6 +934,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMove(SPCHESSGame* src) {
 			}
 		}
 	}
+	spDestroyMove(elem); //added
 	spChessChangePlayer(src); //change the turn
 	return SPCHESS_GAME_SUCCESS;
 }
@@ -975,7 +974,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
 		if (isEaten) {
 			int subArr[DIM] = { -1, -1 };
 			getSubArrayFromPiece(elem->eaten, subArr);
-			for (int i = subArr[0]; i <= subArr[1]; i++) {
+			for (int i = subArr[1]; i >= subArr[0]; i--) {
 				if (src->piecesPlayer1[i][0] == EATEN
 						&& src->piecesPlayer1[i][1] == EATEN) {
 					src->piecesPlayer1[i][0] = elem->to[0];
@@ -994,7 +993,7 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
 		if (isEaten) {
 			int subArr[DIM] = { -1, -1 };
 			getSubArrayFromPiece(elem->eaten, subArr);
-			for (int i = subArr[0]; i <= subArr[1]; i++) {
+			for (int i = subArr[1]; i >= subArr[0]; i--) {
 				if (src->piecesPlayer2[i][0] == EATEN
 						&& src->piecesPlayer2[i][1] == EATEN) {
 					src->piecesPlayer2[i][0] = elem->to[0];
@@ -1008,13 +1007,14 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
 	//print the undo move
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
 		printf("Undo move for player white: <%d,%c> -> <%d,%c>\n",
-				elem->to[0] + 1, (char) (elem->to[1] + 'A'),
-				elem->from[0] + 1, (char) (elem->from[1] + 'A'));
+				elem->to[0] + 1, (char) (elem->to[1] + 'A'), elem->from[0] + 1,
+				(char) (elem->from[1] + 'A'));
 	} else { //src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
 		printf("Undo move for player black: <%d,%c> -> <%d,%c>\n",
-				elem->to[0] + 1, (char) (elem->to[1] + 'A'),
-				elem->from[0] + 1, (char) (elem->from[1] + 'A'));
+				elem->to[0] + 1, (char) (elem->to[1] + 'A'), elem->from[0] + 1,
+				(char) (elem->from[1] + 'A'));
 	}
+	spDestroyMove(elem); //added
 	return SPCHESS_GAME_SUCCESS;
 }
 
@@ -1219,66 +1219,131 @@ bool existsValidMovePlayer1(SPCHESSGame* src) {
 	if (!src)
 		return false;
 
+	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
 	move* elem;
 	bool exist = false;
 	char piece, eaten;
-//check if there is a move that after it the king is not threated
+	int legalMoves[MAX_STEPS_PIECE][DIM];
+	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer1[i][0] >= 0 && src->piecesPlayer1[i][1] >= 0) {
 			int from[DIM] =
 					{ src->piecesPlayer1[i][0], src->piecesPlayer1[i][1] };
-			for (int m = 0; m < BOARD_SIZE; m++) {
-				for (int k = 0; k < BOARD_SIZE; k++) {
-					int to[DIM] = { m, k };
-					piece = src->gameBoard[from[0]][from[1]];
-					eaten = src->gameBoard[to[0]][to[1]];
-					elem = spCreateMove(from, to, piece, eaten);
-					if (spChessMoveHandler(src, elem,
-					SPCHESS_GAME_PLAYER_1_SYMBOL) == SPCHESS_GAME_SUCCESS
-							&& !spChessGameIsKingRisker(src, from, to)) {
-						exist = true;
-						spDestroyMove(elem);
-						break;
-					}
+
+			move* step = spCreateMove(from, from,
+					src->gameBoard[from[0]][from[1]],
+					EMPTY);
+			getLegalMovesForPiece(src, step, legalMoves);
+			spDestroyMove(step);
+
+			for (int k = 0; k < MAX_STEPS_PIECE && legalMoves[k][0] != -1;
+					k++) {
+				int to[DIM] = { legalMoves[k][0], legalMoves[k][1] };
+				piece = src->gameBoard[from[0]][from[1]];
+				eaten = src->gameBoard[to[0]][to[1]];
+				elem = spCreateMove(from, to, piece, eaten);
+				if (!spChessGameIsKingRisker(src, from, to)
+						&& spChessMoveHandler(src, elem,
+						SPCHESS_GAME_PLAYER_1_SYMBOL) == SPCHESS_GAME_SUCCESS) {
+					exist = true;
 					spDestroyMove(elem);
+					break;
 				}
+				spDestroyMove(elem);
 			}
+
+//			for (int m = 0; m < BOARD_SIZE; m++) {
+//				for (int k = 0; k < BOARD_SIZE; k++) {
+//					int to[DIM] = { m, k };
+//					piece = src->gameBoard[from[0]][from[1]];
+//					eaten = src->gameBoard[to[0]][to[1]];
+//					elem = spCreateMove(from, to, piece, eaten);
+//					if (!spChessGameIsKingRisker(src, from, to)
+//							&& spChessMoveHandler(src, elem,
+//							SPCHESS_GAME_PLAYER_1_SYMBOL)
+//									== SPCHESS_GAME_SUCCESS) {
+//						exist = true;
+//						spDestroyMove(elem);
+//						break;
+//					}
+//					spDestroyMove(elem);
+//				}
+//			}
 		}
 	}
 	return exist;
 }
 
 bool existsValidMovePlayer2(SPCHESSGame* src) {
+
 	if (!src)
 		return false;
-
+	src->currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL;
 	move* elem;
 	bool exist = false;
 	char piece, eaten;
-//check if there is a move that after it the king is not threated
+	int legalMoves[MAX_STEPS_PIECE][DIM];
+	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 			int from[DIM] =
 					{ src->piecesPlayer2[i][0], src->piecesPlayer2[i][1] };
-			for (int m = 0; m < BOARD_SIZE; m++) {
-				for (int k = 0; k < BOARD_SIZE; k++) {
-					int to[DIM] = { m, k };
-					piece = src->gameBoard[from[0]][from[1]];
-					eaten = src->gameBoard[to[0]][to[1]];
-					elem = spCreateMove(from, to, piece, eaten);
-					if (spChessMoveHandler(src, elem,
-					SPCHESS_GAME_PLAYER_2_SYMBOL) == SPCHESS_GAME_SUCCESS
-							&& !spChessGameIsKingRisker(src, from, to)) {
-						exist = true;
-						spDestroyMove(elem);
-						break;
-					}
+
+			move* step = spCreateMove(from, from,
+					src->gameBoard[from[0]][from[1]],
+					EMPTY);
+			getLegalMovesForPiece(src, step, legalMoves);
+			spDestroyMove(step);
+			for (int k = 0; k < MAX_STEPS_PIECE && legalMoves[k][0] != -1;
+					k++) {
+				int to[DIM] = { legalMoves[k][0], legalMoves[k][1] };
+				piece = src->gameBoard[from[0]][from[1]];
+				eaten = src->gameBoard[to[0]][to[1]];
+				elem = spCreateMove(from, to, piece, eaten);
+				if (!spChessGameIsKingRisker(src, from, to)
+						&& spChessMoveHandler(src, elem,
+						SPCHESS_GAME_PLAYER_2_SYMBOL) == SPCHESS_GAME_SUCCESS) {
+					exist = true;
 					spDestroyMove(elem);
+					break;
 				}
+				spDestroyMove(elem);
 			}
 		}
 	}
 	return exist;
+
+//	if (!src)
+//		return false;
+//
+//	move* elem;
+//	bool exist = false;
+//	char piece, eaten;
+////check if there is a move that after it the king is not threated
+//	for (int i = 0; i < NUM_OF_PIECES; i++) {
+//		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
+//			int from[DIM] =
+//					{ src->piecesPlayer2[i][0], src->piecesPlayer2[i][1] };
+//			for (int m = 0; m < BOARD_SIZE; m++) {
+//				for (int k = 0; k < BOARD_SIZE; k++) {
+//					int to[DIM] = { m, k };
+//					piece = src->gameBoard[from[0]][from[1]];
+//					eaten = src->gameBoard[to[0]][to[1]];
+//					elem = spCreateMove(from, to, piece, eaten);
+//					if (!spChessGameIsKingRisker(src, from, to)
+//							&& spChessMoveHandler(src, elem,
+//							SPCHESS_GAME_PLAYER_2_SYMBOL)
+//									== SPCHESS_GAME_SUCCESS) {
+//						exist = true;
+//						spDestroyMove(elem);
+//						break;
+//					}
+//					spDestroyMove(elem);
+//				}
+//			}
+//		}
+//	}
+//	return exist;
 }
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src) {
