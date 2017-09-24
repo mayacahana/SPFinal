@@ -10,7 +10,7 @@
 #define DIM 2
 
 /*
- * structure represents a move in the game:
+ * Structure represents a move in the game:
  * from[DIM] - a 2-size array contains row and col of the source location
  * to[DIM] - a 2-size array contains row and col of the destination location
  * char piece - char represents the current piece at 'from' location
@@ -24,7 +24,7 @@ typedef struct move_t {
 } move;
 
 /*
- * structure represents an list of history plays.
+ * Structure represents an list of history plays.
  * Contains an array of moves, real size of list, and full capacity size.
  */
 typedef struct sp_array_list_t {
@@ -47,44 +47,134 @@ typedef enum sp_array_list_message_t {
 
 
 /*
- * basic functions of structur move: create a new move,
+ * basic functions of structure move: create a new move,
  * destroy a move by freeing it's memory and copy of a move.
  */
+
+/*
+ *Create a move object with the specified targets.
+ *@param from[DIM] - represent the start position
+ *@param to[DIM] - represent the target position
+ *@param piece - indicates the type of the soldier
+ *@param eaten - indicates if the soldier was eaten in this specific move
+ *@return
+ *the move object
+ */
 move* spCreateMove(int from[DIM], int to[DIM], char piece, char eaten);
+/*
+ * Frees all memory resources associated with the move object.
+ * If the source is NULL, then the function does nothing.
+ * @param elem - the move
+ */
 void spDestroyMove(move* elem);
+/*
+ *	Creates an exact copy of the move object.
+ *	@param src - the source move.
+ *	@return
+ *	NULL if either an allocation error occurs or src == NULL.
+ *	A new copy of the move object, otherwise.
+ */
 move* spCopyMove(move* elem);
 
 /*
  * basic functions of arrayList: create a new list (by setting it's max size),
  * copy an arrayList and destroy an arrayList (by freeing it's memory).
  */
+
+/**
+ *  Creates an empty array list with the specified maximum capacity.
+ *  @param maxSize - the maximum capacity of the target array list.
+ *  @return
+ *  NULL, if an allocation error occurred or maxSize  <= 0.
+ *  An instant of an array list otherwise.
+ */
 SPCHESSArrayList* spArrayListCreate(int maxSize);
+/**
+ *	Creates an exact copy of the src array list. Elements in the new copy will
+ *	be in the same order as they appeared in the source list.
+ *	@param src - the source array list.
+ *	@return
+ *	NULL if either an allocation error occurs or src == NULL.
+ *	A new copy of the source array list, otherwise.
+ */
 SPCHESSArrayList* spArrayListCopy(SPCHESSArrayList* src);
+/**
+ * Frees all memory resources associated with the source array list. If the
+ * source array is NULL, then the function does nothing.
+ * @param src - the source array list
+ */
 void spArrayListDestroy(SPCHESSArrayList* src);
 
-/*
- * returns the move elem in the current index,
- * or an error msg if it doesn't exits or index is invalid.
+/**
+ * Returns the element at the specified index. The function is called
+ * with the assertion that all arguments are valid. If any of the arguments is
+ * invalid then an undefined value is returned.
+ * @param src - the source array list
+ * @param index - the specified index, the index is 0-based.
+ * @return
+ * Undefined value if either src == NULL or index out of bound.
+ * Otherwise, the element at the specified index is returned.
  */
 move* spArrayListGetAt(SPCHESSArrayList* src, int index);
-/*
- * returns the first move elem of the list,
- * or an error msg if it doesn't exits or index is invalid.
+/**
+ * Returns the element at the beginning of the list. The function is called
+ * with the assertion that all arguments are valid. If any of the arguments is
+ * invalid then an undefined value is returned.
+ * @param src - the source array list
+ * @return
+ * Undefined value if either src == NULL or the list is empty
+ * Otherwise, the element at the beginning of the list is returned.
  */
 move* spArrayListGetFirst(SPCHESSArrayList* src);
 
-/*
- * returns the last move elem of the list,
- * or an error msg if it doesn't exits or index is invalid.
+/**
+ * Returns the element at the end of the list. The function is called
+ * with the assertion that all arguments are valid. If any of the arguments is
+ * invalid then an undefined value is returned.
+ * @param src - the source array list
+ * @return
+ * Undefined value if either src == NULL or the list is empty
+ * Otherwise, the element at the end of the list is returned.
  */
 move* spArrayListGetLast(SPCHESSArrayList* src);
-/*
- * general functions of the list: it's max capacity size,
- * it's actuall size, if it's full, and it's empty.
+/**
+ * Returns the maximum capacity of the list. The function is called
+ * with the assertion that all arguments are valid. If any of the arguments is
+ * invalid then an undefined value is returned.
+ * @param src - the source array list
+ * @return
+ * Undefined value if either src == NULL
+ * Otherwise, the maximum capacity of the list is returned.
  */
 int spArrayListMaxCapacity(SPCHESSArrayList* src);
+/**
+ * Returns the number of elements in the list. The function is called
+ * with the assertion that all arguments are valid. If any of the arguments is
+ * invalid then an undefined value is returned.
+ * @param src - the source array list
+ * @return
+ * Undefined value if either src == NULL
+ * Otherwise, the number of the elements in the list is returned.
+ */
 int spArrayListSize(SPCHESSArrayList* src);
+/**
+ * Returns true if the list is full, that is the number of elements in the list
+ * equals its maximum capacity.
+ * @param src - the source array list
+ * @return
+ * false if either src == NULL or the number of elements in the list is less
+ * than its maximum capacity.
+ * Otherwise, true is returned.
+ */
 bool spArrayListIsFull(SPCHESSArrayList* src);
+/**
+ * Returns true if the list is empty, that is the number of elements in the list
+ * equals to zero.
+ * @param src - the source array list
+ * @return
+ * false if either src == NULL or the number of elements in the list is not zero.
+ * Otherwise, true is returned.
+ */
 bool spArrayListIsEmpty(SPCHESSArrayList* src);
 
 /*
