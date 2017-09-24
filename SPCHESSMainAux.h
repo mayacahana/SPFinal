@@ -25,7 +25,7 @@ void quitGame(SPCHESSGame* src);
 
 SPCHESS_COMMAND userTurn(SPCHESSGame* src);
 int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
-void checkGameStatusForUser(SPCHESSGame* src);
+void checkGameStatusForUser(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
 int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
 int undoMove(SPCHESSGame* src);
 void resetGame(SPCHESSGame* src);

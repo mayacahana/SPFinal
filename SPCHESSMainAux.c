@@ -167,7 +167,7 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 	}
 	if (act.cmd == SPCHESS_MOVE) {
 		if (setUserMove(src, act) == SUCCESS) {
-			checkGameStatusForUser(src);
+			checkGameStatusForUser(src, act);
 			free(act.strOne);
 			free(act.strTwo);
 			return SPCHESS_MOVE;
@@ -242,7 +242,7 @@ int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 	}
 }
 
-void checkGameStatusForUser(SPCHESSGame* src) {
+void checkGameStatusForUser(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 	char winner = spChessGameCheckWinner(src);
 	if (winner != '\0') {
 		if (winner == SPCHESS_GAME_PLAYER_1_SYMBOL) {
@@ -252,6 +252,8 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 			printf("Checkmate! black player wins the game\n");
 		}
 		//the game has reached terminal state
+		free(act.strOne);
+		free(act.strTwo);
 		spChessGameDestroy(src);
 		exit(0);
 	}
@@ -270,6 +272,8 @@ void checkGameStatusForUser(SPCHESSGame* src) {
 		printf("The game is tied\n");
 
 		//the game has reached terminal state
+		free(act.strOne);
+		free(act.strTwo);
 		spChessGameDestroy(src);
 		exit(0);
 	}
