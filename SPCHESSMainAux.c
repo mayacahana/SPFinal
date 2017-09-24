@@ -138,7 +138,7 @@ void printCurrentSetting(SPCHESSGame* src) {
 			tmpColorUser = "BLACK";
 		else
 			tmpColorUser = "WHITE";
-		printf("DIFFICULTY_LVL: %d\nUSER_CLR: %d\n", src->difficulty,
+		printf("DIFFICULTY_LVL: %d\nUSER_CLR: %s\n", src->difficulty,
 				tmpColorUser);
 	}
 

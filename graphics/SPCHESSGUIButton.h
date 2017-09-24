@@ -1,9 +1,3 @@
-/*
- * SPCHESSGUIButton.h
- *
- *  Created on: 12 בספט׳ 2017
- *      Author: uri
- */
 #ifndef GRAPHICS_SPCHESSGUIBUTTON_H_
 #define GRAPHICS_SPCHESSGUIBUTTON_H_
 

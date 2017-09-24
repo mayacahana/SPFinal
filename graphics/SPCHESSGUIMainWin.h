@@ -1,16 +1,11 @@
-/*
- * SPCHESSGUIMainWin.h
- *
- *  Created on: 7 בספט׳ 2017
- *      Author: uri
- */
-
 #ifndef GRAPHICS_SPCHESSGUIMAINWIN_H_
 #define GRAPHICS_SPCHESSGUIMAINWIN_H_
 
 #include "SPCHESSGUICommon.h"
 #define NUM_OF_MAIN_BUTTONS 3
-
+/*
+ * enum represents main window events.
+ */
 typedef enum {
 	SPCHESS_MAIN_EXIT,
 	SPCHESS_MAIN_NEW_GAME,
@@ -20,6 +15,9 @@ typedef enum {
 	SPCHESS_MAIN_QUIT
 } SPCHESS_MAIN_EVENT;
 
+/*
+ * structure represents main window.
+ */
 typedef struct spchessmainwin_t {
 	SDL_Window* mainWindow;
 	SDL_Renderer* mainRenderer;
@@ -28,7 +26,10 @@ typedef struct spchessmainwin_t {
 
 } SPCHESSMainWin;
 
-
+/*
+ * standard main window functions: create destroy, draw,
+ * handle events, hide and show.
+ */
 SPCHESSMainWin* spMainWindowCreate();
 void spMainWindowDraw(SPCHESSMainWin* src);
 void spMainWindowDestroy(SPCHESSMainWin* src);

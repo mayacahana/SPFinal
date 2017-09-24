@@ -1,10 +1,3 @@
-/*
- * SPCHESSGUICommon.c
- *
- *  Created on: 12 בספט׳ 2017
- *      Author: uri
- */
-
 #include "SPCHESSGUICommon.h"
 
 int countSavedFiles() {

@@ -1,9 +1,3 @@
-/*
- * guimode.c
- *
- *  Created on: 7 בספט׳ 2017
- *      Author: uri
- */
 #include "guimode.h"
 
 int activegui() {

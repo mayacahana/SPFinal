@@ -11,6 +11,9 @@
 #include "SPCHESSGUICommon.h"
 #define NUM_OF_SET_BUTTONS 13
 
+/*
+ * enum represents set window events.
+ */
 typedef enum {
 	SPCHESS_SET_GAME_MODE,
 	SPCHESS_SET_DIFF,
@@ -21,7 +24,9 @@ typedef enum {
 	SPCHESS_SET_NONE,
 	SPCHESS_SET_QUIT
 } SPCHESS_SET_EVENT;
-
+/*
+ * structure represents a set window.
+ */
 typedef struct spchesssetwin_t {
 	SDL_Window* setWindow;
 	SDL_Renderer* setRenderer;
@@ -30,7 +35,10 @@ typedef struct spchesssetwin_t {
 	SPCHESSGame* game;
 
 } SPCHESSSetWin;
-
+/*
+ * standard set window functions: create destroy, draw,
+ * handle events, hide and show.
+ */
 SPCHESSSetWin* spSetWindowCreate();
 void spSetWindowDraw(SPCHESSSetWin* src);
 void spSetWindowDestroy(SPCHESSSetWin* src);
