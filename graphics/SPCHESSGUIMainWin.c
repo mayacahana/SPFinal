@@ -1,10 +1,3 @@
-/*
- * SPCHESSGUIMainWin.c
- *
- *  Created on: 7 בספט׳ 2017
- *      Author: uri
- */
-
 #include "SPCHESSGUIMainWin.h"
 
 SPCHESSMainWin* spMainWindowCreate() {
@@ -15,7 +8,6 @@ SPCHESSMainWin* spMainWindowCreate() {
 
 	res->mainWindow = SDL_CreateWindow("CHESS GAME: Main Window", SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED, 400, 400, SDL_WINDOW_OPENGL);
-	//SDL_WINDOW_INPUT_FOCUS
 
 	if (res->mainWindow == NULL) {
 		spMainWindowDestroy(res);
@@ -24,7 +16,6 @@ SPCHESSMainWin* spMainWindowCreate() {
 	}
 	res->mainRenderer = SDL_CreateRenderer(res->mainWindow, -1,
 			SDL_RENDERER_ACCELERATED);
-	//SDL_RENDERER_SOFTWARE
 	if (res->mainRenderer == NULL) {
 		spMainWindowDestroy(res);
 		printf("Could not create window: %s\n", SDL_GetError());

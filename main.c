@@ -2,7 +2,8 @@
 #include "./graphics/guimode.h"
 
 /*
- * MAIN FUNCTION - activate cosole or gui mode according to command line argument.
+ * MAIN FUNCTION - activate console or gui mode
+ * according to command line argument.
  */
 int main(int argc, char* argv[]) {
 

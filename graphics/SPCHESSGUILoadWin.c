@@ -1,9 +1,3 @@
-/*
- * SPCHESSGUILoadWin.c
- *
- *  Created on: 8 בספט׳ 2017
- *      Author: uri
- */
 #include "SPCHESSGUILoadWin.h"
 
 SPCHESSLoadWin* spLoadWindowCreate() {

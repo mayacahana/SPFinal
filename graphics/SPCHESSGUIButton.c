@@ -1,10 +1,3 @@
-/*
- * SPCHESSGUIButton.c
- *
- *  Created on: 12 בספט׳ 2017
- *      Author: uri
- */
-
 #include "SPCHESSGUIButton.h"
 
 SDL_Rect* spCopyRect(SDL_Rect* src) {

@@ -1,10 +1,3 @@
-/*
- * SPCHESSGUIGameWin.h
- *
- *  Created on: 13 בספט׳ 2017
- *      Author: uri
- */
-
 #ifndef GRAPHICS_SPCHESSGUIGAMEWIN_H_
 #define GRAPHICS_SPCHESSGUIGAMEWIN_H_
 
@@ -67,17 +60,41 @@ void drawPieceByEntry(SPCHESSGameWin* src, SDL_Rect rec, int i, int j);
  * and returns the user choice.
  */
 int popUpSave();
+/*
+ * The functions return true iff the current mouse location is on the chess board itself.
+ */
 bool isClickOnBoard(int x);
+
+/*
+ * The functions coverts pixel mouse location from
+ * the gui game board to current position in the console mode.
+ */
 void computeLocFromGui(int loc[DIM]);
 
+/*
+ * standard window functions: draw, destroy, hide and show.
+ */
 void spGameWindowDraw(SPCHESSGameWin* src, SDL_Event* event);
 void spGameWindowDestroy(SPCHESSGameWin* src);
 void spGameWindowHide(SPCHESSGameWin* src);
 void spGameWindowShow(SPCHESSGameWin* src);
+
+/*
+ * The handle events game window functions - act according to the event sent and the location.
+ */
 SPCHESS_GAME_EVENT spGameWindowHandleEvent(SPCHESSGameWin* src,
 		SDL_Event* event);
+/*
+ * The function check The game Status after a turn and return an event enum accordingly.
+ */
 SPCHESS_GAME_EVENT checkStatusForUserGui(SPCHESSGameWin* src);
+/*
+ * An helper function hadling only with panel events (restart, save, load etc.)
+ */
 SPCHESS_GAME_EVENT spPanelHandleEvent(SPCHESSGameWin* src, SDL_Event* event);
+/*
+ * The function shows the relavent pop-up (if needed) about the game state: check, checkmate or tie.
+ */
 SPCHESS_GAME_EVENT spStatusAfterMove(SPCHESS_GAME_EVENT msg,
 		SPCHESSGameWin* src, SDL_Event* event);
 

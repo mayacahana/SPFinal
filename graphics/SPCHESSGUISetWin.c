@@ -1,10 +1,3 @@
-/*
- * SPCHESSGUISetWin.c
- *
- *  Created on: 12 בספט׳ 2017
- *      Author: uri
- */
-
 #include "SPCHESSGUISetWin.h"
 
 SPCHESSSetWin* spSetWindowCreate() {
