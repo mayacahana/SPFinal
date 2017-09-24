@@ -50,21 +50,24 @@ typedef struct game_setting_command_t {
 } SPCHESS_GAME_SETTINGS_Command;
 
 /*
- * function parses a command line in the setting mode
- * and returns a structure of a setting command with the above params.
+ * Parses a command line in the setting mode and returns a structure
+ *  of a setting command with the above params.
+ *  @param src - the input string
+ *  @return
+ *  the settings command
  */
 SPCHESS_GAME_SETTINGS_Command spParserPraseSettingLine(const char* str);
 
 /*
- * helper functons which returns the enum represents the string command recieved - setting state..
+ * Helper function which returns the enum represents the string command recieved - setting state..
  */
 int spParserSettingCommand(char* str);
 
 /*
- * structure represents a user command in the game setting:
+ * Structure represents a user command in the game setting:
  * contains it's type,
  * a bool represents the validity of the
- * relavent parama and the relavent params.
+ * relavent param and the relavent params.
  */
 typedef struct game_mode_command_t {
 	SPCHESS_COMMAND cmd;
@@ -75,18 +78,19 @@ typedef struct game_mode_command_t {
 
 
 /*
- * function parses a command line in the game mode
+ * Parses a command line in the game mode
  * and returns a structure of a game command with the above params.
  */
 SPCHESS_GAME_MODE_Command spParserPraseGameModeLine(const char* str);
 
 /*
- * helper functons which returns the enum represents
+ * helper function which returns the enum represents
  * the string command recieved - game mode.
  */
 int spParserGameModeCommand(char* str);
 
 /*
+ * Aux function that helps parse the command.
  * return true iff str is the pattern '<x,y>'
  * where x is int and y is an upper char
  */
