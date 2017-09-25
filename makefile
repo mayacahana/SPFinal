@@ -24,10 +24,14 @@ MAINAUX_TEST_OBJS = SPMainAux.o SPArrayList.o SPCHESSGame.o SPMiniMax.o SPMiniMa
 UNIT_TESTS = SPCHESSParserUnitTest SPCHESSArrayListUnitTest SPCHESSGameUnitTest SPCHESSMiniMaxUnitTest\
 SPMiniMaxNodeUnitTest SPCHESSFileAuxUnitTest SPMainAuxUnitTest
 
+
 #The exec file
+all: $(ALL_OBJS)
+	$(CC) $(ALL_OBJS) $(SDL_LIB) -o $(EXEC)
+
 $(EXEC): $(ALL_OBJS)
 	$(CC) $(ALL_OBJS) $(SDL_LIB) -o $@
-
+	
 #testers rules and exec	
 SPCHESSGameUnitTest: $(GAME_TEST_OBJS)
 	$(CC) $(GAME_TEST_OBJS) -o $@

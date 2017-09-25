@@ -4,12 +4,12 @@
 	<game_mode>2</game_mode>
 	<board>
 		<row_8>RNBQKBNR</row_8>
-		<row_7>MMMMMMMM</row_7>
+		<row_7>__MMMMMM</row_7>
 		<row_6>________</row_6>
-		<row_5>________</row_5>
-		<row_4>________</row_4>
+		<row_5>m_______</row_5>
+		<row_4>M_______</row_4>
 		<row_3>________</row_3>
-		<row_2>mmmmmmmm</row_2>
+		<row_2>__mmmmmm</row_2>
 		<row_1>rnbqkbnr</row_1>
 	</board>
 </game>
