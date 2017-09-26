@@ -13,7 +13,15 @@
 #define MAX(x,y) (((x) > (y)) ? (x) : (y))
 #define MIN(x,y) (((x) < (y)) ? (x) : (y))
 /**
- *
+ * Calculates the board's score for the current player after the last move.
+ * Goes over every location on board, and for each position computes the value
+ * of the position for the current player
+ * The score of each soldier and position o the board is calculated
+ * according to a constant values, given in the instructions.
+ * @param src - The source game
+ * @param currentPlayer - The player we calcuate the score for.
+ * @return
+ * The board's score.
  */
 int scoringFunc(SPCHESSGame* src, char currentPlayer);
 /**
