@@ -10,8 +10,11 @@
 }
 
 /*
+ * Execute the game in console mode.
  * main console mode - run console mode by first
  * showing setting state and then moving to game state.
+ * @return
+ * 0 in case the game is finished
  */
 int activeconsole();
 
