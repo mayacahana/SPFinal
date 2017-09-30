@@ -1,10 +1,3 @@
-/*
- * SPCHESSGame.h
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
-
 #ifndef SPCHESSGAME_H_
 #define SPCHESSGAME_H_
 #include "SPCHESSArrayList.h"

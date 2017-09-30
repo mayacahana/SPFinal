@@ -5,7 +5,7 @@
 #include <SDL2/SDL_video.h>
 #include <stdbool.h>
 
-//button eight and width
+//button height and width
 #define BUTTON_W 150
 #define BUTTON_H 50
 

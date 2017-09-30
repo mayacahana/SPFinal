@@ -1,10 +1,3 @@
-/*
- * SPCHESSGame.c
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
-
 #include "SPCHESSGame.h"
 
 SPCHESSGame* spChessGameCreate(int historySize) {
@@ -343,12 +336,7 @@ bool spChessGameValidMoveLoc(SPCHESSGame* src, move* elem) {
 	bool validMove = false;
 
 	int legalMoves[MAX_STEPS_PIECE][DIM]; //pre-allocated array of legal moves
-	//init values with -1's
-//	for (int i = 0; i < MAX_STEPS_PIECE; i++) {
-//		for (int j = 0; j < DIM; j++) {
-//			legalMoves[i][j] = -1;
-//		}
-//	}
+
 	getLegalMovesForPiece(src, elem, legalMoves);
 	//check if target location is one of the legal moves above
 	for (int i = 0; i < MAX_STEPS_PIECE && legalMoves[i][0] != -1; i++) {
@@ -1065,7 +1053,7 @@ bool spChessIfPlayer2IsThreatening(SPCHESSGame* src) {
 	int to[DIM] = { src->piecesPlayer1[15][0], src->piecesPlayer1[15][1] }; //white king's location
 	char piece, king = src->gameBoard[to[0]][to[1]];
 
-//find pieces who can threaten the white king
+	//find pieces who can threaten the white king
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
 		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
 			int from[DIM] =
@@ -1128,7 +1116,7 @@ bool existsPlayer2KingSaver(SPCHESSGame* src) {
 	if (!src)
 		return false;
 
-	src->currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL; // (?)
+	src->currentPlayer = SPCHESS_GAME_PLAYER_2_SYMBOL;
 	bool exist = false;
 	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -1158,7 +1146,7 @@ bool existsPlayer1KingSaver(SPCHESSGame* src) {
 	if (!src)
 		return false;
 
-	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL; // (?)
+	src->currentPlayer = SPCHESS_GAME_PLAYER_1_SYMBOL;
 	bool exist = false;
 	//check if there is a move that after it the king is not threated
 	for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -1251,24 +1239,6 @@ bool existsValidMovePlayer1(SPCHESSGame* src) {
 				}
 				spDestroyMove(elem);
 			}
-
-//			for (int m = 0; m < BOARD_SIZE; m++) {
-//				for (int k = 0; k < BOARD_SIZE; k++) {
-//					int to[DIM] = { m, k };
-//					piece = src->gameBoard[from[0]][from[1]];
-//					eaten = src->gameBoard[to[0]][to[1]];
-//					elem = spCreateMove(from, to, piece, eaten);
-//					if (!spChessGameIsKingRisker(src, from, to)
-//							&& spChessMoveHandler(src, elem,
-//							SPCHESS_GAME_PLAYER_1_SYMBOL)
-//									== SPCHESS_GAME_SUCCESS) {
-//						exist = true;
-//						spDestroyMove(elem);
-//						break;
-//					}
-//					spDestroyMove(elem);
-//				}
-//			}
 		}
 	}
 	return exist;
@@ -1312,38 +1282,6 @@ bool existsValidMovePlayer2(SPCHESSGame* src) {
 		}
 	}
 	return exist;
-
-//	if (!src)
-//		return false;
-//
-//	move* elem;
-//	bool exist = false;
-//	char piece, eaten;
-////check if there is a move that after it the king is not threated
-//	for (int i = 0; i < NUM_OF_PIECES; i++) {
-//		if (src->piecesPlayer2[i][0] >= 0 && src->piecesPlayer2[i][1] >= 0) {
-//			int from[DIM] =
-//					{ src->piecesPlayer2[i][0], src->piecesPlayer2[i][1] };
-//			for (int m = 0; m < BOARD_SIZE; m++) {
-//				for (int k = 0; k < BOARD_SIZE; k++) {
-//					int to[DIM] = { m, k };
-//					piece = src->gameBoard[from[0]][from[1]];
-//					eaten = src->gameBoard[to[0]][to[1]];
-//					elem = spCreateMove(from, to, piece, eaten);
-//					if (!spChessGameIsKingRisker(src, from, to)
-//							&& spChessMoveHandler(src, elem,
-//							SPCHESS_GAME_PLAYER_2_SYMBOL)
-//									== SPCHESS_GAME_SUCCESS) {
-//						exist = true;
-//						spDestroyMove(elem);
-//						break;
-//					}
-//					spDestroyMove(elem);
-//				}
-//			}
-//		}
-//	}
-//	return exist;
 }
 
 char spChessGameGetCurrentPlayer(SPCHESSGame* src) {
@@ -1371,7 +1309,7 @@ char getColorFromPiece(char piece) {
 			|| piece == WHITE_B || piece == WHITE_Q || piece == WHITE_P) {
 		return SPCHESS_GAME_PLAYER_1_SYMBOL;
 	}
-//it is a black piece
+	//it is a black piece
 	return SPCHESS_GAME_PLAYER_2_SYMBOL;
 }
 

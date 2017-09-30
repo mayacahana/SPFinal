@@ -6,6 +6,6 @@
 SPCHESSGame* getStateFromFile(char* path);
 int saveGameToFile(char* path, SPCHESSGame* game);
 
-void fillGameDataDueToLine(char* cleanLine, SPCHESSGame* src);
+void fillGameInfoParserLine(char* cleanLine, SPCHESSGame* src);
 
 #endif /* SPCHESSFILEAUX_H_ */

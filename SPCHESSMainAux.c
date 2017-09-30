@@ -1,9 +1,3 @@
-/*
- * SPCHESSMainAux.c
- *
- *  Created on: 29 באוג׳ 2017
- *      Author: uri
- */
 #include "SPCHESSMainAux.h"
 
 void setDefaultSetting(SPCHESSGame* src) {

@@ -1,9 +1,3 @@
-/*
- * SPCHESSMiniMaxNode.c
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
 #include "SPCHESSMiniMaxNode.h"
 
 int scoringFunc(SPCHESSGame* src, char currentPlayer) {
@@ -119,6 +113,7 @@ int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
 				continue;
 		}
 
+		//get legal moves for current piece
 		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]],
 				EMPTY);
 		getLegalMovesForPiece(src, step, legalMoves);
@@ -144,30 +139,6 @@ int computeValueRec(SPCHESSGame* src, int maxRecLvl, int alpha, int beta,
 
 			}
 		}
-		//location where to go
-		//		for (int k = 0; k < BOARD_SIZE; k++) {
-		//			for (int p = 0; p < BOARD_SIZE; p++) {
-		//				int to[DIM] = { k, p };
-		//				if (!spChessGameIsKingRisker(src, from, to)
-		//						&& spChessGameSetMove(src, from, to)
-		//								== SPCHESS_GAME_SUCCESS) {
-		//					value = decider(value,
-		//							computeValueRec(src, maxRecLvl - 1, alpha, beta,
-		//									!flag, colorForFunc), flag);
-		//					spChessGameUndoPrevMove(src);
-		//
-		//					if (flag)
-		//						alpha = decider(alpha, value, flag);
-		//					else
-		//						beta = decider(beta, value, flag);
-		//
-		//					if (beta <= alpha) {
-		//						printf("gizom!\n");
-		//						break;
-		//					}
-		//				}
-		//			}
-		//		}
 	}
 	return value;
 }

@@ -1,10 +1,3 @@
-/*
- * SPCHESSMiniMax.c
- *
- *  Created on: 15 באוג׳ 2017
- *      Author: uri
- */
-
 #include "SPCHESSMiniMax.h"
 
 move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
@@ -48,6 +41,7 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 				continue;
 		}
 
+		//get legal moves for current piece (child of the root)
 		move* step = spCreateMove(from, from, src->gameBoard[from[0]][from[1]],
 		EMPTY);
 		getLegalMovesForPiece(src, step, legalMoves);
@@ -69,27 +63,6 @@ move* spChessMiniMaxSuggestMove(SPCHESSGame* src, unsigned int maxDepth) {
 				spChessGameUndoPrevMove(copy);
 			}
 		}
-//		//location where to move
-//		for (int k = 0; k < BOARD_SIZE; k++) {
-//			for (int p = 0; p < BOARD_SIZE; p++) {
-//				int to[DIM] = { k, p };
-//
-//				if (!spChessGameIsKingRisker(copy, from, to)
-//						&& spChessGameSetMove(copy, from, to)
-//								== SPCHESS_GAME_SUCCESS) {
-//					childValue = computeValueRec(copy, maxDepth - 1, INT_MIN,
-//							INT_MAX, false, currentPlayer);
-//					if (childValue > max) {
-//						max = childValue;
-//						fromBest[0] = from[0];
-//						fromBest[1] = from[1];
-//						toBest[0] = to[0];
-//						toBest[1] = to[1];
-//					}
-//					spChessGameUndoPrevMove(copy);
-//				}
-//			}
-//		}
 	}
 	char pieceBest = copy->gameBoard[fromBest[0]][fromBest[1]];
 	char eatenBest = copy->gameBoard[toBest[0]][toBest[1]];

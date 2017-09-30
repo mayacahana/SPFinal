@@ -15,11 +15,10 @@ SPCHESSGame* getStateFromFile(char* path) {
 		printf("Error: File doesn't exist or cannot be opened\n");
 		return NULL;
 	}
-
 	while (fgets(tmpLine, SPCHESS_MAX_LINE_LENGTH, in)) {
 		cleanLine = strtok(tmpLine, delim);
 		if (cleanLine != NULL)
-			fillGameDataDueToLine(cleanLine, loaded);
+			fillGameInfoParserLine(cleanLine, loaded);
 	}
 	fclose(in);
 	//fill pieces array acoording to game board
@@ -60,7 +59,7 @@ SPCHESSGame* getStateFromFile(char* path) {
 	return loaded;
 }
 
-void fillGameDataDueToLine(char* cleanLine, SPCHESSGame* src) {
+void fillGameInfoParserLine(char* cleanLine, SPCHESSGame* src) {
 	const char delimTag[3] = "<>";
 	char* tmpLine = NULL;
 	char* data = NULL;
@@ -69,7 +68,6 @@ void fillGameDataDueToLine(char* cleanLine, SPCHESSGame* src) {
 	tmpLine = strtok(cleanLine, delimTag);
 
 	//switch case according to the tag content:
-
 	//current turn
 	if (strstr(tmpLine, "current_turn") != NULL) {
 		data = strtok(NULL, delimTag);
@@ -98,7 +96,7 @@ void fillGameDataDueToLine(char* cleanLine, SPCHESSGame* src) {
 			src->difficulty = DEFAULT_DIFFICULTY;
 		else {
 			dataInt = data[0] - '0';
-			if(dataInt == 5) {
+			if (dataInt == 5) {
 				printf("Expert level not supported\n");
 				return;
 			} else
@@ -136,13 +134,17 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 	out = fopen(path, "w");
 	if (!out)
 		return -1;
+	//title
 	fprintf(out,
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n\t<current_turn>");
+
+	//current turn
 	if (game->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL)
 		fputs("1</current_turn>\n\t<game_mode>", out);
-	else {
+	else
 		fputs("0</current_turn>\n\t<game_mode>", out);
-	}
+
+	//game mode + difficulty and user color in case of two-players mode
 	if (game->gameMode == 2)
 		fputs("2</game_mode>\n\t<board>", out);
 	else {
@@ -154,6 +156,8 @@ int saveGameToFile(char* path, SPCHESSGame* game) {
 		else
 			fputs("0</user_color>\n\t<board>", out);
 	}
+
+	//board state
 	for (int i = BOARD_SIZE - 1; i >= 0; i--) {
 		fprintf(out, "\n\t\t<row_%d>", i + 1);
 		for (int j = 0; j < BOARD_SIZE; j++) {
