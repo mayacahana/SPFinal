@@ -70,17 +70,67 @@ void quitGame(SPCHESSGame* src);
  */
 SPCHESS_COMMAND userTurn(SPCHESSGame* src);
 /**
- *
+ * Executes the next user move. If not valid - prints a message accordingly.
+ * @param src - the game
+ * @param act - the command move to execute
+ * @return
+ * 1 in case of success, 0 otherwise
  */
 int setUserMove(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
+/**
+ * Checks if there is a winner, mate or tie in the game
+ * following the input command. Prints a message accordingly
+ * @param src - the game
+ * @param act - the desired command
+ */
 void checkGameStatusForUser(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
+/**
+ * Saving the game to the desired output file.
+ * @param src - the game
+ * @param act - the save command to execute
+ * @return
+ * 1 in case of success, 0 otherwise.
+ */
 int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act);
+/**
+ * Execute the undo command.
+ * If not legal - prints a message accordingly.
+ * @param src - the game
+ * @return
+ * 1 in case of success, 0 otherwise.
+ */
 int undoMove(SPCHESSGame* src);
+/**
+ * Reset the game to default settings, delete
+ * any parameters of the current game.
+ * @param src - the game
+ */
 void resetGame(SPCHESSGame* src);
+/**
+ * Helper function. prints a message to the next player
+ * to play his move.
+ * @param src -the game
+ */
 void printTurn(SPCHESSGame* src);
-
+/**
+ * Calculate the computer next move and print a message
+ * according to the move that taken.
+ * @param src - the game
+ */
 void computerTurn(SPCHESSGame* src);
+/**
+ * Checks if there is a winner, mate or tie in the game
+ * Prints a message accordingly
+ * @param src - the game
+ */
 void checkGameStatusForComputer(SPCHESSGame* src);
+/**
+ * Helper function. return the full name of the piece
+ * following its MACRO definition.
+ * @param piece - the piece's symbol
+ * @return
+ * the piece's full name.
+ */
 char* getNameFromPiece(char piece);
 
 #endif /* SPCHESSMAINAUX_H_ */
