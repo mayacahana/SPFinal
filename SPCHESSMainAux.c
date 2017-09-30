@@ -112,7 +112,7 @@ int setLoad(SPCHESSGame* src, SPCHESS_GAME_SETTINGS_Command act) {
 		//try to open the path, if yes - change the game, according o/w do nothing
 		FILE* in = fopen(act.str, "r");
 		if (!in) {
-			printf("Error: File doesn’t exist or cannot be opened\n");
+			printf("Error: File doesn't exist or cannot be opened\n");
 			free(in);
 			return NOSUCCESS;
 		}
@@ -133,7 +133,7 @@ void printCurrentSetting(SPCHESSGame* src) {
 
 	printf("SETTINGS:\nGAME_MODE: %d\n", src->gameMode);
 	if (src->gameMode == 1) {
-		char* tmpColorUser;
+		char* tmpColorUser = NULL;
 		if (src->colorUser == 0)
 			tmpColorUser = "BLACK";
 		else
@@ -162,7 +162,7 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 
 	if (act.cmd == SPCHESS_INVALID_LINE) {
 		printf("Error: invalid command\n");
-
+		printTurn(src);
 		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_MOVE) {
@@ -183,6 +183,7 @@ SPCHESS_COMMAND userTurn(SPCHESSGame* src) {
 	if (act.cmd == SPCHESS_SAVE) {
 		saveGame(src, act);
 		free(act.strOne);
+		printTurn(src);
 		return userTurn(src);
 	}
 	if (act.cmd == SPCHESS_UNDO) {
@@ -286,8 +287,6 @@ int saveGame(SPCHESSGame* src, SPCHESS_GAME_MODE_Command act) {
 			printf("File cannot be created or modified\n");
 			return NOSUCCESS;
 		}
-		//not sure:
-		//printf("Game was successfully saved\n");
 		return SUCCESS;
 	} else {
 		printf("Error: invalid command\n");
@@ -356,7 +355,7 @@ void checkGameStatusForComputer(SPCHESSGame* src) {
 	}
 	char istie = spChessGameCheckTie(src);
 	if (istie == SPCHESS_GAME_TIE_SYMBOL) {
-		spChessGamePrintBoard(src);
+		printf("The game ends in a tie\n");
 		//the game has reached terminal state
 		spChessGameDestroy(src);
 		exit(0);

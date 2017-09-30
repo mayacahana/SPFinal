@@ -1006,11 +1006,11 @@ SPCHESS_GAME_MESSAGE spChessGameUndoPrevMoveWithPrint(SPCHESSGame* src) {
 
 	//print the undo move
 	if (src->currentPlayer == SPCHESS_GAME_PLAYER_1_SYMBOL) {
-		printf("Undo move for player white: <%d,%c> -> <%d,%c>\n",
+		printf("Undo move for player white : <%d,%c> -> <%d,%c>\n",
 				elem->to[0] + 1, (char) (elem->to[1] + 'A'), elem->from[0] + 1,
 				(char) (elem->from[1] + 'A'));
 	} else { //src->currentPlayer == SPCHESS_GAME_PLAYER_2_SYMBOL
-		printf("Undo move for player black: <%d,%c> -> <%d,%c>\n",
+		printf("Undo move for player black : <%d,%c> -> <%d,%c>\n",
 				elem->to[0] + 1, (char) (elem->to[1] + 'A'), elem->from[0] + 1,
 				(char) (elem->from[1] + 'A'));
 	}

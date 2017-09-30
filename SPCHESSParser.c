@@ -89,7 +89,7 @@ int spParserSettingCommand(char* str) {
 	//create a copy
 	char *strcopy = (char*) malloc((strlen(str) + 1) * sizeof(char));
 	if (!strcopy) {
-		perror_message_malloc;
+		printf("Error: standard function malloc has failed\n");
 		free(strcopy);
 		exit(1);
 	}
@@ -262,6 +262,10 @@ int spParserGameModeCommand(char* str) {
 }
 
 bool checkPosPat(char *str) {
+
+	if (str == NULL)
+		return false;
+
 	if (strlen(str) >= 5 && str[0] == '<'
 			&& (isdigit(str[1]) || isupper(str[1])) && str[2] == ','
 			&& (isdigit(str[3]) || isupper(str[3])) && str[4] == '>') {

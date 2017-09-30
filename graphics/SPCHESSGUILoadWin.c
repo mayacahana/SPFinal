@@ -65,11 +65,11 @@ void spLoadWindowDestroy(SPCHESSLoadWin* src) {
 	if (!src)
 		return;
 
-	if (src->btns != NULL)
-		destroyButtons(src->btns, src->numOfBtns);
-
 	if (src->game != NULL)
 		spChessGameDestroy(src->game);
+
+	if (src->btns != NULL)
+		destroyButtons(src->btns, src->numOfBtns);
 
 	if (src->loadRenderer != NULL)
 		SDL_DestroyRenderer(src->loadRenderer);

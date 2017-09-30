@@ -25,7 +25,7 @@ UNIT_TESTS = SPCHESSParserUnitTest SPCHESSArrayListUnitTest SPCHESSGameUnitTest 
 SPMiniMaxNodeUnitTest SPCHESSFileAuxUnitTest SPMainAuxUnitTest
 
 
-#The exec file
+#the main execution
 all: $(ALL_OBJS)
 	$(CC) $(ALL_OBJS) $(SDL_LIB) -o $(EXEC)
 

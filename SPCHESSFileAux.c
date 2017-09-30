@@ -57,7 +57,6 @@ SPCHESSGame* getStateFromFile(char* path) {
 			}
 		}
 	}
-
 	return loaded;
 }
 

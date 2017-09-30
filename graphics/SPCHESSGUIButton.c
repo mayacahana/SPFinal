@@ -106,11 +106,11 @@ Button** createButtons(SDL_Renderer* windowRender, const char* activeImages[],
 		btns[i] = createButton(windowRender, activeImages[i], inactiveImages[i],
 				&rec, visible[i], active[i], types[i]);
 		if (btns[i] == NULL) {
-			for (int k = 0; k < i; k++) {
+			for (int k = 0; k < i; k++)
 				destroyButton(btns[k]);
-				free(btns);
-				return NULL;
-			}
+
+			free(btns);
+			return NULL;
 		}
 	}
 	return btns;
@@ -124,6 +124,7 @@ void destroyButtons(Button** btns, int numOfBtns) {
 	for(int i = 0; i < numOfBtns; i++)
 		destroyButton(btns[i]);
 
+	free(btns);
 }
 
 
